@@ -104,3 +104,52 @@ rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR
 ### Pieces on board
 
 1. If contiguous, 4 bits per square, white
+
+## Database
+
+### Games table
+
+- GameID
+- UTC Date
+- UTC Time
+- White Username
+- Black Username
+- White ELO
+- Black ELO
+- Time Control
+- Increment
+- Result (win/loss/draw)
+- Result category
+- Number of (half) moves
+- MoveBlob (blob, 2B per half move)
+
+### Moves table
+
+- MoveID
+- Color
+- GameID (foreign key to Games table)
+- PieceType
+- From
+- To
+- Check/Checkmate/Stalemate (nullable?)
+- Captured PieceType (nullable)
+- Promoted PieceType (nullable)
+- Annotation (nullable)
+
+- SecondsRemaining (float, nullable)
+- Evaluation (nullable)
+
+- WhiteCanCastleKS (boolean)
+- WhiteCanCastleQS (boolean)
+- BlackCanCastleKS (boolean)
+- BlackCanCastleQS (boolean)
+- EnPassant (nullable, 1-8=(file a-h))
+- HalfMoveCounter (int)
+- FullTurnCounter (int >= 1)
+- PositionID (foreign key in Positions table)
+
+### Positions table
+
+- PositionID
+- Position (blob, 32B)
+    - Ensure empty squares are standardized to 4 bits of 0.
