@@ -180,6 +180,14 @@ namespace ChessGame
         readPGNHeader(input, game);
         readPGNMoves(input, game);
 
+        Board board;
+        game.boards.reserve(game.moves.size());
+        for (auto &move : game.moves)
+        {
+            board.applyMove(move);
+            game.boards.push_back(board); // intentional copy
+        }
+
         return game;
     }
 }
