@@ -63,6 +63,9 @@ namespace ChessGame
         return (color == Color::White) ? 0u : 7u;
     }
 
+    /// @brief Applies a move to the board state, possibly adding information to the move
+    ///     (e.g., from square, captured piece)
+    /// @param move
     void Board::applyMove(ChessGame::Move &move)
     {
         determineFromCapture(move);
