@@ -68,7 +68,13 @@ namespace ChessGame
     /// @param move
     void Board::applyMove(ChessGame::Move &move)
     {
-        determineFromCapture(move);
+        move.capturedPiece = pieces.put(move.to, move.piece);
+        if (move.piece.type == PieceType::Pawn &&
+            move.from.file != move.to.file &&
+            move.capturedPiece.type == PieceType::None)
+            move.capturedPiece = Piece{oppositeColor(move.piece.color), PieceType::Pawn};
+
+        determineFromSquare(move);
 
         auto tmp = enPassant;
         determineExtra(move);
@@ -81,10 +87,8 @@ namespace ChessGame
         turn = oppositeColor(turn);
     }
 
-    void Board::determineFromCapture(Move &move)
+    void Board::determineFromSquare(Move &move)
     {
-        move.capturedPiece = pieces.put(move.to, move.piece);
-
         std::vector<Square> candiateSquares;
 
         for (uint8_t rank = 0; rank < 8; rank++)
