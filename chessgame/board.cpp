@@ -138,7 +138,7 @@ namespace ChessGame
         pieces.put(move.from, Piece{Color::White, PieceType::None});
     }
 
-    void Board::determineExtra(Move &move)
+    void Board::determineExtra(const Move &move)
     {
         if (move.piece.type == PieceType::Pawn)
         {

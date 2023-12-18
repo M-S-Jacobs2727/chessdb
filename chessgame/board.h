@@ -58,8 +58,8 @@ namespace ChessGame
         std::optional<Square> enPassant = std::nullopt;
 
     private:
-        void determineFromCapture(Move &move);
-        void determineExtra(Move &move);
+        void determineFromSquare(Move &move);
+        void determineExtra(const Move &move);
         uint8_t homeRank(Color color);
     };
 } // namespace ChessGame
