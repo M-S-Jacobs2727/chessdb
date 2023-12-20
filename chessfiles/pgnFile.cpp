@@ -11,9 +11,9 @@
 #include <variant>
 #include <vector>
 
-#include "clockTime.h"
-#include "evaluation.h"
-#include "game.h"
+#include "chessgame/clockTime.h"
+#include "chessgame/evaluation.h"
+#include "chessgame/game.h"
 
 #include "pgnFile.h"
 

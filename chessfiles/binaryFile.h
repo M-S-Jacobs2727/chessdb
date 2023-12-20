@@ -3,10 +3,10 @@
 #include <istream>
 #include <ostream>
 
-#include "board.h"
-#include "clockTime.h"
-#include "evaluation.h"
-#include "game.h"
+#include "chessgame/board.h"
+#include "chessgame/clockTime.h"
+#include "chessgame/evaluation.h"
+#include "chessgame/game.h"
 
 namespace ChessGame
 {

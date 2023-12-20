@@ -4,8 +4,8 @@
 #include <ostream>
 #include <string_view>
 
-#include "game.h"
-#include "move.h"
+#include "chessgame/game.h"
+#include "chessgame/move.h"
 
 namespace ChessGame
 {
