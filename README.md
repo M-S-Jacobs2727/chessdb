@@ -110,8 +110,7 @@ rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR
 ### Games table
 
 - GameID
-- UTC Date
-- UTC Time
+- UTC Datetime
 - White Username
 - Black Username
 - White ELO
