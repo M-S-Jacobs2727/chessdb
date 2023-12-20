@@ -87,6 +87,7 @@ namespace ChessGame
         turn = oppositeColor(turn);
     }
 
+    // DANGER: REQUIRES MOVE LOGIC, NOT IMPLEMENTED CORRECTLY
     void Board::determineFromSquare(Move &move)
     {
         std::vector<Square> candiateSquares;
