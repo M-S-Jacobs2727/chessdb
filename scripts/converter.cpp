@@ -2,9 +2,9 @@
 #include <iostream>
 #include <string>
 
-#include "binaryFile.h"
-#include "game.h"
-#include "pgnFile.h"
+#include "chessfiles/binaryFile.h"
+#include "chessfiles/pgnFile.h"
+#include "chessgame/game.h"
 
 int main(int argc, char *argv[])
 {

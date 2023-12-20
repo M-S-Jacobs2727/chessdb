@@ -11,10 +11,9 @@ option(TEST "Enable testing" ON)
 # Add subdirectories
 add_subdirectory(chessgame)
 add_subdirectory(chessfiles)
+add_subdirectory(database)
 if(TEST)
     add_subdirectory(test) # Add the test directory
 endif()
 
-add_executable(converter converter.cpp)
-target_link_libraries(converter PRIVATE ChessGame_shared ChessFiles_shared)
-target_include_directories(converter PUBLIC chessgame chessfiles)
+add_subdirectory(scripts)
