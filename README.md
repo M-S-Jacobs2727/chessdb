@@ -107,6 +107,9 @@ rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR
 
 ## Database
 
+- Look into normal forms 
+    - Move redundancy is ok, binary for searching prefix and moves table for 
+
 ### Games table
 
 - GameID
@@ -152,3 +155,25 @@ rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR
 - PositionID
 - Position (blob, 32B)
     - Ensure empty squares are standardized to 4 bits of 0.
+
+### ECO table
+
+- Entry (PK)
+- Code (varchar(3))
+- Move binary prefix
+
+## Runtime Interface for Apps (console and GUI)
+
+- State-based main board position and move order
+    - Select branch of moves (player created or from DB)
+    - Next/prev/jumpto move
+    - Delete player created branch (to declutter)
+    - Apply move, making new branch or continuing the current one (try matching existing branches?)
+- Query database
+    - Position
+    - Move order prefix
+    - Usernames
+    - Individual moves? (e.g., b4+ for white, b4+ for either, b8=Q#)
+- Best engine moves
+- Book moves (ECO table in database)
+- Endgame tables (<7 pieces) (another table in database)
