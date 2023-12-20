@@ -1,28 +1,23 @@
 add_executable(converter converter.cpp)
-target_link_libraries(
-    converter
-    PRIVATE
-    ChessGame_shared
-    ChessFiles_shared
-)
 target_include_directories(
     converter
     PUBLIC
     ${CMAKE_SOURCE_DIR}
+)
+target_link_libraries(
+    converter
+    PRIVATE
+    ChessFiles_static
 )
 
-add_executable(loadDatabase db.cpp)
+add_executable(initdb db.cpp)
 target_include_directories(
-    loadDatabase
+    initdb
     PUBLIC
-    ${CMAKE_SOURCE_DIR}/pqxx/include/
     ${CMAKE_SOURCE_DIR}
 )
 target_link_libraries(
-    loadDatabase
+    initdb
     PRIVATE
-    ChessGame_shared
-    ChessFiles_shared
-    ${CMAKE_SOURCE_DIR}/pqxx/lib/libpqxx.a
-    pq
+    Database
 )
