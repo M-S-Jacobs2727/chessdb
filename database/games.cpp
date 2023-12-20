@@ -42,7 +42,7 @@ namespace ChessGame
         return moveData;
     }
 
-    std::string_view insertGameString(const Game &game)
+    std::string_view insertGameCommand(const Game &game)
     {
         constexpr std::array<std::string_view, 4> results{"white", "black", "draw", "none"};
         constexpr std::array<std::string_view, 8> conditions{

@@ -8,5 +8,5 @@
 namespace ChessGame
 {
     std::string_view assembleMovesBlob(const std::vector<Move> &moves);
-    std::string_view insertGameString(const Game &game);
+    std::string_view insertGameCommand(const Game &game);
 } // namespace ChessGame
