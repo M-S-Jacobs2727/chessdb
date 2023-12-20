@@ -28,11 +28,11 @@ namespace ChessGame
             {"*", GameResult::Type::Other}};
 
         std::unordered_map<std::string, GameResult::Reason> resultReasonMap{
-            {"Normal", GameResult::Reason::Normal},
+            {"Normal", GameResult::Reason::None},
             {"Time forfeit", GameResult::Reason::Timeout},
             {"Rules infraction", GameResult::Reason::RulesInfraction},
-            {"Abandoned", GameResult::Reason::Unknown},
-            {"Unterminated", GameResult::Reason::Unknown}};
+            {"Abandoned", GameResult::Reason::Checkmate},
+            {"Unterminated", GameResult::Reason::Checkmate}};
 
         std::string line, dateString, timeString;
 

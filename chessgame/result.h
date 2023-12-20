@@ -13,14 +13,14 @@ namespace ChessGame
         };
         enum class Reason
         {
-            Normal,
+            None,
+            Checkmate,
             Timeout,
+            Resignation,
             RulesInfraction,
+            Stalemate,
+            Agreement,
             InsufficientMaterial,
-            Unknown,
-            Unknown2,
-            Unknown3,
-            Unknown4,
         };
         Type type;
         Reason reason;
