@@ -2,6 +2,8 @@
 
 #include <pqxx/pqxx>
 
+#include "database/games.h"
+
 int main()
 {
     try
