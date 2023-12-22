@@ -1,4 +1,4 @@
-#include "pieces.h"
+#include "position.h"
 
 #include <algorithm>
 #include <functional>

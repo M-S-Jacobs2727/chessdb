@@ -5,7 +5,7 @@
 #include "chessgame/evaluation.h"
 #include "chessgame/game.h"
 #include "chessgame/move.h"
-#include "chessgame/pieces.h"
+#include "chessgame/position.h"
 
 namespace ChessGame
 {
@@ -19,7 +19,7 @@ namespace ChessGame
         void loadEngine(std::string_view enginePath);
         ~UCI();
 
-        void newGame(const Position &pieces = Position());
+        void newGame(const Position &position = Position());
         void applyMove(const Move &move);
         eval_t evaluation();
         Move bestMove();

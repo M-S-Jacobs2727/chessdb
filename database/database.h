@@ -7,11 +7,10 @@
 
 #include <pqxx/pqxx>
 
-#include "chessgame/board.h"
 #include "chessgame/game.h"
 #include "chessgame/move.h"
 #include "chessgame/piece.h"
-#include "chessgame/pieces.h"
+#include "chessgame/position.h"
 
 namespace ChessGame
 {
@@ -22,7 +21,7 @@ namespace ChessGame
         ~Database();
         void insertPGN(std::istream &pgnIn);
 
-        void findGamesByPosition(const Position &pieces);
+        void findGamesByPosition(const Position &position);
         void findGamesByMoves(const std::vector<Move> &moves);
         void findGamesByOpening(std::string_view openingECO);
         void findGamesByPlayer(std::string_view player, std::optional<Color> = std::nullopt);
@@ -34,12 +33,12 @@ namespace ChessGame
         bool insertGame(const Game &game);
         bool insertMoves(const std::vector<Move> &moves);
         bool insertMove(const Move &move);
-        bool insertPosition(const Board &board);
+        bool insertPosition(const Position &position);
 
         std::string_view assembleMovesBlob(const std::vector<Move> &moves);
         std::string_view insertGameCommand(const Game &game);
         std::string_view insertMoveCommand(const Move &moves);
-        std::string_view insertPositionCommand(const Position &pieces);
+        std::string_view insertPositionCommand(const Position &position);
 
     private:
         pqxx::connection m_conn;
