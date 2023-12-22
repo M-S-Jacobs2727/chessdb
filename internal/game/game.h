@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 
-#include "clockTime.h"
-#include "datetime.h"
-#include "evaluation.h"
+#include "internal/evaluation.h"
+#include "internal/time/clockTime.h"
+#include "internal/time/datetime.h"
+#include "internal/time/timeControl.h"
 #include "move.h"
 #include "result.h"
 #include "state.h"
-#include "timeControl.h"
 
 namespace ChessGame
 {

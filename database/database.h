@@ -7,10 +7,10 @@
 
 #include <pqxx/pqxx>
 
-#include "chessgame/game.h"
-#include "chessgame/move.h"
-#include "chessgame/piece.h"
-#include "chessgame/position.h"
+#include "internal/game/game.h"
+#include "internal/game/move.h"
+#include "internal/game/piece.h"
+#include "internal/game/position.h"
 
 namespace ChessGame
 {

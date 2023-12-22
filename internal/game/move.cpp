@@ -5,20 +5,6 @@
 
 namespace ChessGame
 {
-    Annotation readAnnotation(const std::string_view &str)
-    {
-        const static std::unordered_map<std::string_view, Annotation> annoMap = {
-            {"", Annotation::None},
-            {"?", Annotation::Mistake},
-            {"!", Annotation::Good},
-            {"!!", Annotation::Brilliant},
-            {"??", Annotation::Blunder},
-            {"?!", Annotation::Dubious},
-            {"!?", Annotation::Interesting},
-        };
-        return annoMap.at(str);
-    }
-
     Move::Move(const std::string_view &str, Color color)
         : capturedPiece(Piece{oppositeColor(color), PieceType::None}),
           piece(Piece{color, readPGNPieceType(str)}),
@@ -32,7 +18,6 @@ namespace ChessGame
             throw std::runtime_error("Invalid move string");
 
         std::string moveStr = match[1], checkStr = match[8], annoStr = match[9];
-        annotation = readAnnotation(annoStr);
         check = !checkStr.empty();
 
         if (moveStr[0] == 'O')

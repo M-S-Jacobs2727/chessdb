@@ -19,6 +19,10 @@ namespace ChessGame
             s[1] += rank;
             return std::string_view(s);
         }
+        bool valid()
+        {
+            return file <= 7 && rank <= 7;
+        }
 
         bool operator==(const Square &other) const = default;
     };
