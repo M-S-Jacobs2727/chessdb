@@ -6,7 +6,7 @@
 
 #include "move.h"
 #include "piece.h"
-#include "pieces.h"
+#include "position.h"
 
 namespace ChessGame
 {
@@ -50,7 +50,7 @@ namespace ChessGame
         void applyMove(Move &move);
 
     public:
-        Pieces pieces;
+        Position pieces;
         uint8_t fullTurnCounter = 1;
         uint8_t halfTurnCounter = 0;
         Color turn = Color::White;

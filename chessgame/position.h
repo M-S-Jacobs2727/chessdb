@@ -13,10 +13,10 @@
 
 namespace ChessGame
 {
-    class Pieces : public std::array<Piece, 64>
+    class Position : public std::array<Piece, 64>
     {
     public:
-        explicit Pieces(std::string_view fenString = INITFEN);
+        explicit Position(std::string_view fenString = INITFEN);
         Piece get(Square square);
         Piece put(Square square, Piece piece);
 

@@ -8,7 +8,7 @@ namespace ChessGame
     struct Square
     {
         uint8_t file = 0; // 0-7, other values invalid
-        uint8_t rank = 0; // 0-7, reversed from Pieces::idx()
+        uint8_t rank = 0; // 0-7, reversed from Position::idx()
         constexpr Square() = default;
         constexpr Square(uint8_t file, uint8_t rank) : file(file), rank(rank) {}
         explicit Square(const std::string_view &str) : file(str[0] - 'a'), rank(str[1] - '1') {}

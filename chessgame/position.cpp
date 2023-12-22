@@ -8,7 +8,7 @@
 
 namespace ChessGame
 {
-    Pieces::Pieces(std::string_view fenString)
+    Position::Position(std::string_view fenString)
     {
         std::unordered_map<char, Piece> pieceMap = {
             {'p', Piece{Color::Black, PieceType::Pawn}},
@@ -82,24 +82,24 @@ namespace ChessGame
             throw std::runtime_error("Invalid FEN string");
     }
 
-    Piece Pieces::get(Square square)
+    Piece Position::get(Square square)
     {
         return at(idx(square));
     }
 
-    Piece Pieces::put(Square square, Piece piece)
+    Piece Position::put(Square square, Piece piece)
     {
         auto oldPiece = at(idx(square));
         at(idx(square)) = piece;
         return oldPiece;
     }
 
-    inline uint8_t Pieces::idx(Square square)
+    inline uint8_t Position::idx(Square square)
     {
         return square.file + (7 - square.rank) * 8;
     }
 
-    inline Square Pieces::idxToSquare(uint8_t idx)
+    inline Square Position::idxToSquare(uint8_t idx)
     {
         return Square{static_cast<uint8_t>(idx % 8u), static_cast<uint8_t>(7u - idx / 8u)};
     }

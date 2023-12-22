@@ -13,7 +13,7 @@ namespace ChessGame
         std::string str;
 
         iss >> str;
-        pieces = Pieces(str);
+        pieces = Position(str);
 
         iss >> str;
         if (str == "w")
