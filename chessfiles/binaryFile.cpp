@@ -130,10 +130,10 @@ namespace ChessGame
         if (board.enPassant)
             extra |= static_cast<uint8_t>(board.enPassant.value().file);
         extra[7] = board.turn == Color::Black;
-        extra[6] = board.rights.get(Color::White, CastleRights::Side::KING);
-        extra[5] = board.rights.get(Color::White, CastleRights::Side::QUEEN);
-        extra[4] = board.rights.get(Color::Black, CastleRights::Side::KING);
-        extra[3] = board.rights.get(Color::Black, CastleRights::Side::QUEEN);
+        extra[6] = board.castleRights.get(Color::White, CastleRights::Side::KING);
+        extra[5] = board.castleRights.get(Color::White, CastleRights::Side::QUEEN);
+        extra[4] = board.castleRights.get(Color::Black, CastleRights::Side::KING);
+        extra[3] = board.castleRights.get(Color::Black, CastleRights::Side::QUEEN);
         uint8_t extra_byte = static_cast<uint8_t>(extra.to_ulong());
         output.write(reinterpret_cast<const char *>(&extra_byte), sizeof(extra_byte));
 
@@ -269,10 +269,10 @@ namespace ChessGame
         input.read(reinterpret_cast<char *>(&extra), sizeof(extra));
         std::bitset<8> extraBits{extra};
         board.turn = static_cast<Color>(extraBits.test(7));
-        board.rights.set(Color::White, CastleRights::Side::KING, extraBits.test(6));
-        board.rights.set(Color::White, CastleRights::Side::QUEEN, extraBits.test(5));
-        board.rights.set(Color::Black, CastleRights::Side::KING, extraBits.test(4));
-        board.rights.set(Color::Black, CastleRights::Side::QUEEN, extraBits.test(3));
+        board.castleRights.set(Color::White, CastleRights::Side::KING, extraBits.test(6));
+        board.castleRights.set(Color::White, CastleRights::Side::QUEEN, extraBits.test(5));
+        board.castleRights.set(Color::Black, CastleRights::Side::KING, extraBits.test(4));
+        board.castleRights.set(Color::Black, CastleRights::Side::QUEEN, extraBits.test(3));
         board.enPassant.emplace("a1");
         board.enPassant.value().file = extra & 0x07;
 

@@ -24,22 +24,22 @@ namespace ChessGame
             throw std::runtime_error("Invalid FEN string");
 
         iss >> str;
-        rights.reset(false);
+        castleRights.reset(false);
         for (const auto &c : str)
         {
             switch (c)
             {
             case 'K':
-                rights.set(Color::White, CastleRights::Side::KING);
+                castleRights.set(Color::White, CastleRights::Side::KING);
                 break;
             case 'Q':
-                rights.set(Color::White, CastleRights::Side::QUEEN);
+                castleRights.set(Color::White, CastleRights::Side::QUEEN);
                 break;
             case 'k':
-                rights.set(Color::Black, CastleRights::Side::KING);
+                castleRights.set(Color::Black, CastleRights::Side::KING);
                 break;
             case 'q':
-                rights.set(Color::Black, CastleRights::Side::QUEEN);
+                castleRights.set(Color::Black, CastleRights::Side::QUEEN);
                 break;
 
             default:
@@ -162,17 +162,17 @@ namespace ChessGame
                 Square rookSquare{static_cast<uint8_t>((move.to.file == 2u) ? 0u : 7u), move.to.rank};
                 pieces.put(middleSquare, pieces.put(rookSquare, Piece{Color::White, PieceType::None}));
             }
-            rights.remove(turn, CastleRights::Side::KING);
-            rights.remove(turn, CastleRights::Side::QUEEN);
+            castleRights.remove(turn, CastleRights::Side::KING);
+            castleRights.remove(turn, CastleRights::Side::QUEEN);
         }
         else if (move.piece.type == PieceType::Rook)
         {
             if (move.from.rank == homeRank(turn))
             {
                 if (move.from.file == 0u)
-                    rights.remove(turn, CastleRights::Side::QUEEN);
+                    castleRights.remove(turn, CastleRights::Side::QUEEN);
                 else if (move.from.file == 7u)
-                    rights.remove(turn, CastleRights::Side::KING);
+                    castleRights.remove(turn, CastleRights::Side::KING);
             }
         }
 
@@ -183,9 +183,9 @@ namespace ChessGame
             if (move.capturedPiece.type == PieceType::Rook && move.to.rank == homeRank(opp))
             {
                 if (move.to.file == 0u)
-                    rights.remove(opp, CastleRights::Side::QUEEN);
+                    castleRights.remove(opp, CastleRights::Side::QUEEN);
                 else if (move.to.file == 7u)
-                    rights.remove(opp, CastleRights::Side::KING);
+                    castleRights.remove(opp, CastleRights::Side::KING);
             }
         }
     }

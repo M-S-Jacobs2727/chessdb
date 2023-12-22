@@ -54,7 +54,7 @@ namespace ChessGame
         uint8_t fullTurnCounter = 1;
         uint8_t halfTurnCounter = 0;
         Color turn = Color::White;
-        CastleRights rights;
+        CastleRights castleRights;
         std::optional<Square> enPassant = std::nullopt;
 
     private:
