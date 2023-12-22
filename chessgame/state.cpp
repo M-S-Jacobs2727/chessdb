@@ -1,4 +1,4 @@
-#include "board.h"
+#include "state.h"
 
 #include <algorithm>
 #include <sstream>
@@ -7,13 +7,13 @@
 
 namespace ChessGame
 {
-    Board::Board(std::string_view fenString)
+    State::State(std::string_view fenString)
     {
         std::istringstream iss{fenString.data()};
         std::string str;
 
         iss >> str;
-        pieces = Position(str);
+        position = Position(str);
 
         iss >> str;
         if (str == "w")
@@ -58,7 +58,7 @@ namespace ChessGame
         fullTurnCounter = std::stoul(str);
     }
 
-    inline uint8_t Board::homeRank(Color color)
+    inline uint8_t State::homeRank(Color color)
     {
         return (color == Color::White) ? 0u : 7u;
     }
@@ -66,9 +66,9 @@ namespace ChessGame
     /// @brief Applies a move to the board state, possibly adding information to the move
     ///     (e.g., from square, captured piece)
     /// @param move
-    void Board::applyMove(ChessGame::Move &move)
+    void State::applyMove(ChessGame::Move &move)
     {
-        move.capturedPiece = pieces.put(move.to, move.piece);
+        move.capturedPiece = position.put(move.to, move.piece);
         if (move.piece.type == PieceType::Pawn &&
             move.from.file != move.to.file &&
             move.capturedPiece.type == PieceType::None)
@@ -88,7 +88,7 @@ namespace ChessGame
     }
 
     // DANGER: REQUIRES MOVE LOGIC, NOT IMPLEMENTED CORRECTLY
-    void Board::determineFromSquare(Move &move)
+    void State::determineFromSquare(Move &move)
     {
         std::vector<Square> candiateSquares;
 
@@ -96,7 +96,7 @@ namespace ChessGame
             for (uint8_t file = 0; file < 8; file++)
             {
                 Square square{file, rank};
-                if (pieces.get(square) == move.piece)
+                if (position.get(square) == move.piece)
                     candiateSquares.push_back(square);
             }
 
@@ -136,10 +136,10 @@ namespace ChessGame
             move.from = *it;
         }
 
-        pieces.put(move.from, Piece{Color::White, PieceType::None});
+        position.put(move.from, Piece{Color::White, PieceType::None});
     }
 
-    void Board::determineExtra(const Move &move)
+    void State::determineExtra(const Move &move)
     {
         if (move.piece.type == PieceType::Pawn)
         {
@@ -148,9 +148,9 @@ namespace ChessGame
             if (abs(move.to.rank - move.from.rank) == 2)
                 enPassant = Square{move.to.file, static_cast<uint8_t>((move.to.rank + move.from.rank) / 2)};
             else if (move.to.file != move.from.file && move.to == enPassant)
-                pieces.put(Square{move.to.file, move.from.rank}, Piece{Color::White, PieceType::None});
+                position.put(Square{move.to.file, move.from.rank}, Piece{Color::White, PieceType::None});
             else if (move.promotedPiece.type != PieceType::None)
-                pieces.put(move.to, move.promotedPiece);
+                position.put(move.to, move.promotedPiece);
         }
         else if (move.piece.type == PieceType::King)
         {
@@ -160,7 +160,7 @@ namespace ChessGame
                     throw std::runtime_error("Invalid castle move");
                 Square middleSquare{static_cast<uint8_t>((move.to.file + move.from.file) / 2), move.to.rank};
                 Square rookSquare{static_cast<uint8_t>((move.to.file == 2u) ? 0u : 7u), move.to.rank};
-                pieces.put(middleSquare, pieces.put(rookSquare, Piece{Color::White, PieceType::None}));
+                position.put(middleSquare, position.put(rookSquare, Piece{Color::White, PieceType::None}));
             }
             castleRights.remove(turn, CastleRights::Side::KING);
             castleRights.remove(turn, CastleRights::Side::QUEEN);

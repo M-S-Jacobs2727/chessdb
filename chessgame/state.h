@@ -43,14 +43,14 @@ namespace ChessGame
         std::array<bool, 4> m_rights = {true, true, true, true};
     };
 
-    class Board
+    class State
     {
     public:
-        explicit Board(std::string_view fenString = INITFEN);
+        explicit State(std::string_view fenString = INITFEN);
         void applyMove(Move &move);
 
     public:
-        Position pieces;
+        Position position;
         uint8_t fullTurnCounter = 1;
         uint8_t halfTurnCounter = 0;
         Color turn = Color::White;

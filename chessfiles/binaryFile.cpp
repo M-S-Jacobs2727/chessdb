@@ -109,7 +109,7 @@ namespace ChessGame
         output.write(reinterpret_cast<const char *>(&secondsRemaining), sizeof(secondsRemaining));
     }
 
-    void writeBinaryState(std::ostream &output, const Board &board)
+    void writeBinaryState(std::ostream &output, const State &board)
     {
         uint32_t row = 0;
         size_t idx = 0;
@@ -250,7 +250,7 @@ namespace ChessGame
         input.read(reinterpret_cast<char *>(&clock.seconds), sizeof(clock.seconds));
     }
 
-    void readBinaryState(std::istream &input, Board &board)
+    void readBinaryState(std::istream &input, State &board)
     {
         uint32_t row = 0;
         size_t idx = 0;

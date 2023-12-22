@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 
-#include "board.h"
 #include "clockTime.h"
 #include "datetime.h"
 #include "evaluation.h"
 #include "move.h"
 #include "result.h"
+#include "state.h"
 #include "timeControl.h"
 
 namespace ChessGame
@@ -28,6 +28,6 @@ namespace ChessGame
         std::vector<Move> moves;
         std::optional<std::vector<ClockTime>> clocks = std::nullopt;
         std::optional<std::vector<Evaluation>> evaluations = std::nullopt;
-        std::vector<Board> boards;
+        std::vector<State> states;
     };
 }
