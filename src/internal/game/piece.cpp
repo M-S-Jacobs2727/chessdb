@@ -1,4 +1,4 @@
-#include "piece.h"
+#include "internal/game/piece.h"
 
 #include <stdexcept>
 #include <string_view>

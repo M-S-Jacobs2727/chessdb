@@ -5,12 +5,12 @@
 #include <vector>
 
 #include "internal/evaluation.h"
+#include "internal/game/move.h"
+#include "internal/game/result.h"
+#include "internal/game/state.h"
 #include "internal/time/clockTime.h"
 #include "internal/time/datetime.h"
 #include "internal/time/timeControl.h"
-#include "move.h"
-#include "result.h"
-#include "state.h"
 
 namespace ChessGame
 {

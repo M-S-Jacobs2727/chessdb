@@ -1,4 +1,4 @@
-#include "position.h"
+#include "internal/game/position.h"
 
 #include <algorithm>
 #include <functional>
@@ -82,7 +82,7 @@ namespace ChessGame
             throw std::runtime_error("Invalid FEN string");
     }
 
-    Piece Position::get(Square square)
+    Piece Position::get(Square square) const
     {
         return at(idx(square));
     }
@@ -94,12 +94,12 @@ namespace ChessGame
         return oldPiece;
     }
 
-    inline uint8_t Position::idx(Square square)
+    inline uint8_t Position::idx(Square square) const
     {
         return square.file + (7 - square.rank) * 8;
     }
 
-    inline Square Position::idxToSquare(uint8_t idx)
+    inline Square Position::idxToSquare(uint8_t idx) const
     {
         return Square{static_cast<uint8_t>(idx % 8u), static_cast<uint8_t>(7u - idx / 8u)};
     }

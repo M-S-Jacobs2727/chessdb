@@ -1,4 +1,4 @@
-#include "move.h"
+#include "internal/game/move.h"
 
 #include <regex>
 #include <unordered_map>

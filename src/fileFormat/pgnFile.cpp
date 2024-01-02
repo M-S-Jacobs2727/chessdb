@@ -11,11 +11,11 @@
 #include <variant>
 #include <vector>
 
-#include "chessgame/clockTime.h"
-#include "chessgame/evaluation.h"
-#include "chessgame/game.h"
+#include "internal/evaluation.h"
+#include "internal/game/game.h"
+#include "internal/time/clockTime.h"
 
-#include "pgnFile.h"
+#include "fileFormat/pgnFile.h"
 
 namespace ChessGame
 {
@@ -162,10 +162,10 @@ namespace ChessGame
                 throw std::runtime_error("Invalid move string");
             }
 
-            if (std::regex_match(annotation_string, match, annotation_regex))
-                move.annotation = annotationMap[match[2].str()];
-            else
-                throw std::runtime_error("Invalid extra string");
+            // if (std::regex_match(annotation_string, match, annotation_regex))
+            //     move.annotation = annotationMap[match[2].str()];
+            // else
+            //     throw std::runtime_error("Invalid extra string");
         }
 
         if (game.evaluations.value().size() < game.moves.size())

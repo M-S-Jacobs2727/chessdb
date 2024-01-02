@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <optional>
 
-#include "move.h"
-#include "piece.h"
-#include "position.h"
+#include "internal/game/move.h"
+#include "internal/game/piece.h"
+#include "internal/game/position.h"
 
 namespace ChessGame
 {

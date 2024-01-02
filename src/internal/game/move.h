@@ -3,8 +3,8 @@
 #include <string>
 
 #include "internal/annotation.h"
-#include "piece.h"
-#include "square.h"
+#include "internal/game/piece.h"
+#include "internal/game/square.h"
 
 namespace ChessGame
 {

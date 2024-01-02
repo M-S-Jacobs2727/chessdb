@@ -12,14 +12,14 @@ namespace ChessGame
         constexpr Square() = default;
         constexpr Square(uint8_t file, uint8_t rank) : file(file), rank(rank) {}
         explicit Square(const std::string_view &str) : file(str[0] - 'a'), rank(str[1] - '1') {}
-        std::string_view str()
+        std::string_view str() const
         {
             char s[3] = "a1";
             s[0] += file;
             s[1] += rank;
             return std::string_view(s);
         }
-        bool valid()
+        bool valid() const
         {
             return file <= 7 && rank <= 7;
         }

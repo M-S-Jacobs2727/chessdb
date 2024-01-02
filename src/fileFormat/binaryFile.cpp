@@ -5,7 +5,7 @@
 #include <functional>
 #include <variant>
 
-#include "binaryFile.h"
+#include "fileFormat/binaryFile.h"
 
 namespace ChessGame
 {
@@ -87,7 +87,7 @@ namespace ChessGame
         uint8_t extra_data = 0;
         writeToBits(extra_data, move.check, 1);
         writeToBits(extra_data, move.capturedPiece, 3);
-        writeToBits(extra_data, move.annotation, 3);
+        // writeToBits(extra_data, move.annotation, 3);
         output.write(reinterpret_cast<const char *>(&extra_data), sizeof(extra_data));
     }
 
@@ -224,7 +224,7 @@ namespace ChessGame
         move.piece.type = static_cast<PieceType>(readFromBits(move_data, 0x07u, 3));
         move.piece.color = static_cast<Color>(move_data);
 
-        move.annotation = static_cast<Annotation>(readFromBits(extra_data, 0x07u, 3));
+        // move.annotation = static_cast<Annotation>(readFromBits(extra_data, 0x07u, 3));
         move.capturedPiece = Piece{.color = oppositeColor(move.piece.color),
                                    .type = static_cast<PieceType>(readFromBits(extra_data, 0x07u, 3))};
         move.check = static_cast<bool>(readFromBits(extra_data, (uint8_t)0x01, 1));
