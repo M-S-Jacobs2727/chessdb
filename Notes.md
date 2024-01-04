@@ -22,3 +22,5 @@ Intend to release as a minor competitor to ChessBase, open source, pay for insta
 - Changed build system from CMake to premake5
 - Reinstalled pqxx
 - Restructured directories under src/
+- Added database/blobs and database/insert
+- Deleted database/database (we'll work directly with pqxx)
