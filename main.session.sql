@@ -58,7 +58,9 @@ CREATE TABLE IF NOT EXISTS positions (
 CREATE TABLE IF NOT EXISTS moves (
     moveID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     gameID INTEGER REFERENCES games ON UPDATE CASCADE ON DELETE CASCADE,
-    nextMoveID INTEGER REFERENCES moves ON UPDATE CASCADE ON DELETE
+    prevMoveID INTEGER REFERENCES moves ON UPDATE CASCADE ON DELETE
+    SET NULL,
+        nextMoveID INTEGER REFERENCES moves ON UPDATE CASCADE ON DELETE
     SET NULL,
         positionID INTEGER REFERENCES positions ON UPDATE CASCADE ON DELETE
     SET NULL,
@@ -84,3 +86,53 @@ SELECT *
 FROM moves;
 SELECT *
 FROM positions;
+INSERT INTO games (
+        gameID,
+        datetimeUTC,
+        whiteUsername,
+        blackUsername,
+        whiteELO,
+        blackELO,
+        timeLimit,
+        timeIncrement,
+        winner,
+        condition,
+        halfMoves,
+        ecoCode,
+        movesBlob
+    )
+VALUES (
+        DEFAULT,
+        TIMESTAMP (0) '20240101 00:01:02',
+        'wu',
+        'bu',
+        1000,
+        1100,
+        INTERVAL '120 seconds',
+        INTERVAL '0 seconds',
+        'black',
+        'checkmate',
+        64,
+        'A01',
+        BYTEA '\\x0000000011111111'
+    );
+MERGE INTO positions AS pos USING (
+    VALUES (
+            BYTEA '\\xCABDEBAC999999990000000000000000000000001111111142356324'
+        ),
+        (
+            BYTEA '\\xCABDEBAC999999990000000000000000000000001111111142356324'
+        ),
+        (
+            BYTEA '\\xCABDEBAC999999990000000000000000000000001111111142356324'
+        ),
+        (
+            BYTEA '\\xCABDEBAC999999990000000000000000000000001111111142356324'
+        ),
+        (
+            BYTEA '\\xCABDEBAC999999990000000000000000000000001111111142356324'
+        )
+) AS tmp ON pos.position = tmp.column1
+WHEN NOT MATCHED THEN
+INSERT (position)
+VALUES (tmp.column1);
