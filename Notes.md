@@ -12,7 +12,13 @@ Intend to release as a minor competitor to ChessBase, open source, pay for insta
 - Unit and integration tests (TODO)
 
 - TODO: 
-    - [ ] Make CMakeLists.txt for each dir (recently restructured layout)
-    - [ ] Bugfix for build success (comment out lines if necessary)
+    - [x] Make CMakeLists.txt for each dir (recently restructured layout)
+    - [x] Bugfix for build success (comment out lines if necessary)
     - [ ] Continue with database interface (leave UCI interface for later)
     - [ ] Add standard game logic, use enums from internal/game headers
+
+## Week of 2024-01-01
+
+- Changed build system from CMake to premake5
+- Reinstalled pqxx
+- Restructured directories under src/
