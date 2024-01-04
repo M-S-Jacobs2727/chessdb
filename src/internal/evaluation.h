@@ -15,6 +15,7 @@ namespace ChessGame
         Evaluation() = default;
         explicit Evaluation(eval_t eval) : value(eval) {}
         explicit Evaluation(std::string_view evalString);
+        std::string_view str();
     };
 
     struct Evaluation2

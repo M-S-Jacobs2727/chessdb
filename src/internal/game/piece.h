@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 #include <string_view>
 
 namespace ChessGame
@@ -45,4 +46,8 @@ namespace ChessGame
     }
 
     PieceType readPGNPieceType(const std::string_view &moveStr);
+    std::string_view toPGN(const PieceType pt);
+    std::string_view toFEN(const PieceType pt, const Color color = Color::White);
+    std::optional<std::string_view> toStr(const PieceType pt);
+    constexpr std::string_view toStr(const Color c);
 }

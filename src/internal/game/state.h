@@ -34,6 +34,16 @@ namespace ChessGame
         {
             return m_rights[idx(color, side)];
         }
+        constexpr std::string str() const
+        {
+            std::string_view r{"KQkq"};
+            std::string out{""};
+            for (size_t i = 0; i < 4; ++i)
+                if (!m_rights[i])
+                    out += r[i];
+
+            return out.empty() ? "-" : out;
+        }
 
     private:
         constexpr inline int idx(Color color, Side side) const

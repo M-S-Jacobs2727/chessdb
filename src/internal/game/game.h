@@ -28,6 +28,7 @@ namespace ChessGame
         std::vector<Move> moves;
         std::optional<std::vector<ClockTime>> clocks = std::nullopt;
         std::optional<std::vector<Evaluation>> evaluations = std::nullopt;
+        std::optional<std::vector<Annotation>> annotations = std::nullopt;
         std::vector<State> states;
     };
 }
