@@ -25,7 +25,7 @@ namespace ChessGame
             {"1-0", GameResult::Type::WhiteWins},
             {"0-1", GameResult::Type::BlackWins},
             {"1/2-1/2", GameResult::Type::Draw},
-            {"*", GameResult::Type::Other}};
+            {"*", GameResult::Type::None}};
 
         std::unordered_map<std::string, GameResult::Reason> resultReasonMap{
             {"Normal", GameResult::Reason::None},
