@@ -1,4 +1,4 @@
-#include "piece.h"
+#include "internal/game/piece.h"
 #include <gtest/gtest.h>
 
 using ChessGame::Piece, ChessGame::PieceType, ChessGame::Color;
