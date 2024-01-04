@@ -15,7 +15,11 @@ Intend to release as a minor competitor to ChessBase, open source, pay for insta
     - [x] Make CMakeLists.txt for each dir (recently restructured layout)
     - [x] Bugfix for build success (comment out lines if necessary)
     - [ ] Continue with database interface (leave UCI interface for later)
+        - [x] Add insertGame function
+        - [ ] Add query positions function
+        - [ ] Add query opening function
     - [ ] Add standard game logic, use enums from internal/game headers
+    - [ ] Create JChess class for interfacing
 
 ## Week of 2024-01-01
 
