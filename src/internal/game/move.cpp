@@ -1,5 +1,6 @@
 #include "internal/game/move.h"
 
+#include "move.h"
 #include <regex>
 #include <unordered_map>
 
@@ -45,5 +46,10 @@ namespace ChessGame
             if (promotionString.size())
                 promotedPiece.type = readPGNPieceType(promotionString);
         }
+    }
+
+    bool Move::operator==(const Move &other) const
+    {
+        return (piece == other.piece) && (from == other.from) && (to == other.to);
     }
 } // namespace ChessGame
