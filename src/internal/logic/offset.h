@@ -1,5 +1,8 @@
-#include "internal/game/square.h"
+#pragma once
+
 #include <optional>
+
+#include "internal/logic/square.h"
 
 namespace ChessGame
 {
