@@ -24,7 +24,7 @@ project "JChess"
         optimize "On"
     
     filter "action:gmake2"
-        buildoptions {"-std=c++20", "-Wall", "-Waddress"}
+        buildoptions {"-std=c++23", "-Wall", "-Waddress"}
     
     filter {"action:gmake2", "configurations:Debug"}
         buildoptions {"-g", "-Og"}
