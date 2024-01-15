@@ -16,8 +16,8 @@ namespace ChessGame
     public:
         explicit State(std::string_view fenString = INITFEN);
         void applyMove(const Move &move);
-        void applyPGNMove(std::string_view pgnMove);
-        void applyUCIMove(std::string_view uciMove);
+        Move applyPGNMove(std::string_view pgnMove);
+        Move applyUCIMove(std::string_view uciMove);
 
     public:
         Position position;
