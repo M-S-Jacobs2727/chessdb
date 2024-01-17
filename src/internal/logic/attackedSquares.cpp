@@ -275,8 +275,8 @@ namespace ChessGame
 
             switch (piece.type)
             {
-            [[fallthrough]] case PieceType::Bishop:
-            [[fallthrough]] case PieceType::Rook:
+            case PieceType::Bishop:
+            case PieceType::Rook:
             case PieceType::Queen:
                 offset = {sq.file - attSq.file,
                           sq.rank - attSq.rank};
@@ -310,8 +310,8 @@ namespace ChessGame
 
             switch (piece.type)
             {
-            [[fallthrough]] case PieceType::Bishop:
-            [[fallthrough]] case PieceType::Rook:
+            case PieceType::Bishop:
+            case PieceType::Rook:
             case PieceType::Queen:
                 offset = {sq.file - attSq.file,
                           sq.rank - attSq.rank};
