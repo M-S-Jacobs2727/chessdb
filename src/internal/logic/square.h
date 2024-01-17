@@ -25,7 +25,7 @@ namespace ChessGame
                 throw std::runtime_error("Invalid Square");
         }
 
-        constexpr bool operator==(const Square &other) const
+        constexpr inline bool operator==(const Square &other) const
         {
             return (file == other.file) && (rank == other.rank);
         }
@@ -36,11 +36,11 @@ namespace ChessGame
             s[1] += rank;
             return std::string_view(s);
         }
-        constexpr bool valid() const
+        constexpr inline bool valid() const
         {
             return file <= 7 && rank <= 7;
         }
-        constexpr uint8_t idx() const
+        constexpr inline uint8_t idx() const
         {
             return (7 - rank) * 8 + file;
         }

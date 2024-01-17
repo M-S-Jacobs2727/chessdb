@@ -77,12 +77,12 @@ namespace ChessGame
         }
     };
 
-    inline Offset forward(Color color)
+    constexpr inline Offset forward(Color color)
     {
         return Offset{0, static_cast<int>(color) * 2 - 1};
     }
 
-    inline Offset backward(Color color)
+    constexpr inline Offset backward(Color color)
     {
         return Offset{0, static_cast<int>(color) * -2 + 1};
     }
