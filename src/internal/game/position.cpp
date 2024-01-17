@@ -1,4 +1,4 @@
-#include "internal/game/position.h"
+#include "internal/logic/position.h"
 
 #include <algorithm>
 #include <functional>
@@ -39,7 +39,7 @@ namespace ChessGame
             case '7':
             case '8':
                 for (int i = 0; i < c - '0'; i++, col++)
-                    at(idx(Square{col, row})) = Piece{Color::White, PieceType::None};
+                    at(idx(Square{col, row})) = std::nullopt;
                 break;
 
             case 'k':
@@ -82,16 +82,54 @@ namespace ChessGame
             throw std::runtime_error("Invalid FEN string");
     }
 
-    Piece Position::get(Square square) const
+    inline std::optional<Piece> Position::get(Square square) const
     {
         return at(idx(square));
     }
 
-    Piece Position::put(Square square, Piece piece)
+    std::optional<Piece> Position::put(Square square, Piece piece)
     {
         auto oldPiece = at(idx(square));
         at(idx(square)) = piece;
         return oldPiece;
+    }
+
+    constexpr Square Position::kingSquare(Color color) const
+    {
+        for (uint8_t rank = 0; rank < 8; ++rank)
+        {
+            for (uint8_t file = 0; file < 8; ++file)
+            {
+                Square sq{file, rank};
+                auto p = get(sq);
+                if (p && p.value().type == PieceType::King && p.value().color == color)
+                    return sq;
+            }
+        }
+        return Square();
+    }
+
+    constexpr std::vector<Square> Position::getPath(Square fromSquare, Offset direction) const
+    {
+        std::vector<Square> path{};
+        path.reserve(7);
+        return path;
+    }
+
+    std::array<std::pair<Square, std::optional<Piece>>, 64> Position::eachSquare() const
+    {
+        std::array<std::pair<Square, std::optional<Piece>>, 64> squaresAndPieces{};
+        for (uint8_t rank = 0; rank < 8; ++rank)
+        {
+            for (uint8_t file = 0; file < 8; ++file)
+            {
+                Square sq{file, rank};
+                auto p = get(sq);
+                squaresAndPieces[idx(sq)] = {sq, p};
+            }
+        }
+
+        return squaresAndPieces;
     }
 
     inline uint8_t Position::idx(Square square) const
