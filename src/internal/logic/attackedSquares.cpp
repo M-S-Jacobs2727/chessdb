@@ -57,6 +57,16 @@ namespace ChessGame
                 addAttacker(sq, piece.value().type);
     }
 
+    const std::unordered_set<Square> &AttackedSquares::attackers(Square sq) const
+    {
+        return m_squares[sq.idx()];
+    }
+
+    bool AttackedSquares::attacked(Square sq) const
+    {
+        return !m_squares[sq.idx()].empty();
+    }
+
     void AttackedSquares::applyMove(const Move &move)
     {
         bool attacking = move.piece.color == m_color;

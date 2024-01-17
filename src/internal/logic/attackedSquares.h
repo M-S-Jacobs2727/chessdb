@@ -24,6 +24,12 @@ namespace ChessGame
         // Should only need to be called at construction, may make private in the future
         void recompute();
 
+        // Retrieve a read-only view of the set of squares attacking the given square
+        const std::unordered_set<Square> &attackers(Square sq) const;
+
+        // Ascertain whether the given square is attacked
+        bool attacked(Square sq) const;
+
     private:
         uint8_t idx(Square square) const;
         Square idxToSquare(uint8_t idx) const;
