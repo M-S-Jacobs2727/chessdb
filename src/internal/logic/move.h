@@ -10,14 +10,6 @@ namespace ChessGame
 {
     struct Move
     {
-        enum class PromotedPiece
-        {
-            KNIGHT,
-            BISHOP,
-            ROOK,
-            QUEEN
-        };
-
         enum class CastleSide
         {
             KING,
@@ -27,8 +19,10 @@ namespace ChessGame
         Piece piece;
         Square from;
         Square to;
-        std::optional<PromotedPiece> promotion = std::nullopt;
+        std::optional<PieceType> promotion = std::nullopt;
         std::optional<CastleSide> castle = std::nullopt;
+        std::optional<PieceType> capture = std::nullopt;
+        bool enPassant = false;
     };
 } // namespace ChessGame
 
@@ -49,5 +43,6 @@ struct std::hash<ChessGame::Move>
         h ^= std::hash<size_t>{}(static_cast<size_t>(move.to.file));
         h <<= 4;
         h ^= std::hash<size_t>{}(static_cast<size_t>(move.to.rank));
+        return h;
     }
 };
