@@ -4,8 +4,10 @@
 #include <cstdint>
 #include <optional>
 #include <string_view>
+#include <utility>
 
 #include "internal/logic/move.h"
+#include "internal/logic/offset.h"
 #include "internal/logic/piece.h"
 #include "internal/logic/square.h"
 
@@ -13,16 +15,20 @@
 
 namespace ChessGame
 {
-    class Position : public std::array<Piece, 64>
+    class Position : public std::array<std::optional<Piece>, 64>
     {
     public:
         explicit Position(std::string_view fenString = INITFEN);
-        Piece get(Square square) const;
-        Piece put(Square square, Piece piece);
-        std::string_view toFEN() const;
+        inline std::optional<Piece> get(Square square) const;
+        std::optional<Piece> put(Square square, Piece piece);
+        std::optional<Piece> remove(Square square);
+        constexpr Square kingSquare(Color color) const;
+        constexpr std::string_view toFEN() const;
+        constexpr std::vector<Square> getPath(Square fromSquare, Offset direction) const;
+        std::array<std::pair<Square, std::optional<Piece>>, 64> eachSquare() const;
 
     private:
-        uint8_t idx(Square square) const;
-        Square idxToSquare(uint8_t idx) const;
+        constexpr uint8_t idx(Square square) const;
+        constexpr Square idxToSquare(uint8_t idx) const;
     };
 } // namespace ChessGame
