@@ -26,9 +26,5 @@ namespace ChessGame
         constexpr std::string_view toFEN() const;
         constexpr std::vector<Square> getPath(Square fromSquare, Offset direction) const;
         std::array<std::pair<Square, std::optional<Piece>>, 64> eachSquare() const;
-
-    private:
-        constexpr uint8_t idx(Square square) const;
-        constexpr Square idxToSquare(uint8_t idx) const;
     };
 } // namespace ChessGame
