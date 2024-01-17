@@ -15,10 +15,10 @@ namespace ChessGame
             KING,
             QUEEN,
         };
-        constexpr void set(Color color, Side side, bool val = true)
-        {
-            m_rights[idx(color, side)] = val;
-        }
+        // constexpr void set(Color color, Side side, bool val = true)
+        // {
+        //     m_rights[idx(color, side)] = val;
+        // }
         constexpr void reset(bool val = true)
         {
             m_rights = {val, val, val, val};
