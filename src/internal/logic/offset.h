@@ -45,6 +45,30 @@ namespace ChessGame
             return (*this) + (-other);
         }
 
+        constexpr void operator+=(const Offset &other)
+        {
+            file += other.file;
+            rank += other.rank;
+        }
+
+        constexpr void operator-=(const Offset &other)
+        {
+            file -= other.file;
+            rank -= other.rank;
+        }
+
+        constexpr void operator*=(const int factor)
+        {
+            file *= factor;
+            rank *= factor;
+        }
+
+        constexpr void operator/=(const int factor)
+        {
+            file /= factor;
+            rank /= factor;
+        }
+
         constexpr std::optional<Square> operator()(const Square &square) const
         {
             Square s{square.file + file,
