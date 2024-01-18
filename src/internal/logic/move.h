@@ -3,6 +3,7 @@
 #include <functional>
 #include <optional>
 
+#include "internal/logic/castling.h"
 #include "internal/logic/piece.h"
 #include "internal/logic/square.h"
 
@@ -10,19 +11,14 @@ namespace ChessGame
 {
     struct Move
     {
-        enum class CastleSide
-        {
-            KING,
-            QUEEN
-        };
-
         Piece piece;
         Square from;
         Square to;
-        std::optional<PieceType> promotion = std::nullopt;
-        std::optional<CastleSide> castle = std::nullopt;
-        std::optional<PieceType> capture = std::nullopt;
+
         bool enPassant = false;
+        std::optional<PieceType> capture = std::nullopt;
+        std::optional<CastleSide> castle = std::nullopt;
+        std::optional<PieceType> promotion = std::nullopt;
     };
 } // namespace ChessGame
 
