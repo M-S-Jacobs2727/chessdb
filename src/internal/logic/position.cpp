@@ -8,22 +8,23 @@
 
 namespace ChessGame
 {
+    const std::unordered_map<char, Piece> FENPiece = {
+        {'p', Piece{Color::Black, PieceType::Pawn}},
+        {'P', Piece{Color::White, PieceType::Pawn}},
+        {'n', Piece{Color::Black, PieceType::Knight}},
+        {'N', Piece{Color::White, PieceType::Knight}},
+        {'b', Piece{Color::Black, PieceType::Bishop}},
+        {'B', Piece{Color::White, PieceType::Bishop}},
+        {'r', Piece{Color::Black, PieceType::Rook}},
+        {'R', Piece{Color::White, PieceType::Rook}},
+        {'q', Piece{Color::Black, PieceType::Queen}},
+        {'Q', Piece{Color::White, PieceType::Queen}},
+        {'k', Piece{Color::Black, PieceType::King}},
+        {'K', Piece{Color::White, PieceType::King}},
+    };
+
     Position::Position(std::string_view fenString)
     {
-        std::unordered_map<char, Piece> pieceMap = {
-            {'p', Piece{Color::Black, PieceType::Pawn}},
-            {'P', Piece{Color::White, PieceType::Pawn}},
-            {'n', Piece{Color::Black, PieceType::Knight}},
-            {'N', Piece{Color::White, PieceType::Knight}},
-            {'b', Piece{Color::Black, PieceType::Bishop}},
-            {'B', Piece{Color::White, PieceType::Bishop}},
-            {'r', Piece{Color::Black, PieceType::Rook}},
-            {'R', Piece{Color::White, PieceType::Rook}},
-            {'q', Piece{Color::Black, PieceType::Queen}},
-            {'Q', Piece{Color::White, PieceType::Queen}},
-            {'k', Piece{Color::Black, PieceType::King}},
-            {'K', Piece{Color::White, PieceType::King}},
-        };
         fill(std::nullopt);
         uint8_t row = 0, col = 0, numWhiteKings = 0, numBlackKings = 0, i = 0;
         for (const auto &c : fenString)
@@ -59,7 +60,7 @@ namespace ChessGame
             case 'R':
             case 'q':
             case 'Q':
-                at(i++) = pieceMap[c];
+                at(i++) = FENPiece.at(c);
                 ++col;
                 break;
 
