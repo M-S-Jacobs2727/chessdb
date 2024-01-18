@@ -45,6 +45,11 @@ namespace ChessGame
             return (7 - rank) * 8 + file;
         }
     };
+
+    constexpr inline uint8_t homeRank(const Color color)
+    {
+        return -7 * (static_cast<int>(color) - 1);
+    }
 } // namespace ChessGame
 
 template <>
