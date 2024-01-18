@@ -89,7 +89,7 @@ namespace ChessGame
         }
         else if (move.castle)
         {
-            bool qs = move.castle.value() == Move::CastleSide::QUEEN;
+            bool qs = move.castle.value() == CastleSide::QUEEN;
             Square rookTo = Square{qs ? 3 : 5, move.from.rank},
                    rookFrom = Square{qs ? 0 : 7, move.from.rank};
             removePiece(rookFrom);
