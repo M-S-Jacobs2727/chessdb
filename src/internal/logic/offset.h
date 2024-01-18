@@ -86,4 +86,41 @@ namespace ChessGame
     {
         return Offset{0, static_cast<int>(color) * -2 + 1};
     }
+
+    constexpr inline std::array<Offset, 4> pawnOffsets{
+        Offset{0, 1},
+        Offset{0, 2},
+        Offset{-1, 1},
+        Offset{1, 1}};
+    constexpr inline std::array<Offset, 2> pawnAttackOffsets{
+        Offset{-1, 1},
+        Offset{1, 1}};
+    constexpr inline std::array<Offset, 8> knightOffsets{
+        Offset{-2, -1},
+        Offset{-1, -2},
+        Offset{1, -2},
+        Offset{2, -1},
+        Offset{2, 1},
+        Offset{1, 2},
+        Offset{-1, 2},
+        Offset{-2, 1}};
+    constexpr inline std::array<Offset, 4> bishopOffsets{
+        Offset{-1, -1},
+        Offset{-1, 1},
+        Offset{1, -1},
+        Offset{1, 1}};
+    constexpr inline std::array<Offset, 4> rookOffsets{
+        Offset{-1, 0},
+        Offset{1, 0},
+        Offset{0, -1},
+        Offset{0, 1}};
+    constexpr inline std::array<Offset, 8> queenKingOffsets{
+        Offset{-1, -1},
+        Offset{-1, 1},
+        Offset{1, -1},
+        Offset{1, 1},
+        Offset{-1, 0},
+        Offset{1, 0},
+        Offset{0, -1},
+        Offset{0, 1}};
 }
