@@ -71,8 +71,8 @@ namespace ChessGame
 
         constexpr std::optional<Square> operator()(const Square &square) const
         {
-            Square s{square.file + file,
-                     square.rank + rank};
+            Square s{static_cast<uint8_t>(static_cast<int>(square.file) + file),
+                     static_cast<uint8_t>(static_cast<int>(square.rank) + rank)};
             return s.valid() ? std::make_optional(s) : std::nullopt;
         }
 

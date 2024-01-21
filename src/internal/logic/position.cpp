@@ -103,7 +103,7 @@ namespace ChessGame
         return p;
     }
 
-    Square Position::kingSquare(Color color) const
+    constexpr Square Position::kingSquare(Color color) const
     {
         for (const auto &[sq, p] : eachSquare())
             if (p && p.value().type == PieceType::King && p.value().color == color)
@@ -113,9 +113,9 @@ namespace ChessGame
 
     /*
      * Returns a (possibly empty) vector of `Square`s along a given direction,
-     * optionally including the first piece found.
+     * up to and optionally including the first piece found.
      */
-    constexpr std::vector<Square> Position::getPath(Square fromSquare, Offset direction, bool includePiece) const
+    std::vector<Square> Position::getPath(Square fromSquare, Offset direction, bool includePiece) const
     {
         std::vector<Square> path{};
         path.reserve(8);

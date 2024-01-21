@@ -26,7 +26,7 @@ namespace ChessGame
             return std::format("M{}", v);
         }
         // float, centipawns
-        int v = std::get<float>(value);
+        float v = std::get<float>(value);
         return std::format("{:.2f}", v);
     }
 } // namespace ChessGame

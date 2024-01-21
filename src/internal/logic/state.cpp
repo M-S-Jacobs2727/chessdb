@@ -242,15 +242,14 @@ namespace ChessGame
         {
             for (const auto &offset : offsets)
             {
-                for (const auto &sq : pos.getPath(to, offset))
-                {
-                    if (pos.get(sq))
-                    {
-                        if (pos.get(sq).value().type == piece.type)
-                            candidates.push_back(sq);
-                        break;
-                    }
-                }
+                auto path = pos.getPath(to, offset, true);
+                if (path.empty())
+                    continue;
+                if (!pos.get(path.back()))
+                    continue;
+                auto foundPiece = pos.get(path.back()).value();
+                if (foundPiece.type == piece.type)
+                    candidates.push_back(path.back());
             }
         }
 

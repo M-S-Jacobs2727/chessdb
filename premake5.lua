@@ -10,7 +10,7 @@ project "JChess"
     links {"pq", "pqxx"}
 
     files {"src/**.h", "src/**.cpp"}
-    removefiles {"src/engine/*"}
+    removefiles {"src/engine/*", "src/internal/game/*", "src/fileFormat/*", "src/database/*"}
 
     pqxxdir = os.findheader("pqxx/pqxx")
     includedirs({"src", pqxxdir})

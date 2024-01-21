@@ -6,38 +6,6 @@
 
 namespace ChessGame
 {
-    constexpr std::array<Offset, 2> pawnOffsets{
-        Offset{-1, 1},
-        Offset{1, 1}};
-    constexpr std::array<Offset, 8> knightOffsets{
-        Offset{-2, -1},
-        Offset{-1, -2},
-        Offset{1, -2},
-        Offset{2, -1},
-        Offset{2, 1},
-        Offset{1, 2},
-        Offset{-1, 2},
-        Offset{-2, 1}};
-    constexpr std::array<Offset, 4> bishopOffsets{
-        Offset{-1, -1},
-        Offset{-1, 1},
-        Offset{1, -1},
-        Offset{1, 1}};
-    constexpr std::array<Offset, 4> rookOffsets{
-        Offset{-1, 0},
-        Offset{1, 0},
-        Offset{0, -1},
-        Offset{0, 1}};
-    constexpr std::array<Offset, 8> queenOffsets{
-        Offset{-1, -1},
-        Offset{-1, 1},
-        Offset{1, -1},
-        Offset{1, 1},
-        Offset{-1, 0},
-        Offset{1, 0},
-        Offset{0, -1},
-        Offset{0, 1}};
-
     AttackedSquares::AttackedSquares(Color color, std::shared_ptr<Position> pos)
         : m_color(color), m_pos(pos), m_squares()
     {
@@ -90,8 +58,8 @@ namespace ChessGame
         else if (move.castle)
         {
             bool qs = move.castle.value() == CastleSide::QUEEN;
-            Square rookTo = Square{qs ? 3 : 5, move.from.rank},
-                   rookFrom = Square{qs ? 0 : 7, move.from.rank};
+            Square rookTo = Square{qs ? 3u : 5u, move.from.rank},
+                   rookFrom = Square{qs ? 0u : 7u, move.from.rank};
             removePiece(rookFrom);
             addPiece(rookTo);
             if (attacking)
@@ -136,7 +104,7 @@ namespace ChessGame
         case PieceType::Bishop:
             for (const auto &offset : bishopOffsets)
             {
-                for (const auto &newSq : pos->getPath(sq, offset))
+                for (const auto &newSq : pos->getPath(sq, offset, true))
                 {
                     m_squares[newSq.idx()].insert(sq);
                     if (pos->get(newSq))
@@ -148,7 +116,7 @@ namespace ChessGame
         case PieceType::Rook:
             for (const auto &offset : rookOffsets)
             {
-                for (const auto &newSq : pos->getPath(sq, offset))
+                for (const auto &newSq : pos->getPath(sq, offset, true))
                 {
                     m_squares[newSq.idx()].insert(sq);
                     if (pos->get(newSq))
@@ -158,9 +126,9 @@ namespace ChessGame
             break;
 
         case PieceType::Queen:
-            for (const auto &offset : queenOffsets)
+            for (const auto &offset : queenKingOffsets)
             {
-                for (const auto &newSq : pos->getPath(sq, offset))
+                for (const auto &newSq : pos->getPath(sq, offset, true))
                 {
                     m_squares[newSq.idx()].insert(sq);
                     if (pos->get(newSq))
@@ -170,7 +138,7 @@ namespace ChessGame
             break;
 
         case PieceType::King:
-            for (const auto &offset : queenOffsets)
+            for (const auto &offset : queenKingOffsets)
             {
                 maybeSq = offset(sq);
                 if (maybeSq)
@@ -213,7 +181,7 @@ namespace ChessGame
         case PieceType::Bishop:
             for (const auto &offset : bishopOffsets)
             {
-                for (const auto &newSq : pos->getPath(sq, offset))
+                for (const auto &newSq : pos->getPath(sq, offset, true))
                 {
                     m_squares[newSq.idx()].erase(sq);
                     if (pos->get(newSq))
@@ -225,7 +193,7 @@ namespace ChessGame
         case PieceType::Rook:
             for (const auto &offset : rookOffsets)
             {
-                for (const auto &newSq : pos->getPath(sq, offset))
+                for (const auto &newSq : pos->getPath(sq, offset, true))
                 {
                     m_squares[newSq.idx()].erase(sq);
                     if (pos->get(newSq))
@@ -235,9 +203,9 @@ namespace ChessGame
             break;
 
         case PieceType::Queen:
-            for (const auto &offset : queenOffsets)
+            for (const auto &offset : queenKingOffsets)
             {
-                for (const auto &newSq : pos->getPath(sq, offset))
+                for (const auto &newSq : pos->getPath(sq, offset, true))
                 {
                     m_squares[newSq.idx()].erase(sq);
                     if (pos->get(newSq))
@@ -247,7 +215,7 @@ namespace ChessGame
             break;
 
         case PieceType::King:
-            for (const auto &offset : queenOffsets)
+            for (const auto &offset : queenKingOffsets)
             {
                 maybeSq = offset(sq);
                 if (maybeSq)
@@ -290,7 +258,7 @@ namespace ChessGame
             if (!follow)
                 continue;
 
-            for (const auto &newSq : pos->getPath(sq, offset))
+            for (const auto &newSq : pos->getPath(sq, offset, true))
                 m_squares[newSq.idx()].erase(sq);
         }
     }
@@ -325,7 +293,7 @@ namespace ChessGame
             if (!follow)
                 continue;
 
-            for (const auto &newSq : pos->getPath(sq, offset))
+            for (const auto &newSq : pos->getPath(sq, offset, true))
             {
                 m_squares[newSq.idx()].insert(sq);
                 if (pos->get(newSq))

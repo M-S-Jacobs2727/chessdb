@@ -19,6 +19,13 @@ namespace ChessGame
         std::optional<PieceType> capture = std::nullopt;
         std::optional<CastleSide> castle = std::nullopt;
         std::optional<PieceType> promotion = std::nullopt;
+
+        bool operator==(const Move &other) const
+        {
+            return piece == other.piece &&
+                   from == other.from &&
+                   to == other.to;
+        }
     };
 } // namespace ChessGame
 

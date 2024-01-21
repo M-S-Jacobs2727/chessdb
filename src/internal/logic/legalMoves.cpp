@@ -145,7 +145,7 @@ namespace ChessGame
             auto hardPin = getHardPin(pos, sq, color);
             bool canCaptureEnPassant = (state.enPassant) &&
                                        (piece.type == PieceType::Pawn) &&
-                                       (sq.rank == (color == Color::White) ? 5u : 4u) &&
+                                       (sq.rank == ((color == Color::White) ? 5u : 4u)) &&
                                        (abs(sq.file - state.enPassant.value().file) == 1);
 
             for (const auto &move : candidateMoves(pos, sq))
@@ -204,6 +204,8 @@ namespace ChessGame
             std::unreachable();
             break;
         }
+
+        return moves;
     }
 
     std::unordered_set<Move> candidatePawnMoves(const Position &pos, Square from, Color color)
