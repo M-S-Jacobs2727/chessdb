@@ -5,6 +5,7 @@
 #include <optional>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include "internal/logic/move.h"
 #include "internal/logic/offset.h"
@@ -24,7 +25,8 @@ namespace ChessGame
         std::optional<Piece> remove(Square square);
         constexpr Square kingSquare(Color color) const;
         constexpr std::string_view toFEN() const;
-        constexpr std::vector<Square> getPath(Square fromSquare, Offset direction) const;
+        constexpr std::vector<Square> getPath(Square fromSquare, Offset direction, bool includePiece) const;
         std::array<std::pair<Square, std::optional<Piece>>, 64> eachSquare() const;
+        std::vector<std::pair<Square, std::optional<Piece>>> eachVisibleSquare(Square ref, Color color, PieceType pieceType) const;
     };
 } // namespace ChessGame

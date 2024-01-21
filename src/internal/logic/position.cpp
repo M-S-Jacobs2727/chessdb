@@ -111,7 +111,11 @@ namespace ChessGame
         throw std::runtime_error("Could not locate king");
     }
 
-    constexpr std::vector<Square> Position::getPath(Square fromSquare, Offset direction) const
+    /*
+     * Returns a (possibly empty) vector of `Square`s along a given direction,
+     * optionally including the first piece found.
+     */
+    constexpr std::vector<Square> Position::getPath(Square fromSquare, Offset direction, bool includePiece) const
     {
         std::vector<Square> path{};
         path.reserve(8);
@@ -121,7 +125,12 @@ namespace ChessGame
             newSq = direction(newSq.value());
             if (!newSq)
                 return path;
-            path.push_back(newSq.value());
+
+            auto occupant = get(newSq.value());
+            if (!occupant || includePiece)
+                path.push_back(newSq.value());
+            if (occupant)
+                return path;
         }
         return path;
     }
