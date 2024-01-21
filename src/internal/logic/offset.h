@@ -4,6 +4,8 @@
 
 #include "internal/logic/square.h"
 
+#define MAX(x, y) (x < y) ? y : x
+
 namespace ChessGame
 {
     struct Offset
@@ -85,7 +87,29 @@ namespace ChessGame
         {
             return abs(file) == abs(rank);
         }
+
+        bool norm()
+        {
+            if (isLateral())
+            {
+                (*this) /= MAX(abs(file), abs(rank));
+                return true;
+            }
+
+            if (isDiagonal())
+            {
+                (*this) /= abs(file);
+                return true;
+            }
+
+            return false;
+        }
     };
+
+    constexpr Offset difference(Square from, Square to)
+    {
+        return Offset{to.file - from.file, to.rank - from.rank};
+    }
 
     constexpr inline Offset forward(Color color)
     {
