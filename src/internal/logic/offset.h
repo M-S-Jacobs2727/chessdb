@@ -75,6 +75,16 @@ namespace ChessGame
                      square.rank + rank};
             return s.valid() ? std::make_optional(s) : std::nullopt;
         }
+
+        constexpr bool isLateral() const
+        {
+            return file == 0 || rank == 0;
+        }
+
+        constexpr bool isDiagonal() const
+        {
+            return abs(file) == abs(rank);
+        }
     };
 
     constexpr inline Offset forward(Color color)
