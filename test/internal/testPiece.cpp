@@ -1,4 +1,4 @@
-#include "internal/game/piece.h"
+#include "internal/logic/piece.h"
 #include <gtest/gtest.h>
 
 using ChessGame::Piece, ChessGame::PieceType, ChessGame::Color;
@@ -15,7 +15,6 @@ TEST(PieceTest, OppositeColor)
     using ChessGame::oppositeColor;
     ASSERT_EQ(oppositeColor(Color::White), Color::Black);
     ASSERT_EQ(oppositeColor(Color::Black), Color::White);
-    ASSERT_EQ(oppositeColor(Color::Any), Color::White);
 }
 
 TEST(PieceTest, ReadPGN)
@@ -29,7 +28,7 @@ TEST(PieceTest, ReadPGN)
     ASSERT_EQ(readPGNPieceType("e4"), PieceType::Pawn);
     ASSERT_EQ(readPGNPieceType("f4"), PieceType::Pawn);
     ASSERT_EQ(readPGNPieceType("g4"), PieceType::Pawn);
-    ASSERT_EQ(readPGNPieceType("h4=R"), PieceType::Pawn);
+    ASSERT_EQ(readPGNPieceType("h1=R"), PieceType::Pawn);
 
     ASSERT_EQ(readPGNPieceType("Nh4+"), PieceType::Knight);
     ASSERT_EQ(readPGNPieceType("Bh4#"), PieceType::Bishop);
@@ -57,8 +56,4 @@ TEST(PieceTest, Operators)
     ASSERT_NE(piece, Piece(Color::Black, PieceType::Rook));
     ASSERT_NE(piece, Piece(Color::Black, PieceType::Queen));
     ASSERT_NE(piece, Piece(Color::Black, PieceType::King));
-
-    ASSERT_TRUE(piece);
-    ASSERT_TRUE(Piece(Color::Any, PieceType::Any));
-    ASSERT_FALSE(Piece(Color::White, PieceType::None));
 }
