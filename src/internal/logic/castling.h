@@ -70,9 +70,7 @@ namespace ChessGame
                 default:
                     bad = true;
                 }
-                if (m_rights[i])
-                    bad = true;
-                if (bad)
+                if (m_rights[i] || bad)
                     throw std::runtime_error("Invalid FEN castle string");
                 m_rights[i] = true;
             }
