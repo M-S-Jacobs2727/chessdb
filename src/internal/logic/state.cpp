@@ -26,103 +26,6 @@ namespace ChessGame
         {'g', PieceType::Pawn},
         {'h', PieceType::Pawn}};
 
-    State::State(std::string_view fenString)
-    {
-        std::istringstream iss{fenString.data()};
-        std::string str;
-
-        iss >> str;
-        position = Position(str);
-
-        iss >> str;
-        if (str == "w")
-            turn = Color::White;
-        else if (str == "b")
-            turn = Color::Black;
-        else
-            throw std::runtime_error("Invalid FEN string");
-
-        iss >> str;
-        castleRights = CastleRights(str);
-
-        iss >> str;
-        if (str != "-")
-            enPassant = Square(str);
-
-        iss >> str;
-        halfTurnCounter = std::stoul(str);
-
-        iss >> str;
-        fullTurnCounter = std::stoul(str);
-    }
-
-    /// @brief Applies a move to the board state, possibly adding information to the move
-    ///     (e.g., from square, captured piece)
-    /// @param move
-    void State::applyMove(const ChessGame::Move &move)
-    {
-        position.remove(move.from);
-        position.put(move.to,
-                     move.promotion ? Piece{turn, move.promotion.value()}
-                                    : move.piece);
-
-        if (move.piece.type == PieceType::Pawn || move.capture)
-            halfTurnCounter = 0;
-        else
-            ++halfTurnCounter;
-
-        if (move.castle)
-        {
-            bool qs = move.castle.value() == CastleSide::QUEEN;
-            Square rookFrom{qs ? 0 : 7, move.from.rank},
-                rookTo{qs ? 3 : 5, move.from.rank};
-            auto rook = position.remove(rookFrom);
-            position.put(rookTo, rook.value());
-
-            castleRights.remove(turn, CastleSide::QUEEN);
-            castleRights.remove(turn, CastleSide::KING);
-        }
-        else if (move.enPassant)
-        {
-            Square capturedPawnSq = backward(turn)(move.to).value();
-            position.remove(capturedPawnSq);
-            enPassant = std::nullopt;
-        }
-
-        if (move.piece.type == PieceType::Pawn &&
-            2 == abs(move.to.rank - move.from.rank) &&
-            move.to.file == move.from.file)
-            enPassant = Square{move.from.file, (move.from.rank + move.to.rank) / 2};
-        else
-            enPassant = std::nullopt;
-
-        auto r = homeRank(turn);
-        if (move.piece.type == PieceType::Rook && move.from.rank == r)
-        {
-            if (move.from.file == 0)
-                castleRights.remove(turn, CastleSide::QUEEN);
-            if (move.from.file == 7)
-                castleRights.remove(turn, CastleSide::KING);
-        }
-        if (turn == Color::Black)
-            fullTurnCounter++;
-        turn = oppositeColor(turn);
-    }
-
-    Move State::applyPGNMove(std::string_view pgnMove)
-    {
-        Move move = interpretPGNMove(pgnMove, position, turn);
-        applyMove(move);
-        return move;
-    }
-
-    Move State::applyUCIMove(std::string_view uciMove)
-    {
-        Move move = interpretUCIMove(uciMove, *this);
-        applyMove(move);
-        return move;
-    }
-
     Move interpretPGNMove(std::string_view pgnMove,
                           const Position &previousPos,
                           Color turn)
@@ -298,4 +201,101 @@ namespace ChessGame
     Move interpretUCIMove(std::string_view uciMove, const State &state)
     {
     }
+
+    State::State(std::string_view fenString)
+        : position(fenString), m_pos(std::shared_ptr<Position>(&position)), attacked(m_pos)
+    {
+        std::istringstream iss{fenString.data()};
+        std::string str;
+
+        iss >> str;
+
+        iss >> str;
+        if (str == "w")
+            turn = Color::White;
+        else if (str == "b")
+            turn = Color::Black;
+        else
+            throw std::runtime_error("Invalid FEN string");
+
+        iss >> str;
+        castleRights = CastleRights(str);
+
+        iss >> str;
+        if (str != "-")
+            enPassant = Square(str);
+
+        iss >> str;
+        halfTurnCounter = std::stoul(str);
+
+        iss >> str;
+        fullTurnCounter = std::stoul(str);
+    }
+
+    void State::applyMove(const ChessGame::Move &move)
+    {
+        position.remove(move.from);
+        position.put(move.to,
+                     move.promotion ? Piece{turn, move.promotion.value()}
+                                    : move.piece);
+
+        if (move.piece.type == PieceType::Pawn || move.capture)
+            halfTurnCounter = 0;
+        else
+            ++halfTurnCounter;
+
+        if (move.castle)
+        {
+            bool qs = move.castle.value() == CastleSide::QUEEN;
+            Square rookFrom{qs ? 0 : 7, move.from.rank},
+                rookTo{qs ? 3 : 5, move.from.rank};
+            auto rook = position.remove(rookFrom);
+            position.put(rookTo, rook.value());
+
+            castleRights.remove(turn, CastleSide::QUEEN);
+            castleRights.remove(turn, CastleSide::KING);
+        }
+        else if (move.enPassant)
+        {
+            Square capturedPawnSq = backward(turn)(move.to).value();
+            position.remove(capturedPawnSq);
+            enPassant = std::nullopt;
+        }
+
+        if (move.piece.type == PieceType::Pawn &&
+            2 == abs(move.to.rank - move.from.rank) &&
+            move.to.file == move.from.file)
+            enPassant = Square{move.from.file, (move.from.rank + move.to.rank) / 2};
+        else
+            enPassant = std::nullopt;
+
+        auto r = homeRank(turn);
+        if (move.piece.type == PieceType::Rook && move.from.rank == r)
+        {
+            if (move.from.file == 0)
+                castleRights.remove(turn, CastleSide::QUEEN);
+            if (move.from.file == 7)
+                castleRights.remove(turn, CastleSide::KING);
+        }
+        if (turn == Color::Black)
+            fullTurnCounter++;
+        turn = oppositeColor(turn);
+
+        attacked.applyMove(move);
+    }
+
+    Move State::applyPGNMove(std::string_view pgnMove)
+    {
+        Move move = interpretPGNMove(pgnMove, position, turn);
+        applyMove(move);
+        return move;
+    }
+
+    Move State::applyUCIMove(std::string_view uciMove)
+    {
+        Move move = interpretUCIMove(uciMove, *this);
+        applyMove(move);
+        return move;
+    }
+
 }

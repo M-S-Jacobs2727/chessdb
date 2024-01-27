@@ -25,6 +25,14 @@ namespace ChessGame
                 throw std::runtime_error("Invalid Square");
         }
 
+        constexpr static Square fromIdx(uint32_t idx)
+        {
+            if (idx >= 64)
+                throw std::runtime_error("Invalid idx");
+            uint32_t q = idx / 8, r = idx % 8;
+            return Square{r, 7 - q};
+        }
+
         constexpr inline bool operator==(const Square &other) const
         {
             return (file == other.file) && (rank == other.rank);

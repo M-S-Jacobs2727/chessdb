@@ -6,54 +6,68 @@
 
 namespace ChessGame
 {
-    AttackedSquares::AttackedSquares(Color color, std::shared_ptr<Position> pos)
-        : m_color(color), m_pos(pos), m_squares()
+    AttackedSquares::AttackedSquares(std::shared_ptr<Position> pos)
+        : m_pos(pos)
     {
-        for (auto &sq : m_squares)
-            sq.reserve(16);
         recompute();
     }
 
     void AttackedSquares::recompute()
     {
+        for (auto &bs : m_attackedByWhite)
+            bs.reset();
+        for (auto &bs : m_attackedByBlack)
+            bs.reset();
+        for (auto &bs : m_attackedFrom)
+            bs.reset();
+
         auto pos = getPos();
-        for (auto &sq : m_squares)
-            sq.clear();
 
-        for (const auto &[sq, piece] : pos->eachSquare())
-            if (piece && piece.value().color == m_color)
-                addAttacker(sq, piece.value().type);
+        for (const auto &[sq, occupant] : pos->eachSquare())
+            if (occupant)
+                addAttacker(sq, occupant.value());
     }
 
-    const std::unordered_set<Square> &AttackedSquares::attackers(Square sq) const
+    std::vector<Square> AttackedSquares::attackers(Square square, Color color) const
     {
-        return m_squares[sq.idx()];
+        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
+        std::vector<Square> attackers;
+        attackers.reserve(attackedBy.count());
+
+        for (size_t i = 0; i < 64; ++i)
+            if (attackedBy[i])
+                attackers.push_back(Square::fromIdx(i));
+
+        return attackers;
     }
 
-    bool AttackedSquares::attacked(Square sq) const
+    bool AttackedSquares::attacked(Square square, Color color) const
     {
-        return !m_squares[sq.idx()].empty();
+        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
+        return attackedBy.any();
+    }
+
+    constexpr int AttackedSquares::numAttackers(Square square, Color color) const
+    {
+        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
+        return attackedBy.count();
     }
 
     void AttackedSquares::applyMove(const Move &move)
     {
-        bool attacking = move.piece.color == m_color;
+        Color activeColor = move.piece.color;
+        Color otherColor = oppositeColor(activeColor);
 
         removePiece(move.from);
-        if (!move.capture)
+        if (!move.capture || move.enPassant)
             addPiece(move.to);
-        if (attacking)
-        {
-            removeAttacker(move.from, move.piece.type);
-            addAttacker(move.to, move.promotion ? move.promotion.value() : move.piece.type);
-        }
+        removeAttacker(move.from, move.piece);
 
         if (move.enPassant)
         {
-            Square capturedPawnSq = backward(m_color)(move.to).value();
+            Square capturedPawnSq = backward(activeColor)(move.to).value();
             removePiece(capturedPawnSq);
-            if (!attacking)
-                removeAttacker(capturedPawnSq, PieceType::Pawn);
+            removeAttacker(capturedPawnSq, Piece{otherColor, PieceType::Pawn});
         }
         else if (move.castle)
         {
@@ -62,242 +76,228 @@ namespace ChessGame
                    rookFrom = Square{qs ? 0u : 7u, move.from.rank};
             removePiece(rookFrom);
             addPiece(rookTo);
-            if (attacking)
-            {
-                removeAttacker(rookFrom, PieceType::Rook);
-                addAttacker(rookTo, PieceType::Rook);
-            }
+            Piece rook{activeColor, PieceType::Rook};
+            removeAttacker(rookFrom, rook);
+            addAttacker(rookTo, rook);
         }
-        else if (move.capture && !attacking)
+        else if (move.capture)
         {
-            removeAttacker(move.to, move.capture.value());
+            removeAttacker(move.to, Piece{otherColor, move.capture.value()});
         }
+
+        Piece addedAttacker = Piece{activeColor, move.promotion.value_or(move.piece.type)};
+        addAttacker(move.to, addedAttacker);
     }
 
-    void AttackedSquares::addAttacker(Square sq, PieceType pt)
+    void AttackedSquares::addAttacker(Square square, Piece piece)
     {
         std::optional<Square> maybeSq = std::nullopt;
         Square newSq{};
         auto pos = getPos();
-        switch (pt)
+
+        std::vector<Square> attackedSquares;
+        attackedSquares.reserve(16);
+
+        switch (piece.type)
         {
         case PieceType::Pawn:
-            for (auto offset : pawnOffsets)
+            for (auto offset : pawnAttackOffsets)
             {
-                if (m_color == Color::White)
-                    offset.rank = -1;
-                maybeSq = offset(sq);
+                if (piece.color == Color::White)
+                    offset.rank *= -1;
+                maybeSq = offset(square);
                 if (maybeSq)
-                    m_squares[maybeSq.value().idx()].insert(sq);
+                    attackedSquares.push_back(maybeSq.value());
             }
             break;
 
         case PieceType::Knight:
             for (const auto &offset : knightOffsets)
             {
-                maybeSq = offset(sq);
+                maybeSq = offset(square);
                 if (maybeSq)
-                    m_squares[maybeSq.value().idx()].insert(sq);
+                    attackedSquares.push_back(maybeSq.value());
             }
             break;
 
         case PieceType::Bishop:
             for (const auto &offset : bishopOffsets)
-            {
-                for (const auto &newSq : pos->getPath(sq, offset, true))
-                {
-                    m_squares[newSq.idx()].insert(sq);
-                    if (pos->get(newSq))
-                        break;
-                }
-            }
+                for (const auto &newSq : pos->getPath(square, offset, true))
+                    attackedSquares.push_back(newSq);
             break;
 
         case PieceType::Rook:
             for (const auto &offset : rookOffsets)
-            {
-                for (const auto &newSq : pos->getPath(sq, offset, true))
-                {
-                    m_squares[newSq.idx()].insert(sq);
-                    if (pos->get(newSq))
-                        break;
-                }
-            }
+                for (const auto &newSq : pos->getPath(square, offset, true))
+                    attackedSquares.push_back(newSq);
             break;
 
         case PieceType::Queen:
             for (const auto &offset : queenKingOffsets)
-            {
-                for (const auto &newSq : pos->getPath(sq, offset, true))
-                {
-                    m_squares[newSq.idx()].insert(sq);
-                    if (pos->get(newSq))
-                        break;
-                }
-            }
+                for (const auto &newSq : pos->getPath(square, offset, true))
+                    attackedSquares.push_back(newSq);
             break;
 
         case PieceType::King:
             for (const auto &offset : queenKingOffsets)
             {
-                maybeSq = offset(sq);
+                maybeSq = offset(square);
                 if (maybeSq)
-                    m_squares[maybeSq.value().idx()].insert(sq);
+                    attackedSquares.push_back(maybeSq.value());
             }
             break;
 
         default:
             std::unreachable();
+            break;
         }
+
+        for (const auto &attacked : attackedSquares)
+            m_attackedFrom[square.idx()][attacked.idx()] = 1;
+
+        if (piece.color == Color::White)
+            for (const auto &attacked : attackedSquares)
+                m_attackedByWhite[attacked.idx()][square.idx()] = 1;
+        else
+            for (const auto &attacked : attackedSquares)
+                m_attackedByBlack[attacked.idx()][square.idx()] = 1;
     }
 
-    void AttackedSquares::removeAttacker(Square sq, PieceType pt)
+    void AttackedSquares::removeAttacker(Square square, Piece piece)
     {
         std::optional<Square> maybeSq = std::nullopt;
         Square newSq{};
         auto pos = getPos();
-        switch (pt)
+
+        std::vector<Square> attackedSquares;
+        attackedSquares.reserve(16);
+
+        switch (piece.type)
         {
         case PieceType::Pawn:
-            for (auto offset : pawnOffsets)
+            for (auto offset : pawnAttackOffsets)
             {
-                if (m_color == Color::White)
-                    offset.rank = -1;
-                maybeSq = offset(sq);
+                if (piece.color == Color::White)
+                    offset.rank *= -1;
+                maybeSq = offset(square);
                 if (maybeSq)
-                    m_squares[maybeSq.value().idx()].erase(sq);
+                    attackedSquares.push_back(maybeSq.value());
             }
             break;
 
         case PieceType::Knight:
             for (const auto &offset : knightOffsets)
             {
-                maybeSq = offset(sq);
+                maybeSq = offset(square);
                 if (maybeSq)
-                    m_squares[maybeSq.value().idx()].erase(sq);
+                    attackedSquares.push_back(maybeSq.value());
             }
             break;
 
         case PieceType::Bishop:
             for (const auto &offset : bishopOffsets)
-            {
-                for (const auto &newSq : pos->getPath(sq, offset, true))
-                {
-                    m_squares[newSq.idx()].erase(sq);
-                    if (pos->get(newSq))
-                        break;
-                }
-            }
+                for (const auto &newSq : pos->getPath(square, offset, true))
+                    attackedSquares.push_back(newSq);
             break;
 
         case PieceType::Rook:
             for (const auto &offset : rookOffsets)
-            {
-                for (const auto &newSq : pos->getPath(sq, offset, true))
-                {
-                    m_squares[newSq.idx()].erase(sq);
-                    if (pos->get(newSq))
-                        break;
-                }
-            }
+                for (const auto &newSq : pos->getPath(square, offset, true))
+                    attackedSquares.push_back(newSq);
             break;
 
         case PieceType::Queen:
             for (const auto &offset : queenKingOffsets)
-            {
-                for (const auto &newSq : pos->getPath(sq, offset, true))
-                {
-                    m_squares[newSq.idx()].erase(sq);
-                    if (pos->get(newSq))
-                        break;
-                }
-            }
+                for (const auto &newSq : pos->getPath(square, offset, true))
+                    attackedSquares.push_back(newSq);
             break;
 
         case PieceType::King:
             for (const auto &offset : queenKingOffsets)
             {
-                maybeSq = offset(sq);
+                maybeSq = offset(square);
                 if (maybeSq)
-                    m_squares[maybeSq.value().idx()].erase(sq);
+                    attackedSquares.push_back(maybeSq.value());
             }
             break;
 
         default:
             std::unreachable();
         }
+
+        for (const auto &attacked : attackedSquares)
+            m_attackedFrom[square.idx()][attacked.idx()] = 0;
+
+        if (piece.color == Color::White)
+            for (const auto &attacked : attackedSquares)
+                m_attackedByWhite[attacked.idx()][square.idx()] = 0;
+        else
+            for (const auto &attacked : attackedSquares)
+                m_attackedByBlack[attacked.idx()][square.idx()] = 0;
     }
 
-    void AttackedSquares::addPiece(Square sq)
+    void AttackedSquares::addPiece(Square square)
     {
         auto pos = getPos();
-        auto attackers = m_squares[sq.idx()];
-        Offset offset{};
-        if (attackers.empty())
-            return;
 
-        for (const auto &attSq : attackers)
+        for (size_t i = 0; i < 64; ++i)
         {
-            bool follow = false;
-            auto piece = pos->get(attSq).value(); // TODO: throw with message
+            if (!m_attackedFrom[i][square.idx()])
+                continue;
+            Square attacker = Square::fromIdx(i);
 
-            switch (piece.type)
-            {
-            case PieceType::Bishop:
-            case PieceType::Rook:
-            case PieceType::Queen:
-                offset = {sq.file - attSq.file,
-                          sq.rank - attSq.rank};
-                offset /= abs(offset.file);
-                follow = true;
-                break;
+            [[unlikely]] if (!pos->get(attacker))
+                throw std::runtime_error("Invalid attacker");
+            auto piece = pos->get(attacker).value();
 
-            default:
-                break;
-            }
-            if (!follow)
+            auto &attackedBy = (piece.color == Color::White) ? m_attackedByWhite : m_attackedByBlack;
+
+            if (piece.type == PieceType::Pawn ||
+                piece.type == PieceType::Knight ||
+                piece.type == PieceType::King)
                 continue;
 
-            for (const auto &newSq : pos->getPath(sq, offset, true))
-                m_squares[newSq.idx()].erase(sq);
+            Offset offset{square.file - attacker.file,
+                          square.rank - attacker.rank};
+            offset.norm();
+
+            for (const auto &newSq : pos->getPath(square, offset, true))
+            {
+                attackedBy[newSq.idx()][i] = 0;
+                m_attackedFrom[i][newSq.idx()] = 0;
+            }
         }
     }
 
-    void AttackedSquares::removePiece(Square sq)
+    void AttackedSquares::removePiece(Square square)
     {
         auto pos = getPos();
-        auto attackers = m_squares[sq.idx()];
-        Offset offset{};
-        if (attackers.empty())
-            return;
 
-        for (const auto &attSq : attackers)
+        for (size_t i = 0; i < 64; ++i)
         {
-            bool follow = false;
-            auto piece = pos->get(attSq).value(); // TODO: throw with message
+            if (!m_attackedFrom[i][square.idx()])
+                continue;
+            Square attacker = Square::fromIdx(i);
 
-            switch (piece.type)
-            {
-            case PieceType::Bishop:
-            case PieceType::Rook:
-            case PieceType::Queen:
-                offset = {sq.file - attSq.file,
-                          sq.rank - attSq.rank};
-                offset /= abs(offset.file);
-                follow = true;
-                break;
+            [[unlikely]] if (!pos->get(attacker))
+                throw std::runtime_error("Invalid attacker");
+            auto piece = pos->get(attacker).value();
 
-            default:
-                break;
-            }
-            if (!follow)
+            auto &attackedBy = (piece.color == Color::White) ? m_attackedByWhite : m_attackedByBlack;
+
+            if (piece.type == PieceType::Pawn ||
+                piece.type == PieceType::Knight ||
+                piece.type == PieceType::King)
                 continue;
 
-            for (const auto &newSq : pos->getPath(sq, offset, true))
+            Offset offset{square.file - attacker.file,
+                          square.rank - attacker.rank};
+            offset.norm();
+
+            for (const auto &newSq : pos->getPath(square, offset, true))
             {
-                m_squares[newSq.idx()].insert(sq);
-                if (pos->get(newSq))
-                    break;
+                attackedBy[newSq.idx()][i] = 1;
+                m_attackedFrom[i][newSq.idx()] = 1;
             }
         }
     }

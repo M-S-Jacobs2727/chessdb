@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <optional>
 
+#include "internal/logic/attackedSquares.h"
 #include "internal/logic/castling.h"
 #include "internal/logic/move.h"
 #include "internal/logic/piece.h"
@@ -10,30 +11,40 @@
 
 namespace ChessGame
 {
+    constexpr std::string_view initFENFull{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"};
+
+    /// @brief The game state of a game of chess
+    /// @param fenString
     class State
     {
     public:
         Position position;
-        uint8_t fullTurnCounter;
-        uint8_t halfTurnCounter;
+        uint32_t fullTurnCounter;
+        uint32_t halfTurnCounter;
         Color turn;
         CastleRights castleRights;
         std::optional<Square> enPassant;
 
+        AttackedSquares attacked;
+
     public:
-        explicit State(std::string_view fenString = INITFEN);
+        explicit State(std::string_view fenString = initFENFull);
+
+        /// @brief Applies a move to the board state
+        /// @param move
         void applyMove(const Move &move);
+
+        /// @brief Applies a PGN-formatted move to the board state
+        /// @param pgnMove The PGN-formatted move
+        /// @return A full description of the move applied
         Move applyPGNMove(std::string_view pgnMove);
+
+        /// @brief Applies a move formatted in long algebraic notation to the board state
+        /// @param pgnMove The move formatted in long algebraic notation
+        /// @return A full description of the move applied
         Move applyUCIMove(std::string_view uciMove);
+
+    private:
+        std::shared_ptr<Position> m_pos;
     };
-
-    Square computeFromSquare(Square to,
-                             Piece piece,
-                             const Position &pos,
-                             std::string_view partialFrom);
-    Move interpretPGNMove(std::string_view pgnMove,
-                          const Position &pos,
-                          Color turn);
-    Move interpretUCIMove(std::string_view uciMove, const State &state);
-
 } // namespace ChessGame

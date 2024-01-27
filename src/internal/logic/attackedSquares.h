@@ -1,8 +1,10 @@
 #pragma once
 
 #include <array>
+#include <bitset>
 #include <memory>
 #include <unordered_set>
+#include <vector>
 
 #include "internal/logic/move.h"
 #include "internal/logic/piece.h"
@@ -11,41 +13,55 @@
 
 namespace ChessGame
 {
+    using AttackerArray = std::array<std::bitset<64>, 64>;
+
     class AttackedSquares
     {
     public:
-        AttackedSquares(Color color, std::shared_ptr<Position> pos);
+        AttackedSquares() = default;
+        explicit AttackedSquares(std::shared_ptr<Position> pos);
 
-        // To be called after Position::applyMove
-        // Assumes that the referenced position is the new state
+        /* Retrieve a vector of squares occupied by pieces of the given color attacking
+        the given square.
+         */
+        std::vector<Square> attackers(Square square, Color color) const;
+
+        /* Ascertain whether the given square is attacked by pieces of the given color.
+         */
+        constexpr bool attacked(Square square, Color color) const;
+
+        /* Ascertain the number of attackers of a given color on the given square.
+         */
+        constexpr int numAttackers(Square square, Color color) const;
+
+        /* To be called within Position::applyMove (at the end). Assumes that the
+        referenced position is the new state.
+         * Note: I would like to restrict access to this method exclusively to
+         * `Position::applyMove` if possible, e.g., via friend specification, but I can't
+         * figure it out.
+         */
         void applyMove(const Move &move);
 
+    private:
         // Compute the attacking pieces from scratch
         // Should only need to be called at construction, may make private in the future
         void recompute();
 
-        // Retrieve a read-only view of the set of squares attacking the given square
-        const std::unordered_set<Square> &attackers(Square sq) const;
-
-        // Ascertain whether the given square is attacked
-        bool attacked(Square sq) const;
-
-    private:
-        uint8_t idx(Square square) const;
-        Square idxToSquare(uint8_t idx) const;
-        void addAttacker(Square sq, PieceType pt);
-        void removeAttacker(Square sq, PieceType pt);
-        void addPiece(Square sq);
-        void removePiece(Square sq);
+        void addAttacker(Square square, Piece piece);
+        void removeAttacker(Square square, Piece piece);
+        void addPiece(Square square);
+        void removePiece(Square square);
         std::shared_ptr<Position> getPos() const;
 
     private:
-        // Color of the attacking pieces
-        Color m_color;
-
+        // board position
         std::weak_ptr<Position> m_pos;
 
-        // for each square, the set of squares containing pieces of color m_color that attack this square
-        std::array<std::unordered_set<Square>, 64> m_squares;
+        // Squares occupied by white pieces that attack the given square
+        AttackerArray m_attackedByWhite;
+        // Squares occupied by black pieces that attack the given square
+        AttackerArray m_attackedByBlack;
+        // Squares that the piece occupying the given square attacks
+        AttackerArray m_attackedFrom;
     };
 } // namespace ChessGame
