@@ -9,12 +9,12 @@
 
 namespace ChessGame
 {
-    bool castleIsLegal(const Move &move, const State &state, const AttackedSquares &attacked)
+    bool castleIsLegal(const Move &move, const State &state)
     {
         auto side = (move.to.file == 2u) ? CastleSide::QUEEN : CastleSide::KING;
         Square midSquare{(move.from.file + move.to.file) / 2, move.from.rank};
         if (!state.castleRights.get(state.turn, side) ||
-            attacked.attackers(midSquare).size() > 0)
+            state.attacked.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
             return false;
 
         if (side == CastleSide::QUEEN)
@@ -57,9 +57,9 @@ namespace ChessGame
         return (std::find(path.begin(), path.end(), move.to) == path.end());
     }
 
-    bool moveDisallowedByHardPin(const Move &move, Square pinningSquare, Offset pinDir, Square kingSq)
+    bool moveDisallowedByHardPin(const Move &move, const std::pair<Square, Offset> &hardPin, Square kingSq)
     {
-        for (Square tmpSq = pinningSquare; tmpSq != kingSq; tmpSq = pinDir(tmpSq).value_or(kingSq))
+        for (Square tmpSq = hardPin.first; tmpSq != kingSq; tmpSq = hardPin.second(tmpSq).value_or(kingSq))
             if (tmpSq == move.to)
                 return false;
         return true;
@@ -102,110 +102,6 @@ namespace ChessGame
             }
         }
         return false;
-    }
-
-    std::unordered_set<Move> legalMoves(const State &state, const AttackedSquares &attacked)
-    {
-        std::unordered_set<Move> moves{};
-        const auto &pos = state.position;
-        Color color = state.turn;
-
-        Square kingSq = pos.kingSquare(color);
-
-        auto attackers = attacked.attackers(kingSq);
-        bool inCheck = attackers.size() >= 1;
-
-        std::unordered_set<Move> kingMoves = candidateKingMoves(pos, kingSq, color);
-        for (const auto &move : kingMoves)
-        {
-            if (attacked.attackers(move.to).size() > 0)
-                continue;
-
-            if (move.castle && (inCheck || !castleIsLegal(move, state, attacked)))
-                continue;
-
-            moves.insert(move);
-        }
-
-        if (attackers.size() > 1)
-            return moves;
-
-        std::optional<Square> checker{
-            attackers.empty() ? std::nullopt
-                              : std::make_optional(*(attackers.begin()))};
-
-        for (const auto &[sq, p] : pos.eachSquare())
-        {
-            if (!p || p.value().color != color || p.value().type == PieceType::King)
-                continue;
-
-            Piece piece = p.value();
-
-            // use concepts(?) to affirm that pos.get(hardPin.value()).has_value() if hardPin.has_value()
-            auto hardPin = getHardPin(pos, sq, color);
-            bool canCaptureEnPassant = (state.enPassant) &&
-                                       (piece.type == PieceType::Pawn) &&
-                                       (sq.rank == ((color == Color::White) ? 5u : 4u)) &&
-                                       (abs(sq.file - state.enPassant.value().file) == 1);
-
-            for (const auto &move : candidateMoves(pos, sq))
-            {
-                if (checker && moveDisallowedByCheck(move, pos, kingSq, checker.value()))
-                    continue;
-
-                if (hardPin && moveDisallowedByHardPin(move, hardPin.value().first, hardPin.value().second, kingSq))
-                    continue;
-
-                if (canCaptureEnPassant && epCatureResultsInCheck(move, state, kingSq))
-                    continue;
-
-                moves.insert(move);
-            }
-        }
-
-        return moves;
-    }
-
-    std::unordered_set<Move> candidateMoves(const Position &pos, Square square)
-    {
-        if (!pos.get(square))
-            return {};
-
-        std::unordered_set<Move> moves{};
-        Piece piece = pos.get(square).value();
-
-        switch (piece.type)
-        {
-        case PieceType::Pawn:
-            candidatePawnMoves(pos, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Knight:
-            candidateKnightMoves(pos, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Bishop:
-            candidateBishopMoves(pos, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Rook:
-            candidateRookMoves(pos, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Queen:
-            candidateQueenMoves(pos, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::King:
-            candidateKingMoves(pos, square, piece.color).swap(moves);
-            break;
-
-        default:
-            std::unreachable();
-            break;
-        }
-
-        return moves;
     }
 
     std::unordered_set<Move> candidatePawnMoves(const Position &pos, Square from, Color color)
@@ -340,6 +236,141 @@ namespace ChessGame
             if (!pos.get(to))
                 moves.emplace(king, from, to);
         }
+        return moves;
+    }
+
+    std::unordered_set<Move> candidateMoves(const Position &pos, Square square)
+    {
+        if (!pos.get(square))
+            return {};
+
+        std::unordered_set<Move> moves{};
+        Piece piece = pos.get(square).value();
+
+        switch (piece.type)
+        {
+        case PieceType::Pawn:
+            candidatePawnMoves(pos, square, piece.color).swap(moves);
+            break;
+
+        case PieceType::Knight:
+            candidateKnightMoves(pos, square, piece.color).swap(moves);
+            break;
+
+        case PieceType::Bishop:
+            candidateBishopMoves(pos, square, piece.color).swap(moves);
+            break;
+
+        case PieceType::Rook:
+            candidateRookMoves(pos, square, piece.color).swap(moves);
+            break;
+
+        case PieceType::Queen:
+            candidateQueenMoves(pos, square, piece.color).swap(moves);
+            break;
+
+        case PieceType::King:
+            candidateKingMoves(pos, square, piece.color).swap(moves);
+            break;
+
+        default:
+            std::unreachable();
+            break;
+        }
+
+        return moves;
+    }
+
+    std::optional<std::pair<Square, Offset>> getHardPin(const Position &pos, Square square, Color color)
+    {
+        auto kingSq = pos.kingSquare(color);
+        auto offset = difference(square, kingSq);
+        if (!offset.norm())
+            return {};
+
+        Color oppColor = oppositeColor(color);
+
+        auto pathToPin = pos.getPath(square, -offset, true);
+        if (pathToPin.empty())
+            return {};
+
+        auto pinSquare = pathToPin.back();
+        std::pair<Square, Offset> hardPin{pinSquare, offset};
+
+        auto occupant = pos.get(pinSquare);
+        if (!occupant || occupant.value().color == color)
+            return {};
+
+        Piece piece = occupant.value();
+
+        if (piece.type == PieceType::Queen ||
+            piece.type == PieceType::Bishop && offset.isDiagonal() ||
+            piece.type == PieceType::Rook && offset.isLateral())
+            return hardPin;
+
+        return {};
+    }
+
+    std::unordered_set<Move> legalMoves(const State &state)
+    {
+        std::unordered_set<Move> moves{};
+        const auto &pos = state.position;
+        Color color = state.turn;
+        Color oppColor = oppositeColor(color);
+
+        Square kingSq = pos.kingSquare(color);
+
+        auto numCheckers = state.attacked.numAttackers(kingSq, oppColor);
+        bool inCheck = numCheckers >= 1;
+
+        std::unordered_set<Move> kingMoves = candidateKingMoves(pos, kingSq, color);
+        for (const auto &move : kingMoves)
+        {
+            if (state.attacked.numAttackers(move.to, oppColor) > 0)
+                continue;
+
+            if (move.castle && (inCheck || !castleIsLegal(move, state)))
+                continue;
+
+            moves.insert(move);
+        }
+
+        if (numCheckers > 1)
+            return moves;
+
+        std::optional<Square> checker{
+            (numCheckers == 0) ? std::nullopt
+                               : std::make_optional(state.attacked.attackers(kingSq, oppColor)[0])};
+
+        for (const auto &[sq, p] : pos.eachSquare())
+        {
+            if (!p || p.value().color != color || p.value().type == PieceType::King)
+                continue;
+
+            Piece piece = p.value();
+
+            // use concepts(?) to affirm that pos.get(hardPin.value()).has_value() if hardPin.has_value()
+            auto hardPin = getHardPin(pos, sq, color);
+            bool canCaptureEnPassant = (state.enPassant) &&
+                                       (piece.type == PieceType::Pawn) &&
+                                       (sq.rank == ((color == Color::White) ? 5u : 4u)) &&
+                                       (abs(sq.file - state.enPassant.value().file) == 1);
+
+            for (const auto &move : candidateMoves(pos, sq))
+            {
+                if (checker && moveDisallowedByCheck(move, pos, kingSq, checker.value()))
+                    continue;
+
+                if (hardPin && moveDisallowedByHardPin(move, hardPin.value(), kingSq))
+                    continue;
+
+                if (canCaptureEnPassant && epCatureResultsInCheck(move, state, kingSq))
+                    continue;
+
+                moves.insert(move);
+            }
+        }
+
         return moves;
     }
 } // namespace ChessGame
