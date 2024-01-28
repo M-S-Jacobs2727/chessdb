@@ -203,7 +203,7 @@ namespace ChessGame
     }
 
     State::State(std::string_view fenString)
-        : position(fenString), m_pos(std::shared_ptr<Position>(&position)), attacked(m_pos)
+        : position(fenString), m_pos(std::shared_ptr<Position>(&position)), attacks(m_pos)
     {
         std::istringstream iss{fenString.data()};
         std::string str;
@@ -281,7 +281,7 @@ namespace ChessGame
             fullTurnCounter++;
         turn = oppositeColor(turn);
 
-        attacked.applyMove(move);
+        attacks.applyMove(move);
     }
 
     Move State::applyPGNMove(std::string_view pgnMove)

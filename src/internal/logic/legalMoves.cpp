@@ -14,7 +14,7 @@ namespace ChessGame
         auto side = (move.to.file == 2u) ? CastleSide::QUEEN : CastleSide::KING;
         Square midSquare{(move.from.file + move.to.file) / 2, move.from.rank};
         if (!state.castleRights.get(state.turn, side) ||
-            state.attacked.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
+            state.attacks.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
             return false;
 
         if (side == CastleSide::QUEEN)
@@ -320,13 +320,13 @@ namespace ChessGame
 
         Square kingSq = pos.kingSquare(color);
 
-        auto numCheckers = state.attacked.numAttackers(kingSq, oppColor);
+        auto numCheckers = state.attacks.numAttackers(kingSq, oppColor);
         bool inCheck = numCheckers >= 1;
 
         std::unordered_set<Move> kingMoves = candidateKingMoves(pos, kingSq, color);
         for (const auto &move : kingMoves)
         {
-            if (state.attacked.numAttackers(move.to, oppColor) > 0)
+            if (state.attacks.numAttackers(move.to, oppColor) > 0)
                 continue;
 
             if (move.castle && (inCheck || !castleIsLegal(move, state)))
@@ -340,7 +340,7 @@ namespace ChessGame
 
         std::optional<Square> checker{
             (numCheckers == 0) ? std::nullopt
-                               : std::make_optional(state.attacked.attackers(kingSq, oppColor)[0])};
+                               : std::make_optional(state.attacks.attackers(kingSq, oppColor)[0])};
 
         for (const auto &[sq, p] : pos.eachSquare())
         {

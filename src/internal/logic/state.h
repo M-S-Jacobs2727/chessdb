@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <optional>
 
-#include "internal/logic/attackedSquares.h"
+#include "internal/logic/attacks.h"
 #include "internal/logic/castling.h"
 #include "internal/logic/move.h"
 #include "internal/logic/piece.h"
@@ -25,7 +25,7 @@ namespace ChessGame
         CastleRights castleRights;
         std::optional<Square> enPassant;
 
-        AttackedSquares attacked;
+        Attacks attacks;
 
     public:
         explicit State(std::string_view fenString = initFENFull);

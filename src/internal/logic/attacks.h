@@ -3,7 +3,6 @@
 #include <array>
 #include <bitset>
 #include <memory>
-#include <unordered_set>
 #include <vector>
 
 #include "internal/logic/move.h"
@@ -15,11 +14,11 @@ namespace ChessGame
 {
     using AttackerArray = std::array<std::bitset<64>, 64>;
 
-    class AttackedSquares
+    class Attacks
     {
     public:
-        AttackedSquares() = default;
-        explicit AttackedSquares(std::shared_ptr<Position> pos);
+        Attacks() = default;
+        explicit Attacks(std::shared_ptr<Position> pos);
 
         /* Retrieve a vector of squares occupied by pieces of the given color attacking
         the given square.

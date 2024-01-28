@@ -1,18 +1,17 @@
-#include "attackedSquares.h"
-
 #include <array>
 
+#include "internal/logic/attacks.h"
 #include "internal/logic/offset.h"
 
 namespace ChessGame
 {
-    AttackedSquares::AttackedSquares(std::shared_ptr<Position> pos)
+    Attacks::Attacks(std::shared_ptr<Position> pos)
         : m_pos(pos)
     {
         recompute();
     }
 
-    void AttackedSquares::recompute()
+    void Attacks::recompute()
     {
         for (auto &bs : m_attackedByWhite)
             bs.reset();
@@ -28,7 +27,7 @@ namespace ChessGame
                 addAttacker(sq, occupant.value());
     }
 
-    std::vector<Square> AttackedSquares::attackers(Square square, Color color) const
+    std::vector<Square> Attacks::attackers(Square square, Color color) const
     {
         auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
         std::vector<Square> attackers;
@@ -41,19 +40,19 @@ namespace ChessGame
         return attackers;
     }
 
-    bool AttackedSquares::attacked(Square square, Color color) const
+    bool Attacks::attacked(Square square, Color color) const
     {
         auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
         return attackedBy.any();
     }
 
-    constexpr int AttackedSquares::numAttackers(Square square, Color color) const
+    constexpr int Attacks::numAttackers(Square square, Color color) const
     {
         auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
         return attackedBy.count();
     }
 
-    void AttackedSquares::applyMove(const Move &move)
+    void Attacks::applyMove(const Move &move)
     {
         Color activeColor = move.piece.color;
         Color otherColor = oppositeColor(activeColor);
@@ -71,7 +70,7 @@ namespace ChessGame
         }
         else if (move.castle)
         {
-            bool qs = move.castle.value() == CastleSide::QUEEN;
+            bool qs = move.castle.value() == Castling::Side::QUEEN;
             Square rookTo = Square{qs ? 3u : 5u, move.from.rank},
                    rookFrom = Square{qs ? 0u : 7u, move.from.rank};
             removePiece(rookFrom);
@@ -89,7 +88,7 @@ namespace ChessGame
         addAttacker(move.to, addedAttacker);
     }
 
-    void AttackedSquares::addAttacker(Square square, Piece piece)
+    void Attacks::addAttacker(Square square, Piece piece)
     {
         std::optional<Square> maybeSq = std::nullopt;
         Square newSq{};
@@ -163,7 +162,7 @@ namespace ChessGame
                 m_attackedByBlack[attacked.idx()][square.idx()] = 1;
     }
 
-    void AttackedSquares::removeAttacker(Square square, Piece piece)
+    void Attacks::removeAttacker(Square square, Piece piece)
     {
         std::optional<Square> maybeSq = std::nullopt;
         Square newSq{};
@@ -236,7 +235,7 @@ namespace ChessGame
                 m_attackedByBlack[attacked.idx()][square.idx()] = 0;
     }
 
-    void AttackedSquares::addPiece(Square square)
+    void Attacks::addPiece(Square square)
     {
         auto pos = getPos();
 
@@ -269,7 +268,7 @@ namespace ChessGame
         }
     }
 
-    void AttackedSquares::removePiece(Square square)
+    void Attacks::removePiece(Square square)
     {
         auto pos = getPos();
 
@@ -302,7 +301,7 @@ namespace ChessGame
         }
     }
 
-    std::shared_ptr<Position> AttackedSquares::getPos() const
+    std::shared_ptr<Position> Attacks::getPos() const
     {
         std::shared_ptr<Position> sp_pos = m_pos.lock();
         if (!sp_pos)
