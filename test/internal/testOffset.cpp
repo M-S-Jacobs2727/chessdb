@@ -54,3 +54,30 @@ TEST(OffsetTest, Operations)
     ASSERT_EQ(offset.file, 3);
     ASSERT_EQ(offset.rank, -1);
 }
+
+TEST(OffsetTest, LatDiag)
+{
+    Offset offset{1, 1};
+    ASSERT_TRUE(offset.isDiagonal());
+
+    offset.rank = 0;
+    ASSERT_TRUE(offset.isLateral());
+}
+
+TEST(OffsetTest, Norm)
+{
+    Offset offset{4, -4};
+    ASSERT_TRUE(offset.norm());
+    ASSERT_EQ(offset.file, 1);
+    ASSERT_EQ(offset.rank, -1);
+
+    Offset offset2{5, 0};
+    ASSERT_TRUE(offset.norm());
+    ASSERT_EQ(offset.file, 1);
+    ASSERT_EQ(offset.rank, 0);
+
+    Offset offset3{5, 1};
+    ASSERT_FALSE(offset.norm());
+    ASSERT_EQ(offset.file, 5);
+    ASSERT_EQ(offset.rank, 1);
+}
