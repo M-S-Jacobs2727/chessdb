@@ -99,3 +99,37 @@ TEST(PositionTest, BasicAssertions)
         for (size_t i = 0; i < 8; ++i)
             ASSERT_FALSE(pos.get({i, j}));
 }
+
+TEST(PositionTest, PutRemove)
+{
+    using ChessGame::Color, ChessGame::Piece, ChessGame::PieceType;
+
+    Piece wp{Color::White, PieceType::Pawn},
+        wn{Color::White, PieceType::Knight},
+        wb{Color::White, PieceType::Bishop},
+        wr{Color::White, PieceType::Rook},
+        wq{Color::White, PieceType::Queen},
+        wk{Color::White, PieceType::King},
+        bp{Color::Black, PieceType::Pawn},
+        bn{Color::Black, PieceType::Knight},
+        bb{Color::Black, PieceType::Bishop},
+        br{Color::Black, PieceType::Rook},
+        bq{Color::Black, PieceType::Queen},
+        bk{Color::Black, PieceType::King};
+    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+
+    ASSERT_FALSE(pos.remove({0, 3}));
+
+    auto p = pos.remove({0, 0});
+    ASSERT_TRUE(p);
+    ASSERT_EQ(p.value(), wr);
+    ASSERT_FALSE(pos.get({0, 0}));
+
+    p = pos.put({0, 1}, wq);
+    ASSERT_TRUE(p);
+    ASSERT_EQ(p.value(), wp);
+
+    p = pos.get({0, 1});
+    ASSERT_TRUE(p);
+    ASSERT_EQ(p.value(), wq);
+}
