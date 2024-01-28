@@ -12,14 +12,14 @@
 #include "internal/logic/piece.h"
 #include "internal/logic/square.h"
 
-#define INITFEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
 namespace ChessGame
 {
-    class Position : public std::array<std::optional<Piece>, 64>
+    constexpr std::string_view initFEN{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+
+    class Position
     {
     public:
-        explicit Position(std::string_view fenString = INITFEN);
+        explicit Position(std::string_view fenString);
         std::optional<Piece> get(Square square) const;
         std::optional<Piece> put(Square square, Piece piece);
         std::optional<Piece> remove(Square square);
@@ -28,5 +28,8 @@ namespace ChessGame
         std::vector<Square> getPath(Square fromSquare, Offset direction, bool includePiece) const;
         std::array<std::pair<Square, std::optional<Piece>>, 64> eachSquare() const;
         std::vector<std::pair<Square, std::optional<Piece>>> eachVisibleSquare(Square ref, Color color, PieceType pieceType) const;
+
+    private:
+        std::array<std::optional<Piece>, 64> m_arr;
     };
 } // namespace ChessGame

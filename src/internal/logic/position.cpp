@@ -25,10 +25,12 @@ namespace ChessGame
 
     Position::Position(std::string_view fenString)
     {
-        fill(std::nullopt);
+        m_arr.fill(std::nullopt);
         uint8_t row = 0, col = 0, numWhiteKings = 0, numBlackKings = 0, i = 0;
         for (const auto &c : fenString)
         {
+            bool complete{false};
+
             switch (c)
             {
             case '1':
@@ -60,7 +62,7 @@ namespace ChessGame
             case 'R':
             case 'q':
             case 'Q':
-                at(i++) = FENPiece.at(c);
+                m_arr[i++] = FENPiece.at(c);
                 ++col;
                 break;
 
@@ -72,34 +74,35 @@ namespace ChessGame
                 break;
 
             case ' ':
-                goto end;
+                complete = true;
 
             default:
                 throw std::runtime_error("Invalid FEN string");
-                break;
             }
+            if (complete)
+                break;
         }
-    end:
+
         if (i != 63 || row != 7 || col != 8 || numWhiteKings != 1 || numBlackKings != 1)
             throw std::runtime_error("Invalid FEN string");
     }
 
     inline std::optional<Piece> Position::get(Square square) const
     {
-        return at(square.idx());
+        return m_arr[square.idx()];
     }
 
     std::optional<Piece> Position::put(Square square, Piece piece)
     {
-        auto oldPiece = at(square.idx());
-        at(square.idx()) = piece;
+        auto oldPiece = m_arr[square.idx()];
+        m_arr[square.idx()] = piece;
         return oldPiece;
     }
 
     std::optional<Piece> Position::remove(Square square)
     {
         auto p = get(square);
-        at(square.idx()) = std::nullopt;
+        m_arr[square.idx()] = std::nullopt;
         return p;
     }
 
