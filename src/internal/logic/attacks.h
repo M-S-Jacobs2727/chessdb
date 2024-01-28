@@ -17,7 +17,7 @@ namespace ChessGame
     class Attacks
     {
     public:
-        Attacks() = default;
+        Attacks() = delete;
         explicit Attacks(std::shared_ptr<Position> pos);
 
         /* Retrieve a vector of squares occupied by pieces of the given color attacking
