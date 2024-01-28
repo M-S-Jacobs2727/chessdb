@@ -152,3 +152,40 @@ TEST(PositionTest, KingSquare)
     ASSERT_EQ(bs.file, 0);
     ASSERT_EQ(bs.rank, 4);
 }
+
+TEST(PositionTest, GetPath)
+{
+    using ChessGame::Offset, ChessGame::Square;
+    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+    Square start{3, 1};
+    Offset forward{0, 1};
+    auto path = pos.getPath(start, forward, true);
+
+    ASSERT_EQ(path.size(), 5);
+    for (size_t i = 2; i < 7; ++i)
+    {
+        ASSERT_EQ(path[0].file, 3);
+        ASSERT_EQ(path[0].rank, i);
+    }
+
+    path = pos.getPath(start, forward, false);
+    ASSERT_EQ(path.size(), 4);
+    for (size_t i = 2; i < 6; ++i)
+    {
+        ASSERT_EQ(path[0].file, 3);
+        ASSERT_EQ(path[0].rank, i);
+    }
+
+    Offset diag{-1, 1};
+    path = pos.getPath(start, diag, true);
+    auto path2 = pos.getPath(start, diag, false);
+    ASSERT_EQ(path.size(), 3);
+    ASSERT_EQ(path2.size(), 3);
+    for (size_t i = 2; i < 5; ++i)
+    {
+        ASSERT_EQ(path[0].file, 4 - i);
+        ASSERT_EQ(path[0].rank, i);
+        ASSERT_EQ(path2[0].file, 4 - i);
+        ASSERT_EQ(path2[0].rank, i);
+    }
+}
