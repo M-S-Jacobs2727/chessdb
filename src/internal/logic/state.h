@@ -25,6 +25,10 @@ namespace ChessGame
         Castling::Rights castleRights;
         std::optional<Square> enPassant;
 
+    private:
+        std::shared_ptr<Position> m_pos;
+
+    public:
         Attacks attacks;
 
     public:
@@ -43,8 +47,5 @@ namespace ChessGame
         /// @param pgnMove The move formatted in long algebraic notation
         /// @return A full description of the move applied
         Move applyUCIMove(std::string_view uciMove);
-
-    private:
-        std::shared_ptr<Position> m_pos;
     };
 } // namespace ChessGame
