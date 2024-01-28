@@ -105,3 +105,33 @@ TEST(OffsetTest, SquareOperator)
     maybeSq = offset(sq);
     ASSERT_FALSE(maybeSq);
 }
+
+TEST(OffsetTest, Difference)
+{
+    using ChessGame::Square;
+
+    Square sq("a1"), sq2("g1");
+    Offset offset = ChessGame::difference(sq, sq2);
+    ASSERT_EQ(offset.file, 6);
+    ASSERT_EQ(offset.rank, 0);
+
+    Offset offset2 = ChessGame::difference(sq2, sq);
+    ASSERT_EQ(offset, -offset2);
+}
+
+TEST(OffsetTest, BackAndForth)
+{
+    using ChessGame::Color;
+
+    Offset offset = ChessGame::forward(Color::White),
+           offset2 = ChessGame::backward(Color::Black);
+    ASSERT_EQ(offset, offset2);
+    ASSERT_EQ(offset.file, 0);
+    ASSERT_EQ(offset.rank, 1);
+
+    offset = ChessGame::forward(Color::Black);
+    offset2 = ChessGame::backward(Color::White);
+    ASSERT_EQ(offset, offset2);
+    ASSERT_EQ(offset.file, 0);
+    ASSERT_EQ(offset.rank, -1);
+}
