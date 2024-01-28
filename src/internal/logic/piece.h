@@ -42,4 +42,9 @@ namespace ChessGame
     std::string_view toFEN(const PieceType pt, const Color color);
     std::optional<std::string_view> toStr(const PieceType pt);
     constexpr std::string_view toStr(const Color c);
+
+    constexpr inline uint8_t homeRank(const Color color)
+    {
+        return -7 * (static_cast<int>(color) - 1);
+    }
 }

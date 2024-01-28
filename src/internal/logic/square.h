@@ -8,8 +8,8 @@ namespace ChessGame
 {
     struct Square
     {
-        uint8_t file = 0; // 0-7, other values invalid
-        uint8_t rank = 0; // 0-7, reversed from Position::idx()
+        uint8_t file = 0; // 0->a, 7->h
+        uint8_t rank = 0; // 0->1, 7->8
 
         constexpr Square() = default;
         constexpr Square(uint8_t file, uint8_t rank)
@@ -40,8 +40,8 @@ namespace ChessGame
         std::string_view str() const
         {
             char s[3] = "a1";
-            s[0] += file;
-            s[1] += rank;
+            s[0] += file; // 0->a, 7->h
+            s[1] += rank; // 0->1, 7->8
             return std::string_view(s);
         }
         constexpr inline bool valid() const
@@ -54,10 +54,6 @@ namespace ChessGame
         }
     };
 
-    constexpr inline uint8_t homeRank(const Color color)
-    {
-        return -7 * (static_cast<int>(color) - 1);
-    }
 } // namespace ChessGame
 
 template <>
