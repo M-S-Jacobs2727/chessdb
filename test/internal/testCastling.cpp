@@ -58,3 +58,44 @@ TEST(CastlingTest, Squares)
     sq2 = Square("h8");
     ASSERT_EQ(sq, sq2);
 }
+
+TEST(CastlingTest, FENConstructor)
+{
+    using ChessGame::Color, ChessGame::Castling::Side;
+
+    {
+        cstl::Rights rights("KQkq");
+        ASSERT_TRUE(rights.get(Color::White, Side::KING));
+        ASSERT_TRUE(rights.get(Color::White, Side::QUEEN));
+        ASSERT_TRUE(rights.get(Color::Black, Side::KING));
+        ASSERT_TRUE(rights.get(Color::Black, Side::QUEEN));
+    }
+    {
+        cstl::Rights rights("KQ");
+        ASSERT_TRUE(rights.get(Color::White, Side::KING));
+        ASSERT_TRUE(rights.get(Color::White, Side::QUEEN));
+        ASSERT_FALSE(rights.get(Color::Black, Side::KING));
+        ASSERT_FALSE(rights.get(Color::Black, Side::QUEEN));
+    }
+    {
+        cstl::Rights rights("Kk");
+        ASSERT_TRUE(rights.get(Color::White, Side::KING));
+        ASSERT_FALSE(rights.get(Color::White, Side::QUEEN));
+        ASSERT_TRUE(rights.get(Color::Black, Side::KING));
+        ASSERT_FALSE(rights.get(Color::Black, Side::QUEEN));
+    }
+    {
+        cstl::Rights rights("q");
+        ASSERT_FALSE(rights.get(Color::White, Side::KING));
+        ASSERT_FALSE(rights.get(Color::White, Side::QUEEN));
+        ASSERT_FALSE(rights.get(Color::Black, Side::KING));
+        ASSERT_TRUE(rights.get(Color::Black, Side::QUEEN));
+    }
+    {
+        cstl::Rights rights("-");
+        ASSERT_FALSE(rights.get(Color::White, Side::KING));
+        ASSERT_FALSE(rights.get(Color::White, Side::QUEEN));
+        ASSERT_FALSE(rights.get(Color::Black, Side::KING));
+        ASSERT_FALSE(rights.get(Color::Black, Side::QUEEN));
+    }
+}
