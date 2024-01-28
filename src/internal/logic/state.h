@@ -22,7 +22,7 @@ namespace ChessGame
         uint32_t fullTurnCounter;
         uint32_t halfTurnCounter;
         Color turn;
-        CastleRights castleRights;
+        Castling::Rights castleRights;
         std::optional<Square> enPassant;
 
         Attacks attacks;

@@ -60,7 +60,7 @@ namespace ChessGame
         }
         else if (std::regex_match(pgnMove.data(), match, castle_regex))
         {
-            move.castle = (match[1].str().empty()) ? CastleSide::KING : CastleSide::QUEEN;
+            move.castle = (match[1].str().empty()) ? Castling::Side::KING : Castling::Side::QUEEN;
             move.from.rank = homeRank(turn);
             move.to.rank = move.from.rank;
             move.from.file = 4;
@@ -219,7 +219,7 @@ namespace ChessGame
             throw std::runtime_error("Invalid FEN string");
 
         iss >> str;
-        castleRights = CastleRights(str);
+        castleRights = Castling::Rights(str);
 
         iss >> str;
         if (str != "-")
@@ -246,14 +246,13 @@ namespace ChessGame
 
         if (move.castle)
         {
-            bool qs = move.castle.value() == CastleSide::QUEEN;
+            bool qs = move.castle.value() == Castling::Side::QUEEN;
             Square rookFrom{qs ? 0 : 7, move.from.rank},
                 rookTo{qs ? 3 : 5, move.from.rank};
             auto rook = position.remove(rookFrom);
             position.put(rookTo, rook.value());
 
-            castleRights.remove(turn, CastleSide::QUEEN);
-            castleRights.remove(turn, CastleSide::KING);
+            castleRights.remove(turn);
         }
         else if (move.enPassant)
         {
@@ -273,9 +272,9 @@ namespace ChessGame
         if (move.piece.type == PieceType::Rook && move.from.rank == r)
         {
             if (move.from.file == 0)
-                castleRights.remove(turn, CastleSide::QUEEN);
+                castleRights.remove({turn, Castling::Side::QUEEN});
             if (move.from.file == 7)
-                castleRights.remove(turn, CastleSide::KING);
+                castleRights.remove({turn, Castling::Side::KING});
         }
         if (turn == Color::Black)
             fullTurnCounter++;

@@ -17,7 +17,7 @@ namespace ChessGame
 
         bool enPassant = false;
         std::optional<PieceType> capture = std::nullopt;
-        std::optional<CastleSide> castle = std::nullopt;
+        std::optional<Castling::Side> castle = std::nullopt;
         std::optional<PieceType> promotion = std::nullopt;
 
         bool operator==(const Move &other) const

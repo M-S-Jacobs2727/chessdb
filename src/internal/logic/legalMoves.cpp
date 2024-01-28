@@ -1,5 +1,8 @@
 #include "internal/logic/legalMoves.h"
+#include "internal/logic/attacks.h"
+#include "internal/logic/move.h"
 #include "internal/logic/offset.h"
+#include "internal/logic/square.h"
 
 #include "legalMoves.h"
 #include <algorithm>
@@ -11,13 +14,13 @@ namespace ChessGame
 {
     bool castleIsLegal(const Move &move, const State &state)
     {
-        auto side = (move.to.file == 2u) ? CastleSide::QUEEN : CastleSide::KING;
+        auto side = (move.to.file == 2u) ? Castling::Side::QUEEN : Castling::Side::KING;
         Square midSquare{(move.from.file + move.to.file) / 2, move.from.rank};
         if (!state.castleRights.get(state.turn, side) ||
             state.attacks.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
             return false;
 
-        if (side == CastleSide::QUEEN)
+        if (side == Castling::Side::QUEEN)
         {
             for (auto file = 1; file <= 3; ++file)
                 if (state.position.get(Square{file, move.from.rank}))
