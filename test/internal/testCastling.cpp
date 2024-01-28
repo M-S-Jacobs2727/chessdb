@@ -99,3 +99,32 @@ TEST(CastlingTest, FENConstructor)
         ASSERT_FALSE(rights.get(Color::Black, Side::QUEEN));
     }
 }
+
+TEST(CastlingTest, Remove)
+{
+    using ChessGame::Color, ChessGame::Castling::Side, ChessGame::Castling::Castle;
+
+    Castle wk{Color::White, Side::KING},
+        wq{Color::White, Side::QUEEN},
+        bk{Color::Black, Side::KING},
+        bq{Color::Black, Side::QUEEN};
+
+    cstl::Rights rights;
+    rights.remove(wk);
+    ASSERT_FALSE(rights.get(wk.color, wk.side));
+    ASSERT_TRUE(rights.get(wq.color, wq.side));
+    ASSERT_TRUE(rights.get(bk.color, bk.side));
+    ASSERT_TRUE(rights.get(bq.color, bq.side));
+
+    rights.remove(Color::Black);
+    ASSERT_FALSE(rights.get(wk.color, wk.side));
+    ASSERT_TRUE(rights.get(wq.color, wq.side));
+    ASSERT_FALSE(rights.get(bk.color, bk.side));
+    ASSERT_FALSE(rights.get(bq.color, bq.side));
+
+    rights.remove(wq);
+    ASSERT_FALSE(rights.get(wk.color, wk.side));
+    ASSERT_FALSE(rights.get(wq.color, wq.side));
+    ASSERT_FALSE(rights.get(bk.color, bk.side));
+    ASSERT_FALSE(rights.get(bq.color, bq.side));
+}
