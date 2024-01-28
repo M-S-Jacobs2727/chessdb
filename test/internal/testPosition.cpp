@@ -133,3 +133,22 @@ TEST(PositionTest, PutRemove)
     ASSERT_TRUE(p);
     ASSERT_EQ(p.value(), wq);
 }
+
+TEST(PositionTest, KingSquare)
+{
+    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+    ChessGame::Square ws = pos.kingSquare(ChessGame::Color::White),
+                      bs = pos.kingSquare(ChessGame::Color::Black);
+    ASSERT_EQ(ws.file, 4);
+    ASSERT_EQ(ws.rank, 0);
+    ASSERT_EQ(bs.file, 4);
+    ASSERT_EQ(bs.rank, 7);
+
+    Position pos2{"8/8/8/k6K/8/8/8/8"};
+    ws = pos.kingSquare(ChessGame::Color::White);
+    bs = pos.kingSquare(ChessGame::Color::Black);
+    ASSERT_EQ(ws.file, 7);
+    ASSERT_EQ(ws.rank, 4);
+    ASSERT_EQ(bs.file, 0);
+    ASSERT_EQ(bs.rank, 4);
+}
