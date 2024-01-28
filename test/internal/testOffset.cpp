@@ -81,3 +81,27 @@ TEST(OffsetTest, Norm)
     ASSERT_EQ(offset.file, 5);
     ASSERT_EQ(offset.rank, 1);
 }
+
+TEST(OffsetTest, SquareOperator)
+{
+    using ChessGame::Square;
+
+    Square sq("a1");
+    Offset offset{1, 2};
+
+    auto maybeSq = offset(sq);
+    ASSERT_TRUE(maybeSq);
+    Square sq2 = maybeSq.value();
+
+    ASSERT_EQ(sq2.file, 1);
+    ASSERT_EQ(sq2.rank, 2);
+
+    sq.file = 7;
+    maybeSq = offset(sq);
+    ASSERT_FALSE(maybeSq);
+
+    sq.file = 0;
+    sq.rank = 6;
+    maybeSq = offset(sq);
+    ASSERT_FALSE(maybeSq);
+}
