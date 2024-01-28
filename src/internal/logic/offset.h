@@ -2,6 +2,7 @@
 
 #include <optional>
 
+#include "internal/logic/piece.h"
 #include "internal/logic/square.h"
 
 #define MAX(x, y) (x < y) ? y : x
@@ -113,12 +114,12 @@ namespace ChessGame
 
     constexpr inline Offset forward(Color color)
     {
-        return Offset{0, static_cast<int>(color) * 2 - 1};
+        return Offset{0, static_cast<int>(color) * -2 + 1};
     }
 
     constexpr inline Offset backward(Color color)
     {
-        return Offset{0, static_cast<int>(color) * -2 + 1};
+        return Offset{0, static_cast<int>(color) * 2 - 1};
     }
 
     constexpr inline std::array<Offset, 4> pawnOffsets{
