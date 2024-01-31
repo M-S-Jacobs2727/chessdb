@@ -68,23 +68,24 @@ namespace ChessGame
 
             case '/':
                 if (col != 8)
-                    throw std::runtime_error("Invalid FEN string");
+                    throw std::runtime_error("Invalid FEN string: wrong number of columns");
                 row++;
                 col = 0;
                 break;
 
             case ' ':
                 complete = true;
+                break;
 
             default:
-                throw std::runtime_error("Invalid FEN string");
+                throw std::runtime_error("Invalid FEN string: invalid character");
             }
             if (complete)
                 break;
         }
 
-        if (i != 63 || row != 7 || col != 8 || numWhiteKings != 1 || numBlackKings != 1)
-            throw std::runtime_error("Invalid FEN string");
+        if (i != 64 || row != 7 || col != 8 || numWhiteKings != 1 || numBlackKings != 1)
+            throw std::runtime_error("Invalid FEN string: end");
     }
 
     std::optional<Piece> Position::get(Square square) const
