@@ -14,6 +14,11 @@ namespace ChessGame
         int file = 0;
         int rank = 0;
 
+        constexpr bool operator==(const Offset &other) const
+        {
+            return (file == other.file) && (rank == other.rank);
+        }
+
         constexpr Offset operator+(const Offset &other) const
         {
             return {
