@@ -1,6 +1,5 @@
 .vscode
 build
-dep
 *.make
 Makefile
 tmp/chessbase-info.html
