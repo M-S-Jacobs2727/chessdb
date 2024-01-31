@@ -46,7 +46,7 @@ namespace ChessGame
         return attackedBy.any();
     }
 
-    constexpr int Attacks::numAttackers(Square square, Color color) const
+    int Attacks::numAttackers(Square square, Color color) const
     {
         auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
         return attackedBy.count();

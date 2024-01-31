@@ -27,11 +27,11 @@ namespace ChessGame
 
         /* Ascertain whether the given square is attacked by pieces of the given color.
          */
-        constexpr bool attacked(Square square, Color color) const;
+        bool attacked(Square square, Color color) const;
 
         /* Ascertain the number of attackers of a given color on the given square.
          */
-        constexpr int numAttackers(Square square, Color color) const;
+        int numAttackers(Square square, Color color) const;
 
         /* To be called within Position::applyMove (at the end). Assumes that the
         referenced position is the new state.

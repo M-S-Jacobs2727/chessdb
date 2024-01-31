@@ -87,7 +87,7 @@ namespace ChessGame
             throw std::runtime_error("Invalid FEN string");
     }
 
-    inline std::optional<Piece> Position::get(Square square) const
+    std::optional<Piece> Position::get(Square square) const
     {
         return m_arr[square.idx()];
     }
@@ -106,7 +106,7 @@ namespace ChessGame
         return p;
     }
 
-    constexpr Square Position::kingSquare(Color color) const
+    Square Position::kingSquare(Color color) const
     {
         for (const auto &[sq, p] : eachSquare())
             if (p && p.value().type == PieceType::King && p.value().color == color)

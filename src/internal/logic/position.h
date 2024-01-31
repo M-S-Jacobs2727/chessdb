@@ -23,7 +23,7 @@ namespace ChessGame
         std::optional<Piece> get(Square square) const;
         std::optional<Piece> put(Square square, Piece piece);
         std::optional<Piece> remove(Square square);
-        constexpr Square kingSquare(Color color) const;
+        Square kingSquare(Color color) const;
         constexpr std::string_view toFEN() const;
         std::vector<Square> getPath(Square fromSquare, Offset direction, bool includePiece) const;
         std::array<std::pair<Square, std::optional<Piece>>, 64> eachSquare() const;
