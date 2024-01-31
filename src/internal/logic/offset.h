@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <optional>
 
 #include "internal/logic/piece.h"
@@ -127,40 +128,34 @@ namespace ChessGame
         return Offset{0, static_cast<int>(color) * 2 - 1};
     }
 
-    constexpr inline std::array<Offset, 4> pawnOffsets{
-        Offset{0, 1},
-        Offset{0, 2},
-        Offset{-1, 1},
-        Offset{1, 1}};
-    constexpr inline std::array<Offset, 2> pawnAttackOffsets{
-        Offset{-1, 1},
-        Offset{1, 1}};
-    constexpr inline std::array<Offset, 8> knightOffsets{
-        Offset{-2, -1},
-        Offset{-1, -2},
-        Offset{1, -2},
-        Offset{2, -1},
-        Offset{2, 1},
-        Offset{1, 2},
-        Offset{-1, 2},
-        Offset{-2, 1}};
-    constexpr inline std::array<Offset, 4> bishopOffsets{
-        Offset{-1, -1},
-        Offset{-1, 1},
-        Offset{1, -1},
-        Offset{1, 1}};
-    constexpr inline std::array<Offset, 4> rookOffsets{
-        Offset{-1, 0},
-        Offset{1, 0},
-        Offset{0, -1},
-        Offset{0, 1}};
-    constexpr inline std::array<Offset, 8> queenKingOffsets{
-        Offset{-1, -1},
-        Offset{-1, 1},
-        Offset{1, -1},
-        Offset{1, 1},
-        Offset{-1, 0},
-        Offset{1, 0},
-        Offset{0, -1},
-        Offset{0, 1}};
+    const inline std::array<Offset, 4> pawnOffsets{{{0, 1},
+                                                    {0, 2},
+                                                    {-1, 1},
+                                                    {1, 1}}};
+    const inline std::array<Offset, 2> pawnAttackOffsets{{{-1, 1},
+                                                          {1, 1}}};
+    const inline std::array<Offset, 8> knightOffsets{{{-2, -1},
+                                                      {-1, -2},
+                                                      {1, -2},
+                                                      {2, -1},
+                                                      {2, 1},
+                                                      {1, 2},
+                                                      {-1, 2},
+                                                      {-2, 1}}};
+    const inline std::array<Offset, 4> bishopOffsets{{{-1, -1},
+                                                      {-1, 1},
+                                                      {1, -1},
+                                                      {1, 1}}};
+    const inline std::array<Offset, 4> rookOffsets{{{-1, 0},
+                                                    {1, 0},
+                                                    {0, -1},
+                                                    {0, 1}}};
+    const inline std::array<Offset, 8> queenKingOffsets{{{-1, -1},
+                                                         {-1, 1},
+                                                         {1, -1},
+                                                         {1, 1},
+                                                         {-1, 0},
+                                                         {1, 0},
+                                                         {0, -1},
+                                                         {0, 1}}};
 }
