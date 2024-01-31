@@ -109,10 +109,16 @@ namespace ChessGame
 
     Square Position::kingSquare(Color color) const
     {
-        for (const auto &[sq, p] : eachSquare())
-            if (p && p.value().type == PieceType::King && p.value().color == color)
-                return sq;
-        throw std::runtime_error("Could not locate king");
+        auto it = std::find(m_arr.begin(), m_arr.end(), Piece{color, PieceType::King});
+        if (it == m_arr.end())
+            throw std::runtime_error("Could not locate king");
+
+        uint32_t idx = static_cast<uint32_t>(it - m_arr.begin());
+        return Square::fromIdx(idx);
+        // for (const auto &[sq, p] : eachSquare())
+        //     if (p && p.value().type == PieceType::King && p.value().color == color)
+        //         return sq;
+        // throw std::runtime_error("Could not locate king");
     }
 
     /*
