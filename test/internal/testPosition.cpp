@@ -145,8 +145,8 @@ TEST(PositionTest, KingSquare)
     EXPECT_EQ(bs.rank, 7);
 
     Position pos2{"8/8/8/k6K/8/8/8/8"};
-    ws = pos.kingSquare(ChessGame::Color::White);
-    bs = pos.kingSquare(ChessGame::Color::Black);
+    ws = pos2.kingSquare(ChessGame::Color::White);
+    bs = pos2.kingSquare(ChessGame::Color::Black);
     EXPECT_EQ(ws.file, 7);
     EXPECT_EQ(ws.rank, 4);
     EXPECT_EQ(bs.file, 0);
@@ -164,16 +164,16 @@ TEST(PositionTest, GetPath)
     ASSERT_EQ(path.size(), 5);
     for (size_t i = 2; i < 7; ++i)
     {
-        EXPECT_EQ(path[0].file, 3);
-        EXPECT_EQ(path[0].rank, i);
+        EXPECT_EQ(path[i - 2].file, 3);
+        EXPECT_EQ(path[i - 2].rank, i);
     }
 
     path = pos.getPath(start, forward, false);
     ASSERT_EQ(path.size(), 4);
     for (size_t i = 2; i < 6; ++i)
     {
-        EXPECT_EQ(path[0].file, 3);
-        EXPECT_EQ(path[0].rank, i);
+        EXPECT_EQ(path[i - 2].file, 3);
+        EXPECT_EQ(path[i - 2].rank, i);
     }
 
     Offset diag{-1, 1};
@@ -183,9 +183,9 @@ TEST(PositionTest, GetPath)
     ASSERT_EQ(path2.size(), 3);
     for (size_t i = 2; i < 5; ++i)
     {
-        EXPECT_EQ(path[0].file, 4 - i);
-        EXPECT_EQ(path[0].rank, i);
-        EXPECT_EQ(path2[0].file, 4 - i);
-        EXPECT_EQ(path2[0].rank, i);
+        EXPECT_EQ(path[i - 2].file, 4 - i);
+        EXPECT_EQ(path[i - 2].rank, i);
+        EXPECT_EQ(path2[i - 2].file, 4 - i);
+        EXPECT_EQ(path2[i - 2].rank, i);
     }
 }
