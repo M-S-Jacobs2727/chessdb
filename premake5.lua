@@ -37,30 +37,30 @@ project "jchess-core"
 
     files {"src/internal/**.cpp", "src/internal/**.h"}
     
-project "jchess-engine"
-    kind "StaticLib"
+-- project "jchess-engine"
+--     kind "StaticLib"
 
-    location(locdir)
-    targetdir "%{prj.location}"
-    objdir "%{prj.location}/obj"
+--     location(locdir)
+--     targetdir "%{prj.location}"
+--     objdir "%{prj.location}/obj"
 
-    links {"jchess-core"}
+--     links {"jchess-core"}
 
-    files {"src/engine/**.cpp", "src/engine/**.h"}
+--     files {"src/engine/**.cpp", "src/engine/**.h"}
     
-project "jchess-database"
-    kind "StaticLib"
+-- project "jchess-database"
+--     kind "StaticLib"
 
-    location(locdir)
-    targetdir "%{prj.location}"
-    objdir "%{prj.location}/obj"
+--     location(locdir)
+--     targetdir "%{prj.location}"
+--     objdir "%{prj.location}/obj"
 
-    pqxxdir = os.findheader("pqxx/pqxx")
-    includedirs({"src", pqxxdir})
+--     pqxxdir = os.findheader("pqxx/pqxx")
+--     includedirs({"src", pqxxdir})
 
-    links {"jchess-core", "pq", "pqxx"}
+--     links {"jchess-core", "pq", "pqxx"}
 
-    files {"src/database/**.cpp", "src/database/**.h"}
+--     files {"src/database/**.cpp", "src/database/**.h"}
 
 -- project "jchess-lib"
 --     kind "StaticLib"
@@ -73,6 +73,16 @@ project "jchess-database"
 
 --     files {"src/interface/**.cpp", "src/interface/**.h"}
 
+project "gtest_main"
+    kind "StaticLib"
+    location "build/dep/gtest_main"
+    targetdir "%{prj.location}"
+    objdir "%{prj.location}/obj"
+
+    srcdir = "dep/googletest/googletest/src/"
+    files({path.join(srcdir, "**.cc"), path.join(srcdir, "**.h")})
+    includedirs({path.join(srcdir, ".."), path.join(srcdir, "../include")})
+
 project "jchess-test"
     kind "ConsoleApp"
 
@@ -80,9 +90,7 @@ project "jchess-test"
     targetdir "%{prj.location}"
     objdir "%{prj.location}/obj"
 
-    gtestdir = os.findheader("gtest/gtest.h")
-    includedirs({"src", gtestdir})
-
-    links {"jchess-core", "jchess-engine", "jchess-database", "gtest_main"}
-
-    files "test/**.cpp"
+    files "test/internal/**.cpp"
+    includedirs {"src", "dep/googletest/googletest/include"}
+    
+    links {"jchess-core", "gtest_main"}
