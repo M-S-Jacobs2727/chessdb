@@ -53,7 +53,7 @@ namespace ChessGame
 
         /// @brief Set up engine for a new game starting at `position`.
         /// @param position An initial starting Position
-        void newGame(const Position &position);
+        void newGame(const Board &position);
 
         /// @brief Update the engine's board position with the given move.
         /// @param move
@@ -62,7 +62,7 @@ namespace ChessGame
         /// @brief Apply a new position to the engine's state.
         /// Note: Do not use for a new game. Call `UCI::newGame(pos)` instead.
         /// @param pos The new position to evaluate.
-        void nextPosition(const Position &pos);
+        void nextPosition(const Board &pos);
 
         void poll();
         eval_t evaluation();
@@ -89,7 +89,7 @@ namespace ChessGame
         bp::child m_engine;
 
         std::vector<std::string> m_header;
-        Position m_initialPosition;
+        Board m_initialPosition;
         std::vector<Move> m_currentMoves;
         Move m_bestMove;
         std::string m_lastLine;

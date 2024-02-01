@@ -14,7 +14,7 @@ namespace ChessGame
     void readPGNHeader(std::istream &input, Game &game);
     void readPGNMoves(std::istream &input, Game &game);
     Move readPGNMove(std::string_view pgnMove,
-                     const Position &pos,
+                     const Board &pos,
                      const std::optional<Square> &enPassant,
                      Color turn);
 } // namespace ChessGame

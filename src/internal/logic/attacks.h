@@ -18,7 +18,7 @@ namespace ChessGame
     {
     public:
         Attacks() = delete;
-        explicit Attacks(std::shared_ptr<Position> pos);
+        explicit Attacks(std::shared_ptr<Board> pos);
 
         /* Retrieve a vector of squares occupied by pieces of the given color attacking
         the given square.
@@ -50,11 +50,11 @@ namespace ChessGame
         void removeAttacker(Square square, Piece piece);
         void addPiece(Square square);
         void removePiece(Square square);
-        std::shared_ptr<Position> getPos() const;
+        std::shared_ptr<Board> getPos() const;
 
     private:
         // board position
-        std::weak_ptr<Position> m_pos;
+        std::weak_ptr<Board> m_pos;
 
         // Squares occupied by white pieces that attack the given square
         AttackerArray m_attackedByWhite;

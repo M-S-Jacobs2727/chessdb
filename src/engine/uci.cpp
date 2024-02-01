@@ -36,7 +36,7 @@ namespace ChessGame
             m_engine.terminate();
     }
 
-    void UCI::nextPosition(const Position &pos)
+    void UCI::nextPosition(const Board &pos)
     {
         m_engOutput << "position " << pos.toFEN() << std::endl;
     }
@@ -82,7 +82,7 @@ namespace ChessGame
         }
     }
 
-    void UCI::newGame(const Position &position)
+    void UCI::newGame(const Board &position)
     {
         m_initialPosition = position;
         m_engOutput << "ucinewgame" << std::endl;

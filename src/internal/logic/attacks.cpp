@@ -5,7 +5,7 @@
 
 namespace ChessGame
 {
-    Attacks::Attacks(std::shared_ptr<Position> pos)
+    Attacks::Attacks(std::shared_ptr<Board> pos)
         : m_pos(pos)
     {
         recompute();
@@ -301,9 +301,9 @@ namespace ChessGame
         }
     }
 
-    std::shared_ptr<Position> Attacks::getPos() const
+    std::shared_ptr<Board> Attacks::getPos() const
     {
-        std::shared_ptr<Position> sp_pos = m_pos.lock();
+        std::shared_ptr<Board> sp_pos = m_pos.lock();
         if (!sp_pos)
             throw std::runtime_error("AttackingPieces could not access Postion");
         return sp_pos;

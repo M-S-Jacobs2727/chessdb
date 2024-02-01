@@ -1,12 +1,12 @@
 #include "internal/logic/attacks.h"
 #include <gtest/gtest.h>
 
-using ChessGame::Attacks, ChessGame::Position;
+using ChessGame::Attacks, ChessGame::Board;
 
 TEST(AttacksTest, BasicAssertions)
 {
-    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
-    auto pos_p = std::make_shared<Position>(pos);
+    Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+    auto pos_p = std::make_shared<Board>(pos);
     Attacks att{pos_p};
 
     {

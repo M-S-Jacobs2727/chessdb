@@ -37,7 +37,7 @@ namespace ChessGame
     }
 
     bool moveDisallowedByCheck(const Move &move,
-                               const Position &pos,
+                               const Board &pos,
                                Square kingSq,
                                Square checkingSq)
     {
@@ -107,7 +107,7 @@ namespace ChessGame
         return false;
     }
 
-    std::unordered_set<Move> candidatePawnMoves(const Position &pos, Square from, Color color)
+    std::unordered_set<Move> candidatePawnMoves(const Board &pos, Square from, Color color)
     {
         std::unordered_set<Move> moves{};
         moves.reserve(4);
@@ -138,7 +138,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::unordered_set<Move> candidateKnightMoves(const Position &pos, Square from, Color color)
+    std::unordered_set<Move> candidateKnightMoves(const Board &pos, Square from, Color color)
     {
         std::unordered_set<Move> moves{};
         moves.reserve(8);
@@ -156,7 +156,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::unordered_set<Move> candidateBishopMoves(const Position &pos, Square from, Color color)
+    std::unordered_set<Move> candidateBishopMoves(const Board &pos, Square from, Color color)
     {
         std::unordered_set<Move> moves{};
         moves.reserve(16);
@@ -175,7 +175,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::unordered_set<Move> candidateRookMoves(const Position &pos, Square from, Color color)
+    std::unordered_set<Move> candidateRookMoves(const Board &pos, Square from, Color color)
     {
         std::unordered_set<Move> moves{};
         moves.reserve(16);
@@ -194,7 +194,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::unordered_set<Move> candidateQueenMoves(const Position &pos, Square from, Color color)
+    std::unordered_set<Move> candidateQueenMoves(const Board &pos, Square from, Color color)
     {
         std::unordered_set<Move> moves{};
         moves.reserve(32);
@@ -213,7 +213,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::unordered_set<Move> candidateKingMoves(const Position &pos, Square from, Color color)
+    std::unordered_set<Move> candidateKingMoves(const Board &pos, Square from, Color color)
     {
         std::unordered_set<Move> moves{};
         moves.reserve(8);
@@ -242,7 +242,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::unordered_set<Move> candidateMoves(const Position &pos, Square square)
+    std::unordered_set<Move> candidateMoves(const Board &pos, Square square)
     {
         if (!pos.get(square))
             return {};
@@ -284,7 +284,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::optional<std::pair<Square, Offset>> getHardPin(const Position &pos, Square square, Color color)
+    std::optional<std::pair<Square, Offset>> getHardPin(const Board &pos, Square square, Color color)
     {
         auto kingSq = pos.kingSquare(color);
         auto offset = difference(square, kingSq);

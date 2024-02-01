@@ -18,7 +18,7 @@ namespace ChessGame
     class State
     {
     public:
-        Position position;
+        Board position;
         uint32_t fullTurnCounter;
         uint32_t halfTurnCounter;
         Color turn;
@@ -26,7 +26,7 @@ namespace ChessGame
         std::optional<Square> enPassant;
 
     private:
-        std::shared_ptr<Position> m_pos;
+        std::shared_ptr<Board> m_pos;
 
     public:
         Attacks attacks;

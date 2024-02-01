@@ -1,7 +1,7 @@
 #include "internal/logic/position.h"
 #include <gtest/gtest.h>
 
-using ChessGame::Position;
+using ChessGame::Board;
 
 TEST(PositionTest, BasicAssertions)
 {
@@ -19,8 +19,8 @@ TEST(PositionTest, BasicAssertions)
         bq{Color::Black, PieceType::Queen},
         bk{Color::Black, PieceType::King};
 
-    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"};
-    Position pos2{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+    Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"};
+    Board pos2{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
 
     for (size_t i = 0; i < 8; ++i)
         for (size_t j = 0; j < 8; ++j)
@@ -116,7 +116,7 @@ TEST(PositionTest, PutRemove)
         br{Color::Black, PieceType::Rook},
         bq{Color::Black, PieceType::Queen},
         bk{Color::Black, PieceType::King};
-    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+    Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
 
     EXPECT_FALSE(pos.remove({0, 3}));
 
@@ -136,7 +136,7 @@ TEST(PositionTest, PutRemove)
 
 TEST(PositionTest, KingSquare)
 {
-    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+    Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     ChessGame::Square ws = pos.kingSquare(ChessGame::Color::White),
                       bs = pos.kingSquare(ChessGame::Color::Black);
     EXPECT_EQ(ws.file, 4);
@@ -144,7 +144,7 @@ TEST(PositionTest, KingSquare)
     EXPECT_EQ(bs.file, 4);
     EXPECT_EQ(bs.rank, 7);
 
-    Position pos2{"8/8/8/k6K/8/8/8/8"};
+    Board pos2{"8/8/8/k6K/8/8/8/8"};
     ws = pos2.kingSquare(ChessGame::Color::White);
     bs = pos2.kingSquare(ChessGame::Color::Black);
     EXPECT_EQ(ws.file, 7);
@@ -156,7 +156,7 @@ TEST(PositionTest, KingSquare)
 TEST(PositionTest, GetPath)
 {
     using ChessGame::Offset, ChessGame::Square;
-    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
+    Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     Square start{3, 1};
     Offset forward{0, 1};
     auto path = pos.getPath(start, forward, true);

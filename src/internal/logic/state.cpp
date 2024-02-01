@@ -26,7 +26,7 @@ namespace ChessGame
         {'g', PieceType::Pawn},
         {'h', PieceType::Pawn}};
 
-    Square computeFromSquare(Square to, Piece piece, const Position &pos, std::string_view partialFrom)
+    Square computeFromSquare(Square to, Piece piece, const Board &pos, std::string_view partialFrom)
     {
         if (partialFrom.size() == 2)
             return Square(partialFrom);
@@ -151,7 +151,7 @@ namespace ChessGame
     }
 
     Move interpretPGNMove(std::string_view pgnMove,
-                          const Position &previousPos,
+                          const Board &previousPos,
                           Color turn)
     {
         Move move;
@@ -203,7 +203,7 @@ namespace ChessGame
     }
 
     State::State(std::string_view fenString)
-        : position(fenString), m_pos(std::shared_ptr<Position>(&position)), attacks(m_pos)
+        : position(fenString), m_pos(std::shared_ptr<Board>(&position)), attacks(m_pos)
     {
         std::istringstream iss{fenString.data()};
         std::string str;

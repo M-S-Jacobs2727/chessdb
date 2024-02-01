@@ -61,7 +61,7 @@ namespace ChessGame
         return moves;
     }
 
-    blob positionToBlob(const Position &position)
+    blob positionToBlob(const Board &position)
     {
         blob blob;
         blob.reserve(32);
@@ -78,9 +78,9 @@ namespace ChessGame
         return blob;
     }
 
-    Position blobToPosition(const blob &posBlob)
+    Board blobToPosition(const blob &posBlob)
     {
-        Position pos;
+        Board pos;
         for (size_t i = 0; i < 32; ++i)
         {
             const auto &bits = posBlob[i];
