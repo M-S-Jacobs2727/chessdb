@@ -5,7 +5,7 @@ using ChessGame::Attacks, ChessGame::Position;
 
 TEST(AttacksTest, BasicAssertions)
 {
-    Position pos{""};
+    Position pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     auto pos_p = std::make_shared<Position>(pos);
     Attacks att{pos_p};
 
@@ -15,13 +15,13 @@ TEST(AttacksTest, BasicAssertions)
         for (size_t i = 0; i < 8; ++i)
         {
             auto num = att.numAttackers({i, 0}, ChessGame::Color::White);
-            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers in rank 1.";
+            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "1.";
             num = att.numAttackers({i, 0}, ChessGame::Color::Black);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 1.";
+            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "1.";
             num = att.numAttackers({i, 7}, ChessGame::Color::White);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 8.";
+            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "8.";
             num = att.numAttackers({i, 7}, ChessGame::Color::Black);
-            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers in rank 8.";
+            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "8.";
         }
     }
     {
@@ -30,13 +30,13 @@ TEST(AttacksTest, BasicAssertions)
         for (size_t i = 0; i < 8; ++i)
         {
             auto num = att.numAttackers({i, 1}, ChessGame::Color::White);
-            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers in rank 2.";
+            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "2.";
             num = att.numAttackers({i, 1}, ChessGame::Color::Black);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 2.";
+            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "2.";
             num = att.numAttackers({i, 6}, ChessGame::Color::White);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 7.";
+            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "7.";
             num = att.numAttackers({i, 6}, ChessGame::Color::Black);
-            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers in rank 7.";
+            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "7.";
         }
     }
     {
@@ -45,24 +45,24 @@ TEST(AttacksTest, BasicAssertions)
         for (size_t i = 0; i < 8; ++i)
         {
             auto num = att.numAttackers({i, 2}, ChessGame::Color::White);
-            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers in rank 3.";
+            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "3.";
             num = att.numAttackers({i, 2}, ChessGame::Color::Black);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 3.";
+            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "3.";
             num = att.numAttackers({i, 5}, ChessGame::Color::White);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 6.";
+            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "6.";
             num = att.numAttackers({i, 5}, ChessGame::Color::Black);
-            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers in rank 6.";
+            EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "6.";
         }
     }
     for (size_t i = 0; i < 8; ++i)
     {
         auto num = att.numAttackers({i, 3}, ChessGame::Color::White);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 4.";
-        auto num = att.numAttackers({i, 3}, ChessGame::Color::Black);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 4.";
-        auto num = att.numAttackers({i, 4}, ChessGame::Color::White);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 5.";
-        auto num = att.numAttackers({i, 4}, ChessGame::Color::Black);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers in rank 5.";
+        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "4.";
+        num = att.numAttackers({i, 3}, ChessGame::Color::Black);
+        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "4.";
+        num = att.numAttackers({i, 4}, ChessGame::Color::White);
+        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "5.";
+        num = att.numAttackers({i, 4}, ChessGame::Color::Black);
+        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "5.";
     }
 }
