@@ -18,6 +18,28 @@ namespace ChessGame
             KING,
         };
 
+        class Rights
+        {
+        public:
+            Rights() = default;
+            explicit Rights(std::string_view fenStringRights);
+            constexpr void reset(bool val = true);
+            constexpr void remove(Color color, Side side);
+            constexpr void remove(Color color);
+            constexpr bool get(Color color, Side side) const;
+            constexpr std::string str() const;
+
+        private:
+            constexpr inline int idx(Color color, Side side) const;
+            std::array<bool, 4> m_rights = {true, true, true, true};
+            std::unordered_map<char, size_t> m_fenMap = {
+                {'K', 0},
+                {'Q', 1},
+                {'k', 2},
+                {'q', 3},
+            };
+        };
+
         constexpr uint32_t rookFromFile(const Side side)
         {
             // QS/0 -> 0
@@ -39,91 +61,19 @@ namespace ChessGame
             return 4u * static_cast<uint32_t>(side) + 2u;
         }
 
-        struct Castle
+        constexpr Square rookFromSquare(const Color color, const Side side)
         {
-            Color color;
-            Side side;
-        };
-
-        constexpr Square rookFromSquare(const Castle castle)
-        {
-            return Square{rookFromFile(castle.side), homeRank(castle.color)};
+            return Square{rookFromFile(side), homeRank(color)};
         }
 
-        constexpr Square rookToSquare(const Castle castle)
+        constexpr Square rookToSquare(const Color color, const Side side)
         {
-            return Square{rookToFile(castle.side), homeRank(castle.color)};
+            return Square{rookToFile(side), homeRank(color)};
         }
 
-        constexpr Square kingToSquare(const Castle castle)
+        constexpr Square kingToSquare(const Color color, const Side side)
         {
-            return Square{kingToFile(castle.side), homeRank(castle.color)};
+            return Square{kingToFile(side), homeRank(color)};
         }
-
-        class Rights
-        {
-        public:
-            Rights() = default;
-            explicit Rights(std::string_view fenStringRights)
-            {
-                reset(false);
-                if (fenStringRights == "-")
-                    return;
-                for (const auto &c : fenStringRights)
-                {
-                    auto it = m_fenMap.find(c);
-                    if (it == m_fenMap.end())
-                        throw std::runtime_error("Invalid FEN castle string");
-                    m_rights[(*it).second] = true;
-                }
-            }
-            // constexpr void set(Color color, Side side, bool val = true)
-            // {
-            //     m_rights[idx(color, side)] = val;
-            // }
-            constexpr void reset(bool val = true)
-            {
-                m_rights.fill(val);
-            }
-            constexpr void remove(Castle castle)
-            {
-                m_rights[idx(castle.color, castle.side)] = false;
-            }
-            constexpr void remove(Color color)
-            {
-                m_rights[idx(color, Side::QUEEN)] = false;
-                m_rights[idx(color, Side::KING)] = false;
-            }
-            constexpr bool get(Color color, Side side) const
-            {
-                return m_rights[idx(color, side)];
-            }
-            constexpr std::string str() const
-            {
-                const char r[] = "KQkq";
-                std::string out{""};
-                for (size_t i = 0; i < 4; ++i)
-                    if (m_rights[i])
-                        out += r[i];
-
-                if (out.empty())
-                    out += '-';
-
-                return out;
-            }
-
-        private:
-            constexpr inline int idx(Color color, Side side) const
-            {
-                return 2 * static_cast<int>(color) - static_cast<int>(side) + 1;
-            }
-            std::array<bool, 4> m_rights = {true, true, true, true};
-            std::unordered_map<char, size_t> m_fenMap = {
-                {'K', 0},
-                {'Q', 1},
-                {'k', 2},
-                {'q', 3},
-            };
-        };
     }
 }
