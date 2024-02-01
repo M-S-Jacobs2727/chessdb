@@ -37,7 +37,7 @@ namespace ChessGame
         referenced position is the new state.
          * Note: I would like to restrict access to this method exclusively to
          * `Position::applyMove` if possible, e.g., via friend specification, but I can't
-         * figure it out. Also, it's useful for testing.
+         * figure it out. But it's also useful for testing.
          */
         void applyMove(const Move &move);
 
