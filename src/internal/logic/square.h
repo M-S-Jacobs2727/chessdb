@@ -16,19 +16,7 @@ namespace ChessGame
         constexpr Square(uint8_t file, uint8_t rank)
             : file(file), rank(rank) {}
         explicit Square(const std::string_view &str)
-            : file(str[0] - 'a'), rank(str[1] - '1')
-        {
-            if (!valid())
-                throw std::runtime_error("Invalid Square");
-        }
-
-        constexpr static Square fromIdx(uint32_t idx)
-        {
-            if (idx >= 64)
-                throw std::runtime_error("Invalid idx");
-            uint32_t q = idx / 8, r = idx % 8;
-            return Square{r, 7 - q};
-        }
+            : file(str[0] - 'a'), rank(str[1] - '1') {}
 
         constexpr inline bool operator==(const Square &other) const
         {
@@ -40,14 +28,6 @@ namespace ChessGame
             s[0] += file; // 0->a, 7->h
             s[1] += rank; // 0->1, 7->8
             return s;
-        }
-        constexpr inline bool valid() const
-        {
-            return file <= 7 && rank <= 7;
-        }
-        constexpr inline uint8_t idx() const
-        {
-            return (7 - rank) * 8 + file;
         }
     };
 
