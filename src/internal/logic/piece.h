@@ -4,6 +4,8 @@
 #include <optional>
 #include <string_view>
 
+#include "internal/logic/color.h"
+
 namespace ChessGame
 {
     enum class PieceType
@@ -16,12 +18,6 @@ namespace ChessGame
         King,
     };
 
-    enum class Color
-    {
-        White,
-        Black,
-    };
-
     struct Piece
     {
         Color color;
@@ -31,11 +27,6 @@ namespace ChessGame
             return type == other.type && color == other.color;
         }
     };
-
-    constexpr inline Color oppositeColor(const Color color)
-    {
-        return static_cast<Color>(1 - static_cast<int>(color));
-    }
 
     PieceType readPGNPieceType(std::string_view moveStr);
     std::string_view toPGN(const PieceType pt);
