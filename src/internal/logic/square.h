@@ -1,33 +1,22 @@
 #pragma once
 
 #include <cstdint>
-#include <stdexcept>
-#include <string>
-#include <string_view>
+#include <functional>
 
 namespace ChessGame
 {
     struct Square
     {
-        uint8_t file = 0; // 0->a, 7->h
-        uint8_t rank = 0; // 0->1, 7->8
+        uint32_t file = 0; // 0->a, 7->h
+        uint32_t rank = 0; // 0->1, 7->8
 
         constexpr Square() = default;
-        constexpr Square(uint8_t file, uint8_t rank)
+        constexpr Square(uint32_t file, uint32_t rank)
             : file(file), rank(rank) {}
-        explicit Square(const std::string_view &str)
-            : file(str[0] - 'a'), rank(str[1] - '1') {}
 
         constexpr inline bool operator==(const Square &other) const
         {
             return (file == other.file) && (rank == other.rank);
-        }
-        std::string str() const
-        {
-            std::string s{"a1"};
-            s[0] += file; // 0->a, 7->h
-            s[1] += rank; // 0->1, 7->8
-            return s;
         }
     };
 
