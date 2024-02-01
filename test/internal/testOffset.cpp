@@ -71,12 +71,12 @@ TEST(OffsetTest, Norm)
     EXPECT_EQ(offset.file, 1);
     EXPECT_EQ(offset.rank, -1);
 
-    Offset offset2{5, 0};
+    offset = {5, 0};
     EXPECT_TRUE(offset.norm());
     EXPECT_EQ(offset.file, 1);
     EXPECT_EQ(offset.rank, 0);
 
-    Offset offset3{5, 1};
+    offset = {5, 1};
     EXPECT_FALSE(offset.norm());
     EXPECT_EQ(offset.file, 5);
     EXPECT_EQ(offset.rank, 1);

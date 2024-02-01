@@ -23,7 +23,7 @@ TEST(SquareTest, Constructors)
     Square sq2("b2"sv);
     EXPECT_EQ(sq, sq2);
 
-    Square sq3 = Square::fromIdx(56);
+    Square sq3 = Square::fromIdx(49);
     EXPECT_EQ(sq, sq3);
 }
 
@@ -43,9 +43,11 @@ TEST(SquareTest, Validity)
     Square sq{8, 1};
     EXPECT_FALSE(sq.valid());
 
-    Square sq2{100, 100};
+    sq.file = 100;
+    sq.rank = 100;
     EXPECT_FALSE(sq.valid());
 
-    Square sq3{7, 7};
+    sq.file = 7;
+    sq.rank = 7;
     EXPECT_TRUE(sq.valid());
 }
