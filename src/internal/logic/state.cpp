@@ -26,54 +26,6 @@ namespace ChessGame
         {'g', PieceType::Pawn},
         {'h', PieceType::Pawn}};
 
-    Move interpretPGNMove(std::string_view pgnMove,
-                          const Position &previousPos,
-                          Color turn)
-    {
-        Move move;
-
-        move.piece.color = turn;
-        move.piece.type = PGNPieceType.at(pgnMove[0]);
-
-        std::cmatch match;
-        std::regex move_string_regex(R"(([KQRBN])?([a-h]?[1-8]?)(x)?([a-h][1-8])(?:=([QRBN]))?([+#])?([!?]{1,2})?)");
-        std::regex castle_regex(R"(O-O(-O)?([+#])?([!?]{1,2})?)");
-
-        if (std::regex_match(pgnMove.data(), match, move_string_regex))
-        {
-            move.to = Square(match[4].str());
-            move.from = computeFromSquare(move.to, move.piece, previousPos, match[2].str());
-
-            if (match[3].matched)
-            {
-                if (move.piece.type == PieceType::Pawn && !previousPos.get(move.to))
-                {
-                    move.capture = PieceType::Pawn;
-                    move.enPassant = true;
-                }
-                else
-                    move.capture = previousPos.get(move.to).value().type;
-            }
-
-            if (match[5].matched)
-                move.promotion = PGNPieceType.at(match[5].str()[0]);
-        }
-        else if (std::regex_match(pgnMove.data(), match, castle_regex))
-        {
-            move.castle = (match[1].str().empty()) ? Castling::Side::KING : Castling::Side::QUEEN;
-            move.from.rank = homeRank(turn);
-            move.to.rank = move.from.rank;
-            move.from.file = 4;
-            move.to.file = kingToFile(move.castle.value());
-        }
-        else
-        {
-            throw std::runtime_error("Invalid PGN move string");
-        }
-
-        return move;
-    }
-
     Square computeFromSquare(Square to, Piece piece, const Position &pos, std::string_view partialFrom)
     {
         if (partialFrom.size() == 2)
@@ -196,6 +148,54 @@ namespace ChessGame
                     return candidate;
             throw std::runtime_error("Could not identify which square the piece moved from");
         }
+    }
+
+    Move interpretPGNMove(std::string_view pgnMove,
+                          const Position &previousPos,
+                          Color turn)
+    {
+        Move move;
+
+        move.piece.color = turn;
+        move.piece.type = PGNPieceType.at(pgnMove[0]);
+
+        std::cmatch match;
+        std::regex move_string_regex(R"(([KQRBN])?([a-h]?[1-8]?)(x)?([a-h][1-8])(?:=([QRBN]))?([+#])?([!?]{1,2})?)");
+        std::regex castle_regex(R"(O-O(-O)?([+#])?([!?]{1,2})?)");
+
+        if (std::regex_match(pgnMove.data(), match, move_string_regex))
+        {
+            move.to = Square(match[4].str());
+            move.from = computeFromSquare(move.to, move.piece, previousPos, match[2].str());
+
+            if (match[3].matched)
+            {
+                if (move.piece.type == PieceType::Pawn && !previousPos.get(move.to))
+                {
+                    move.capture = PieceType::Pawn;
+                    move.enPassant = true;
+                }
+                else
+                    move.capture = previousPos.get(move.to).value().type;
+            }
+
+            if (match[5].matched)
+                move.promotion = PGNPieceType.at(match[5].str()[0]);
+        }
+        else if (std::regex_match(pgnMove.data(), match, castle_regex))
+        {
+            move.castle = (match[1].str().empty()) ? Castling::Side::KING : Castling::Side::QUEEN;
+            move.from.rank = homeRank(turn);
+            move.to.rank = move.from.rank;
+            move.from.file = 4;
+            move.to.file = kingToFile(move.castle.value());
+        }
+        else
+        {
+            throw std::runtime_error("Invalid PGN move string");
+        }
+
+        return move;
     }
 
     Move interpretUCIMove(std::string_view uciMove, const State &state)
