@@ -46,7 +46,7 @@ namespace ChessGame
         return attackedBy.any();
     }
 
-    int Attacks::numAttackers(Square square, Color color) const
+    size_t Attacks::numAttackers(Square square, Color color) const
     {
         auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
         return attackedBy.count();
@@ -102,7 +102,7 @@ namespace ChessGame
         case PieceType::Pawn:
             for (auto offset : pawnAttackOffsets)
             {
-                if (piece.color == Color::White)
+                if (piece.color == Color::Black)
                     offset.rank *= -1;
                 maybeSq = offset(square);
                 if (maybeSq)

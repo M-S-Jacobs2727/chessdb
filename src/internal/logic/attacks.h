@@ -31,7 +31,7 @@ namespace ChessGame
 
         /* Ascertain the number of attackers of a given color on the given square.
          */
-        int numAttackers(Square square, Color color) const;
+        size_t numAttackers(Square square, Color color) const;
 
         /* To be called within Position::applyMove (at the end). Assumes that the
         referenced position is the new state.
