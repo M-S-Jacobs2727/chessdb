@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <stdexcept>
+#include <string>
 #include <string_view>
 
 namespace ChessGame
@@ -13,11 +14,7 @@ namespace ChessGame
 
         constexpr Square() = default;
         constexpr Square(uint8_t file, uint8_t rank)
-            : file(file), rank(rank)
-        {
-            if (!valid())
-                throw std::runtime_error("Invalid Square");
-        }
+            : file(file), rank(rank) {}
         explicit Square(const std::string_view &str)
             : file(str[0] - 'a'), rank(str[1] - '1')
         {
@@ -37,12 +34,12 @@ namespace ChessGame
         {
             return (file == other.file) && (rank == other.rank);
         }
-        std::string_view str() const
+        std::string str() const
         {
-            char s[3] = "a1";
+            std::string s{"a1"};
             s[0] += file; // 0->a, 7->h
             s[1] += rank; // 0->1, 7->8
-            return std::string_view(s);
+            return s;
         }
         constexpr inline bool valid() const
         {
