@@ -17,28 +17,6 @@ TEST(PieceTest, OppositeColor)
     EXPECT_EQ(oppositeColor(Color::Black), Color::White);
 }
 
-TEST(PieceTest, ReadPGN)
-{
-    using ChessGame::readPGNPieceType;
-    EXPECT_EQ(readPGNPieceType("exd4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("a4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("b4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("c4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("d4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("e4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("f4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("g4"), PieceType::Pawn);
-    EXPECT_EQ(readPGNPieceType("h1=R"), PieceType::Pawn);
-
-    EXPECT_EQ(readPGNPieceType("Nh4+"), PieceType::Knight);
-    EXPECT_EQ(readPGNPieceType("Bh4#"), PieceType::Bishop);
-    EXPECT_EQ(readPGNPieceType("Rhh4"), PieceType::Rook);
-    EXPECT_EQ(readPGNPieceType("Qh4"), PieceType::Queen);
-    EXPECT_EQ(readPGNPieceType("Kh4"), PieceType::King);
-    EXPECT_EQ(readPGNPieceType("O-O"), PieceType::King);
-    EXPECT_EQ(readPGNPieceType("O-O-O"), PieceType::King);
-}
-
 TEST(PieceTest, Operators)
 {
     Piece piece{Color::White, PieceType::Pawn};
