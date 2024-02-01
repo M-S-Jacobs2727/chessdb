@@ -1,13 +1,29 @@
 #include "engine/uci.h"
 
+#include "uci.h"
 #include <chrono>
 #include <sstream>
 
 namespace ChessGame
 {
     UCI::UCI(std::string_view enginePath)
+        : m_engine(bp::child(enginePath,
+                             (bp::std_err & bp::std_out) > m_engInput,
+                             bp::std_in < m_engOutput)),
+          m_engInput(), m_engOutput(), m_initialPosition(initFEN)
     {
-        loadEngine(enginePath);
+        using namespace std::chrono_literals;
+
+        m_readDelay = 10ms;
+
+        std::string line;
+        m_header.reserve(24);
+
+        m_engOutput << "uci" << std::endl;
+        while (running() &&
+               std::getline(m_engInput, line) &&
+               line != "uciok")
+            m_header.push_back(line);
     }
 
     UCI::~UCI()
@@ -16,12 +32,18 @@ namespace ChessGame
         stop();
         m_engOutput << "quit" << std::endl;
 
-        m_engine.wait_for(1s);
+        if (!m_engine.wait_for(1s))
+            m_engine.terminate();
+    }
+
+    void UCI::nextPosition(const Position &pos)
+    {
+        m_engOutput << "position " << pos.toFEN() << std::endl;
     }
 
     void UCI::poll()
     {
-        auto ret = expect("", 0.2);
+        auto ret = expect("", 0.2f);
         m_lastLine = ret.value_or(m_lastLine);
 
         parse(m_lastLine);
@@ -38,6 +60,9 @@ namespace ChessGame
         while (is && !word.empty())
         {
             is >> word;
+            if (word == "string")
+                return;
+
             if (word == "score")
             {
                 is >> word;
@@ -57,30 +82,12 @@ namespace ChessGame
         }
     }
 
-    void UCI::init()
-    {
-        std::string line;
-        m_header.reserve(24);
-
-        m_engOutput << "uci" << std::endl;
-        while (running() && std::getline(m_engInput, line) && line != "uciok")
-            m_header.push_back(line);
-
-        setOptions();
-
-        newGame();
-    }
-
     void UCI::newGame(const Position &position)
     {
         m_initialPosition = position;
         m_engOutput << "ucinewgame" << std::endl;
 
-        std::string line;
-        m_engOutput << "isready" << std::endl;
-        std::getline(m_engInput, line);
-        if (line != "readyok")
-            throw std::runtime_error("Engine failure");
+        checkReady();
 
         m_engOutput << "position " << position.toFEN() << std::endl;
     }
@@ -100,9 +107,17 @@ namespace ChessGame
         m_lastLine.clear();
     }
 
-    std::optional<std::string_view> UCI::expect(std::string_view token, float withinSeconds)
+    void UCI::checkReady()
     {
-        if (withinSeconds <= 0.0f)
+        m_engOutput << "isready" << std::endl;
+        auto line = readline();
+        if (!line || line.value() != "readyok")
+            throw std::runtime_error("Engine failure");
+    }
+
+    std::optional<std::string_view> UCI::expect(std::string_view token, float withinMilliseconds)
+    {
+        if (withinMilliseconds <= 0.0f)
             throw std::runtime_error("Invalid number of seconds");
 
         std::future fut = std::async(std::launch::async, [&]()
@@ -110,7 +125,7 @@ namespace ChessGame
                                       std::getline(this->m_engInput, line);
                                       return line; });
 
-        auto res = fut.wait_for(std::chrono::duration<float>(withinSeconds));
+        auto res = fut.wait_for(std::chrono::duration<float>(withinMilliseconds));
         if (res == std::future_status::ready)
         {
             auto str = fut.get();
@@ -122,6 +137,7 @@ namespace ChessGame
 
     void UCI::stop()
     {
+        m_engOutput << "stop" << std::endl;
     }
 
     inline bool UCI::running()
@@ -129,11 +145,21 @@ namespace ChessGame
         return m_engine.running();
     }
 
-    void UCI::loadEngine(std::string_view enginePath)
+    void UCI::kill()
     {
-        m_engine = bp::child(enginePath,
-                             (bp::std_err & bp::std_out) > m_engInput,
-                             bp::std_in < m_engOutput);
+        m_engine.terminate();
     }
 
+    std::optional<std::string> UCI::readline()
+    {
+        std::future fut = std::async(std::launch::async, [&]()
+                                     {std::string line;
+                                      std::getline(this->m_engInput, line);
+                                      return line; });
+        auto status = fut.wait_for(m_readDelay);
+        if (status != std::future_status::ready)
+            return std::nullopt;
+
+        return fut.get();
+    }
 } // namespace ChessGame
