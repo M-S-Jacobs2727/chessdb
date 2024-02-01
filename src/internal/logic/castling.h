@@ -71,9 +71,10 @@ namespace ChessGame
                     return;
                 for (const auto &c : fenStringRights)
                 {
-                    if (m_fenMap.find(c) == m_fenMap.end())
+                    auto it = m_fenMap.find(c);
+                    if (it == m_fenMap.end())
                         throw std::runtime_error("Invalid FEN castle string");
-                    m_rights[m_fenMap.at(c)] = true;
+                    m_rights[(*it).second] = true;
                 }
             }
             // constexpr void set(Color color, Side side, bool val = true)
@@ -82,7 +83,7 @@ namespace ChessGame
             // }
             constexpr void reset(bool val = true)
             {
-                m_rights = {val, val, val, val};
+                m_rights.fill(val);
             }
             constexpr void remove(Castle castle)
             {
@@ -99,7 +100,7 @@ namespace ChessGame
             }
             constexpr std::string str() const
             {
-                std::string_view r{"KQkq"};
+                const char r[] = "KQkq";
                 std::string out{""};
                 for (size_t i = 0; i < 4; ++i)
                     if (m_rights[i])
@@ -114,14 +115,14 @@ namespace ChessGame
         private:
             constexpr inline int idx(Color color, Side side) const
             {
-                return 2 * static_cast<int>(color) + static_cast<int>(side);
+                return 2 * static_cast<int>(color) - static_cast<int>(side) + 1;
             }
             std::array<bool, 4> m_rights = {true, true, true, true};
             std::unordered_map<char, size_t> m_fenMap = {
                 {'K', 0},
                 {'Q', 1},
                 {'k', 2},
-                {'1', 3},
+                {'q', 3},
             };
         };
     }
