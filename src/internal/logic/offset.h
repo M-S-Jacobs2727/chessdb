@@ -99,13 +99,17 @@ namespace ChessGame
         {
             if (isLateral())
             {
-                (*this) /= MAX(abs(file), abs(rank));
+                auto val = MAX(abs(file), abs(rank));
+                file /= val;
+                rank /= val;
                 return true;
             }
 
             if (isDiagonal())
             {
-                (*this) /= abs(file);
+                auto val = abs(file);
+                file /= val;
+                rank /= val;
                 return true;
             }
 
