@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <functional>
 
+#include "internal/logic/offset.h"
+
 namespace ChessGame
 {
     struct Square
@@ -18,8 +20,34 @@ namespace ChessGame
         {
             return (file == other.file) && (rank == other.rank);
         }
-    };
 
+        constexpr void operator+=(Offset offset)
+        {
+            file += offset.file;
+            rank += offset.rank;
+        }
+
+        constexpr void operator-=(Offset offset)
+        {
+            file -= offset.file;
+            rank -= offset.rank;
+        }
+
+        constexpr Square operator+(Offset offset)
+        {
+            return Square{file + offset.file, rank + offset.rank};
+        }
+
+        constexpr Square operator-(Offset offset)
+        {
+            return (*this) + (-offset);
+        }
+
+        constexpr Offset operator-(Square other)
+        {
+            return Offset{file - other.file, rank - other.rank};
+        }
+    };
 } // namespace ChessGame
 
 template <>

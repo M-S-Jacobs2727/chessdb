@@ -109,23 +109,17 @@ namespace ChessGame
         }
     };
 
-    constexpr Offset difference(Square from, Square to)
-    {
-        return Offset{to.file - from.file, to.rank - from.rank};
-    }
-
-    constexpr inline Offset forward(Color color)
-    {
-        return Offset{0, static_cast<int>(color) * -2 + 1};
-    }
-
-    constexpr inline Offset backward(Color color)
-    {
-        return Offset{0, static_cast<int>(color) * 2 - 1};
-    }
-
     namespace Offsets
     {
+        constexpr inline Offset forward(Color color)
+        {
+            return Offset{0, static_cast<int>(color) * -2 + 1};
+        }
+
+        constexpr inline Offset backward(Color color)
+        {
+            return Offset{0, static_cast<int>(color) * 2 - 1};
+        }
 
         const inline std::array<Offset, 4> pawn{{{0, 1},
                                                  {0, 2},
