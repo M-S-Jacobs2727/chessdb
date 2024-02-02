@@ -2,6 +2,8 @@
 
 #include <array>
 #include <optional>
+#include <ostream>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -70,6 +72,9 @@ namespace ChessGame
         static constexpr Square rookFromSquare(Color color, Castling::Side side);
         static constexpr Square rookToSquare(Color color, Castling::Side side);
         static constexpr Square kingToSquare(Color color, Castling::Side side);
+
+        friend std::ostream &FEN::operator<<(std::ostream &, const Board &);
+        friend constexpr std::string FEN::str(const Board &board);
 
     private:
         std::array<Occupant, 64> m_arr;

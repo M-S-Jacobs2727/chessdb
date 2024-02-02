@@ -25,7 +25,9 @@ namespace ChessGame::Castling
         constexpr void remove(Color color, Side side);
         constexpr void remove(Color color);
         constexpr bool get(Color color, Side side) const;
-        constexpr std::string str() const;
+        constexpr const std::array<bool, 4> &get() const;
+
+        friend constexpr std::string FEN::str(const Rights &rights);
 
     private:
         constexpr inline int idx(Color color, Side side) const;

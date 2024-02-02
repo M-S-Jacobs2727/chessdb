@@ -39,18 +39,9 @@ namespace ChessGame::Castling
         return m_rights[idx(color, side)];
     }
 
-    constexpr std::string Rights::str() const
+    constexpr const std::array<bool, 4> &Rights::get() const
     {
-        const char r[] = "KQkq";
-        std::string out{""};
-        for (size_t i = 0; i < 4; ++i)
-            if (m_rights[i])
-                out += r[i];
-
-        if (out.empty())
-            out += '-';
-
-        return out;
+        return m_rights;
     }
 
     constexpr int Rights::idx(Color color, Side side) const

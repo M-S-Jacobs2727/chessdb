@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <ostream>
+#include <string>
 
 #include "core/attacks.h"
 #include "core/board.h"
@@ -30,5 +32,8 @@ namespace ChessGame
         /// @brief Applies a move to the board state
         /// @param move
         void applyMove(const Move &move);
+
+        friend std::ostream &FEN::operator<<(std::ostream &, const State &);
+        friend constexpr std::string FEN::str(const State &state);
     };
 } // namespace ChessGame
