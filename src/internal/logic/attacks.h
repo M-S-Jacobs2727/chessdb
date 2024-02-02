@@ -34,7 +34,7 @@ namespace ChessGame
         size_t numAttackers(Square square, Color color) const;
 
         /* To be called within Position::applyMove (at the end). Assumes that the
-        referenced position is the new state.
+        referenced board is the new state.
          * Note: I would like to restrict access to this method exclusively to
          * `Position::applyMove` if possible, e.g., via friend specification, but I can't
          * figure it out. But it's also useful for testing.
@@ -53,7 +53,7 @@ namespace ChessGame
         std::shared_ptr<Board> getBoard() const;
 
     private:
-        // board position
+        // board pointer
         std::weak_ptr<Board> m_board_ptr;
 
         // Squares occupied by white pieces that attack the given square
