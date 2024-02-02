@@ -33,17 +33,17 @@ namespace ChessGame
             rank -= offset.rank;
         }
 
-        constexpr Square operator+(Offset offset)
+        constexpr Square operator+(Offset offset) const
         {
             return Square{file + offset.file, rank + offset.rank};
         }
 
-        constexpr Square operator-(Offset offset)
+        constexpr Square operator-(Offset offset) const
         {
             return (*this) + (-offset);
         }
 
-        constexpr Offset operator-(Square other)
+        constexpr Offset operator-(Square other) const
         {
             return Offset{file - other.file, rank - other.rank};
         }

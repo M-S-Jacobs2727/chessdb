@@ -74,7 +74,7 @@ namespace ChessGame
 
         if (move.enPassant)
         {
-            Square capturedPawnSq = backward(activeColor)(move.to).value();
+            Square capturedPawnSq = move.to + Offsets::backward(activeColor);
             removePiece(capturedPawnSq);
             removeAttacker(capturedPawnSq, Piece{otherColor, PieceType::Pawn});
         }
