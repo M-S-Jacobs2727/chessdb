@@ -1,4 +1,5 @@
 #include <array>
+#include <ranges>
 
 #include "internal/logic/attacks.h"
 #include "internal/logic/offset.h"
@@ -22,9 +23,9 @@ namespace ChessGame
 
         auto pos = getBoard();
 
-        for (const auto &[sq, occupant] : pos->eachSquare())
+        for (const auto &[sq, occupant] : std::views::zip(pos->eachSquare(), pos->eachOccupant()))
             if (occupant)
-                addAttacker(sq, occupant.value());
+                addAttacker(sq, static_cast<Piece>(occupant));
     }
 
     std::vector<Square> Attacks::attackers(Square square, Color color) const
