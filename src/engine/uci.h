@@ -7,9 +7,9 @@
 
 #include <boost/process.hpp>
 
-#include "internal/annotation/evaluation.h"
-#include "internal/logic/move.h"
-#include "internal/logic/position.h"
+#include "annotation/evaluation.h"
+#include "core/board.h"
+#include "core/move.h"
 
 namespace ChessGame
 {
@@ -65,7 +65,7 @@ namespace ChessGame
         void nextPosition(const Board &pos);
 
         void poll();
-        eval_t evaluation();
+        Evaluation evaluation();
         Move bestMove();
         void stop();
         void start();

@@ -1,6 +1,5 @@
 #include "engine/uci.h"
 
-#include "uci.h"
 #include <chrono>
 #include <sstream>
 
