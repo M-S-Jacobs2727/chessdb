@@ -1,4 +1,5 @@
-#include "internal/logic/offset.h"
+#include "core/offset.h"
+#include "core/square.h"
 #include <gtest/gtest.h>
 
 using ChessGame::Offset;
@@ -86,36 +87,29 @@ TEST(OffsetTest, SquareOperator)
 {
     using ChessGame::Square;
 
-    Square sq("a1");
+    Square sq{0, 0};
     Offset offset{1, 2};
 
-    auto maybeSq = offset(sq);
-    ASSERT_TRUE(maybeSq);
-    Square sq2 = maybeSq.value();
-
+    Square sq2 = sq + offset;
     EXPECT_EQ(sq2.file, 1);
     EXPECT_EQ(sq2.rank, 2);
 
     sq.file = 7;
-    maybeSq = offset(sq);
-    EXPECT_FALSE(maybeSq);
-
-    sq.file = 0;
-    sq.rank = 6;
-    maybeSq = offset(sq);
-    EXPECT_FALSE(maybeSq);
+    sq2 = sq + offset;
+    EXPECT_EQ(sq2.file, 8);
+    EXPECT_EQ(sq2.file, 2);
 }
 
 TEST(OffsetTest, Difference)
 {
     using ChessGame::Square;
 
-    Square sq("a1"), sq2("g1");
-    Offset offset = ChessGame::difference(sq, sq2);
+    Square sq{0, 0}, sq2{6, 0};
+    Offset offset = sq2 - sq;
     EXPECT_EQ(offset.file, 6);
     EXPECT_EQ(offset.rank, 0);
 
-    Offset offset2 = ChessGame::difference(sq2, sq);
+    Offset offset2 = sq - sq2;
     EXPECT_EQ(offset, -offset2);
 }
 

@@ -1,4 +1,4 @@
-#include "internal/logic/attacks.h"
+#include "core/attacks.h"
 #include <gtest/gtest.h>
 
 using ChessGame::Attacks, ChessGame::Board;
