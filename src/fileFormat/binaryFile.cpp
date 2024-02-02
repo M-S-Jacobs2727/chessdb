@@ -117,7 +117,7 @@ namespace ChessGame
         {
             for (auto j = 0; j < 8; ++j)
             {
-                auto piece = board.position[idx++];
+                auto piece = board.board[idx++];
                 row <<= 1;
                 row |= static_cast<uint8_t>(piece.color);
                 row <<= 3;
@@ -259,8 +259,8 @@ namespace ChessGame
             input.read(reinterpret_cast<char *>(&row), sizeof(row));
             for (auto j = 0; j < 8; ++j)
             {
-                board.position[idx].color = static_cast<Color>((row & 0x80000000) >> 31);
-                board.position[idx++].type = static_cast<PieceType>((row & 0x70000000) >> 28);
+                board.board[idx].color = static_cast<Color>((row & 0x80000000) >> 31);
+                board.board[idx++].type = static_cast<PieceType>((row & 0x70000000) >> 28);
                 row <<= 4;
             }
         }

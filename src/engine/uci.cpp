@@ -38,7 +38,7 @@ namespace ChessGame
 
     void UCI::nextPosition(const Board &pos)
     {
-        m_engOutput << "position " << pos.toFEN() << std::endl;
+        m_engOutput << "board " << pos.toFEN() << std::endl;
     }
 
     void UCI::poll()
@@ -82,20 +82,20 @@ namespace ChessGame
         }
     }
 
-    void UCI::newGame(const Board &position)
+    void UCI::newGame(const Board &board)
     {
-        m_initialPosition = position;
+        m_initialPosition = board;
         m_engOutput << "ucinewgame" << std::endl;
 
         checkReady();
 
-        m_engOutput << "position " << position.toFEN() << std::endl;
+        m_engOutput << "board " << board.toFEN() << std::endl;
     }
 
     void UCI::applyMove(const Move &move)
     {
         m_currentMoves.push_back(move);
-        m_engOutput << "position " << m_initialPosition.toFEN() << " moves";
+        m_engOutput << "board " << m_initialPosition.toFEN() << " moves";
         for (const auto &move : m_currentMoves)
             m_engOutput << ' ' << move.from.str();
         m_engOutput << std::endl;

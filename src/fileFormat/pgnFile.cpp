@@ -190,4 +190,210 @@ namespace ChessGame
 
         return game;
     }
+
+    Square computeFromSquare(Square to, Piece piece, const Board &pos, std::string_view partialFrom)
+    {
+        if (partialFrom.size() == 2)
+            return Square(partialFrom);
+
+        Square from{};
+        bool singleSpace{true};
+        std::vector<Offset> offsets{};
+        offsets.reserve(8);
+        std::vector<Square> candidates{};
+        candidates.reserve(8);
+        std::optional<Square> maybeSq{std::nullopt};
+        switch (piece.type)
+        {
+        case PieceType::Pawn:
+            singleSpace = true;
+            for (const auto &offset : pawnOffsets)
+                offsets.push_back(offset);
+            /* code */
+            break;
+
+        case PieceType::Knight:
+            singleSpace = true;
+            for (const auto &offset : knightOffsets)
+                offsets.push_back(offset);
+            break;
+
+        case PieceType::Bishop:
+            singleSpace = false;
+            for (const auto &offset : bishopOffsets)
+                offsets.push_back(offset);
+            break;
+
+        case PieceType::Rook:
+            singleSpace = false;
+            for (const auto &offset : rookOffsets)
+                offsets.push_back(offset);
+            break;
+
+        case PieceType::Queen:
+            singleSpace = false;
+            for (const auto &offset : queenKingOffsets)
+                offsets.push_back(offset);
+            break;
+
+        case PieceType::King:
+            singleSpace = true;
+            for (const auto &offset : queenKingOffsets)
+                offsets.push_back(offset);
+            break;
+
+        default:
+            std::unreachable();
+        }
+
+        if (singleSpace)
+        {
+            for (const auto &offset : offsets)
+            {
+                maybeSq = offset(to);
+                if (maybeSq &&
+                    pos.get(maybeSq.value())
+                            .value_or(Piece{Color::White, PieceType::Queen})
+                            .type == piece.type)
+                    candidates.push_back(maybeSq.value());
+            }
+        }
+        else
+        {
+            for (const auto &offset : offsets)
+            {
+                auto path = pos.getPath(to, offset, true);
+                if (path.empty())
+                    continue;
+                if (!pos.get(path.back()))
+                    continue;
+                auto foundPiece = pos.get(path.back()).value();
+                if (foundPiece.type == piece.type)
+                    candidates.push_back(path.back());
+            }
+        }
+
+        if (candidates.size() == 0)
+            throw std::runtime_error("Could not identify which square the piece moved from");
+        if (candidates.size() == 1)
+            return candidates.front();
+        if (partialFrom.size() == 0)
+            throw std::runtime_error("Could not identify which square the piece moved from");
+
+        bool matchRank;
+        if ('1' <= partialFrom[0] && partialFrom[0] <= '8')
+            matchRank = true;
+        else if ('a' <= partialFrom[0] && partialFrom[0] <= 'h')
+            matchRank = false;
+        else
+            throw std::runtime_error("Could not identify which square the piece moved from");
+
+        std::string testString{};
+        if (matchRank)
+        {
+            testString += "a";
+            testString += partialFrom;
+            Square test{testString};
+            auto matchPartial = [&](Square sq)
+            { return test.rank == sq.rank; };
+            for (const auto &candidate : candidates)
+                if (matchPartial(candidate))
+                    return candidate;
+            throw std::runtime_error("Could not identify which square the piece moved from");
+        }
+        else
+        {
+            testString += partialFrom;
+            testString += "1";
+            Square test{testString};
+            auto matchPartial = [&](Square sq)
+            { return test.file == sq.file; };
+            for (const auto &candidate : candidates)
+                if (matchPartial(candidate))
+                    return candidate;
+            throw std::runtime_error("Could not identify which square the piece moved from");
+        }
+    }
+
+    Move interpretPGNMove(std::string_view pgnMove,
+                          const Board &previousPos,
+                          Color turn)
+    {
+        Move move;
+
+        move.piece.color = turn;
+        move.piece.type = PGNPieceType.at(pgnMove[0]);
+
+        std::cmatch match;
+        std::regex move_string_regex(R"(([KQRBN])?([a-h]?[1-8]?)(x)?([a-h][1-8])(?:=([QRBN]))?([+#])?([!?]{1,2})?)");
+        std::regex castle_regex(R"(O-O(-O)?([+#])?([!?]{1,2})?)");
+
+        if (std::regex_match(pgnMove.data(), match, move_string_regex))
+        {
+            move.to = Square(match[4].str());
+            move.from = computeFromSquare(move.to, move.piece, previousPos, match[2].str());
+
+            if (match[3].matched)
+            {
+                if (move.piece.type == PieceType::Pawn && !previousPos.get(move.to))
+                {
+                    move.capture = PieceType::Pawn;
+                    move.enPassant = true;
+                }
+                else
+                    move.capture = previousPos.get(move.to).value().type;
+            }
+
+            if (match[5].matched)
+                move.promotion = PGNPieceType.at(match[5].str()[0]);
+        }
+        else if (std::regex_match(pgnMove.data(), match, castle_regex))
+        {
+            move.castle = (match[1].str().empty()) ? Castling::Side::KING : Castling::Side::QUEEN;
+            move.from.rank = homeRank(turn);
+            move.to.rank = move.from.rank;
+            move.from.file = 4;
+            move.to.file = kingToFile(move.castle.value());
+        }
+        else
+        {
+            throw std::runtime_error("Invalid PGN move string");
+        }
+
+        return move;
+    }
+
+    Move interpretUCIMove(std::string_view uciMove, const State &state)
+    {
+    }
+
+    State::State(std::string_view fenString)
+        : board(fenString), m_board(std::shared_ptr<Board>(&board)), attacks(m_board)
+    {
+        std::istringstream iss{fenString.data()};
+        std::string str;
+
+        iss >> str;
+
+        iss >> str;
+        if (str == "w")
+            turn = Color::White;
+        else if (str == "b")
+            turn = Color::Black;
+        else
+            throw std::runtime_error("Invalid FEN string");
+
+        iss >> str;
+        castleRights = Castling::Rights(str);
+
+        iss >> str;
+        if (str != "-")
+            enPassant = Square(str);
+
+        iss >> str;
+        halfTurnCounter = std::stoul(str);
+
+        iss >> str;
+        fullTurnCounter = std::stoul(str);
+    }
 }

@@ -4,6 +4,7 @@
 #include <optional>
 
 #include "internal/logic/attacks.h"
+#include "internal/logic/board.h"
 #include "internal/logic/castling.h"
 #include "internal/logic/move.h"
 #include "internal/logic/piece.h"
@@ -18,7 +19,7 @@ namespace ChessGame
     class State
     {
     public:
-        Board position;
+        Board board;
         uint32_t fullTurnCounter;
         uint32_t halfTurnCounter;
         Color turn;

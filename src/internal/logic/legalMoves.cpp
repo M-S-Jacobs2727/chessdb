@@ -23,13 +23,13 @@ namespace ChessGame
         if (side == Castling::Side::QUEEN)
         {
             for (auto file = 1; file <= 3; ++file)
-                if (state.position.get(Square{file, move.from.rank}))
+                if (state.board.get(Square{file, move.from.rank}))
                     return false;
         }
         else
         {
             for (auto file = 5; file <= 6; ++file)
-                if (state.position.get(Square{file, move.from.rank}))
+                if (state.board.get(Square{file, move.from.rank}))
                     return false;
         }
 
@@ -85,7 +85,7 @@ namespace ChessGame
         file += dir;
         while (file != epPawn.file && file != myPawn.file)
         {
-            if (state.position.get(Square{file, rank}))
+            if (state.board.get(Square{file, rank}))
                 return false;
             file += dir;
         }
@@ -94,9 +94,9 @@ namespace ChessGame
 
         while (0 <= file && file <= 7)
         {
-            if (state.position.get(Square{file, rank}))
+            if (state.board.get(Square{file, rank}))
             {
-                Piece piece = state.position.get(Square{file, rank}).value();
+                Piece piece = state.board.get(Square{file, rank}).value();
                 if (piece.color != state.turn &&
                     (piece.type == PieceType::Queen ||
                      piece.type == PieceType::Rook))
@@ -317,7 +317,7 @@ namespace ChessGame
     std::unordered_set<Move> legalMoves(const State &state)
     {
         std::unordered_set<Move> moves{};
-        const auto &pos = state.position;
+        const auto &pos = state.board;
         Color color = state.turn;
         Color oppColor = oppositeColor(color);
 

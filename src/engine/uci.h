@@ -51,17 +51,17 @@ namespace ChessGame
         /// @brief Set UCI options for this instance (not implemented).
         void setOptions();
 
-        /// @brief Set up engine for a new game starting at `position`.
-        /// @param position An initial starting Position
-        void newGame(const Board &position);
+        /// @brief Set up engine for a new game starting at `board`.
+        /// @param board An initial starting Position
+        void newGame(const Board &board);
 
-        /// @brief Update the engine's board position with the given move.
+        /// @brief Update the engine's board board with the given move.
         /// @param move
         void applyMove(const Move &move);
 
-        /// @brief Apply a new position to the engine's state.
+        /// @brief Apply a new board to the engine's state.
         /// Note: Do not use for a new game. Call `UCI::newGame(pos)` instead.
-        /// @param pos The new position to evaluate.
+        /// @param pos The new board to evaluate.
         void nextPosition(const Board &pos);
 
         void poll();

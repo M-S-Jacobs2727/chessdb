@@ -16,6 +16,6 @@ namespace ChessGame
     blob movesToBlob(const std::vector<Move> &moves);
     std::vector<Move> blobToMoves(const blob &movesBlob);
 
-    blob positionToBlob(const Board &position);
+    blob positionToBlob(const Board &board);
     Board blobToPosition(const blob &posBlob);
 } // namespace ChessGame

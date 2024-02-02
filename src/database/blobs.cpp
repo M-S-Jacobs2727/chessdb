@@ -61,17 +61,17 @@ namespace ChessGame
         return moves;
     }
 
-    blob positionToBlob(const Board &position)
+    blob positionToBlob(const Board &board)
     {
         blob blob;
         blob.reserve(32);
         for (size_t i = 0; i < 32; ++i)
         {
             std::byte bits{0};
-            writeToBits(bits, position[2 * i].color, 1);
-            writeToBits(bits, position[2 * i].type, 3);
-            writeToBits(bits, position[2 * i + 1].color, 1);
-            writeToBits(bits, position[2 * i + 1].type, 3);
+            writeToBits(bits, board[2 * i].color, 1);
+            writeToBits(bits, board[2 * i].type, 3);
+            writeToBits(bits, board[2 * i + 1].color, 1);
+            writeToBits(bits, board[2 * i + 1].type, 3);
 
             blob.push_back(bits);
         }
