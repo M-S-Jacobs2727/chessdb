@@ -25,31 +25,40 @@ namespace ChessGame
 
         for (const auto &[sq, occupant] : std::views::zip(pos->eachSquare(), pos->eachOccupant()))
             if (occupant)
-                addAttacker(sq, static_cast<Piece>(occupant));
+                addAttacker(sq, occupant.piece());
     }
 
     std::vector<Square> Attacks::attackers(Square square, Color color) const
     {
-        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
+        auto board = getBoard();
+        auto idx = board->squareToIdx(square);
+        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[idx]
+                                                   : m_attackedByBlack[idx];
         std::vector<Square> attackers;
         attackers.reserve(attackedBy.count());
 
         for (size_t i = 0; i < 64; ++i)
             if (attackedBy[i])
-                attackers.push_back(Square::fromIdx(i));
+                attackers.push_back(board->idxToSquare(i));
 
         return attackers;
     }
 
     bool Attacks::attacked(Square square, Color color) const
     {
-        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
+        auto board = getBoard();
+        auto idx = board->squareToIdx(square);
+        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[idx]
+                                                   : m_attackedByBlack[idx];
         return attackedBy.any();
     }
 
     size_t Attacks::numAttackers(Square square, Color color) const
     {
-        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[square.idx()] : m_attackedByBlack[square.idx()];
+        auto board = getBoard();
+        auto idx = board->squareToIdx(square);
+        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[idx]
+                                                   : m_attackedByBlack[idx];
         return attackedBy.count();
     }
 
@@ -239,17 +248,17 @@ namespace ChessGame
 
     void Attacks::addPiece(Square square)
     {
-        auto pos = getBoard();
+        auto board = getBoard();
 
         for (size_t i = 0; i < 64; ++i)
         {
-            if (!m_attackedFrom[i][square.idx()])
+            if (!m_attackedFrom[i][board->squareToIdx(square)])
                 continue;
-            Square attacker = Square::fromIdx(i);
+            Square attacker = board->idxToSquare(i);
 
-            [[unlikely]] if (!pos->get(attacker))
+            [[unlikely]] if (!board->get(attacker))
                 throw std::runtime_error("Invalid attacker");
-            auto piece = pos->get(attacker).value();
+            auto piece = board->get(attacker).piece();
 
             auto &attackedBy = (piece.color == Color::White) ? m_attackedByWhite : m_attackedByBlack;
 
@@ -262,27 +271,28 @@ namespace ChessGame
                           square.rank - attacker.rank};
             offset.norm();
 
-            for (const auto &newSq : pos->getPath(square, offset, true))
+            for (const auto &newSq : board->getPath(square, offset, true))
             {
-                attackedBy[newSq.idx()][i] = 0;
-                m_attackedFrom[i][newSq.idx()] = 0;
+                auto idx = board->squareToIdx(newSq);
+                attackedBy[idx][i] = 0;
+                m_attackedFrom[i][idx] = 0;
             }
         }
     }
 
     void Attacks::removePiece(Square square)
     {
-        auto pos = getBoard();
+        auto board = getBoard();
 
         for (size_t i = 0; i < 64; ++i)
         {
-            if (!m_attackedFrom[i][square.idx()])
+            if (!m_attackedFrom[i][board->squareToIdx(square)])
                 continue;
-            Square attacker = Square::fromIdx(i);
+            Square attacker = board->idxToSquare(i);
 
-            [[unlikely]] if (!pos->get(attacker))
+            [[unlikely]] if (!board->get(attacker))
                 throw std::runtime_error("Invalid attacker");
-            auto piece = pos->get(attacker).value();
+            auto piece = board->get(attacker).piece();
 
             auto &attackedBy = (piece.color == Color::White) ? m_attackedByWhite : m_attackedByBlack;
 
@@ -295,10 +305,11 @@ namespace ChessGame
                           square.rank - attacker.rank};
             offset.norm();
 
-            for (const auto &newSq : pos->getPath(square, offset, true))
+            for (const auto &newSq : board->getPath(square, offset, true))
             {
-                attackedBy[newSq.idx()][i] = 1;
-                m_attackedFrom[i][newSq.idx()] = 1;
+                auto idx = board->squareToIdx(newSq);
+                attackedBy[idx][i] = 1;
+                m_attackedFrom[i][idx] = 1;
             }
         }
     }

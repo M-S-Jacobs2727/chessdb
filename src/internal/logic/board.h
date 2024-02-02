@@ -24,10 +24,6 @@ namespace ChessGame
             return static_cast<bool>(m_occ);
         }
         operator Piece() = delete;
-        explicit operator Piece() const
-        {
-            return m_occ.value();
-        }
         void operator=(Piece piece)
         {
             m_occ = piece;
@@ -35,6 +31,10 @@ namespace ChessGame
         void operator=(std::nullopt_t no)
         {
             m_occ = std::nullopt;
+        }
+        const Piece &piece() const
+        {
+            return m_occ.value();
         }
 
     private:
