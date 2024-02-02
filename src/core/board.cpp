@@ -149,7 +149,7 @@ namespace ChessGame
         return path;
     }
 
-    constexpr std::array<Square, 64> Board::eachSquare() const
+    constexpr std::array<Square, 64> Board::eachSquare()
     {
         std::array<Square, 64> squares;
 
@@ -171,18 +171,18 @@ namespace ChessGame
         return m_arr;
     }
 
-    constexpr size_t Board::squareToIdx(Square square) const
+    constexpr size_t Board::squareToIdx(Square square)
     {
         return static_cast<size_t>((7 - square.rank) * 8 + square.file);
     }
 
-    constexpr Square Board::idxToSquare(size_t idx) const
+    constexpr Square Board::idxToSquare(size_t idx)
     {
         size_t q = idx / 8, r = idx % 8;
         return Square{r, 7 - q};
     }
 
-    constexpr bool Board::valid(Square square) const
+    constexpr bool Board::valid(Square square)
     {
         return 0 <= square.file &&
                square.file <= 7 &&
@@ -190,43 +190,43 @@ namespace ChessGame
                square.rank <= 7;
     }
 
-    constexpr int Board::homeRank(Color color) const
+    constexpr int Board::homeRank(Color color)
     {
         return static_cast<int>(color) * 7;
     }
 
-    constexpr int Board::rookFromFile(Castling::Side side) const
+    constexpr int Board::rookFromFile(Castling::Side side)
     {
         // QS/0 -> 0
         // KS/1 -> 7
         return 7u * static_cast<int>(side);
     }
 
-    constexpr int Board::rookToFile(Castling::Side side) const
+    constexpr int Board::rookToFile(Castling::Side side)
     {
         // QS/0 -> 3
         // KS/1 -> 5
         return 2u * static_cast<int>(side) + 3u;
     }
 
-    constexpr int Board::kingToFile(Castling::Side side) const
+    constexpr int Board::kingToFile(Castling::Side side)
     {
         // QS/0 -> 2
         // KS/1 -> 6
         return 4u * static_cast<int>(side) + 2u;
     }
 
-    constexpr Square Board::rookFromSquare(const Color color, Castling::Side side) const
+    constexpr Square Board::rookFromSquare(const Color color, Castling::Side side)
     {
         return Square{rookFromFile(side), homeRank(color)};
     }
 
-    constexpr Square Board::rookToSquare(const Color color, Castling::Side side) const
+    constexpr Square Board::rookToSquare(const Color color, Castling::Side side)
     {
         return Square{rookToFile(side), homeRank(color)};
     }
 
-    constexpr Square Board::kingToSquare(const Color color, Castling::Side side) const
+    constexpr Square Board::kingToSquare(const Color color, Castling::Side side)
     {
         return Square{kingToFile(side), homeRank(color)};
     }

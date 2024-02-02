@@ -55,19 +55,21 @@ namespace ChessGame
          * up to and optionally including the first piece found.
          */
         std::vector<Square> getPath(Square fromSquare, Offset direction, bool includePiece) const;
-        constexpr std::array<Square, 64> eachSquare() const;
         constexpr const std::array<Occupant, 64> &eachOccupant() const;
-        constexpr bool valid(Square square) const;
-        constexpr size_t squareToIdx(Square square) const;
-        constexpr Square idxToSquare(size_t idx) const;
-        constexpr int homeRank(Color color) const;
 
-        constexpr int rookFromFile(Castling::Side side) const;
-        constexpr int rookToFile(Castling::Side side) const;
-        constexpr int kingToFile(Castling::Side side) const;
-        constexpr Square rookFromSquare(Color color, Castling::Side side) const;
-        constexpr Square rookToSquare(Color color, Castling::Side side) const;
-        constexpr Square kingToSquare(Color color, Castling::Side side) const;
+        static constexpr std::array<Square, 64> eachSquare();
+
+        static constexpr bool valid(Square square);
+        static constexpr size_t squareToIdx(Square square);
+        static constexpr Square idxToSquare(size_t idx);
+        static constexpr int homeRank(Color color);
+
+        static constexpr int rookFromFile(Castling::Side side);
+        static constexpr int rookToFile(Castling::Side side);
+        static constexpr int kingToFile(Castling::Side side);
+        static constexpr Square rookFromSquare(Color color, Castling::Side side);
+        static constexpr Square rookToSquare(Color color, Castling::Side side);
+        static constexpr Square kingToSquare(Color color, Castling::Side side);
 
     private:
         std::array<Occupant, 64> m_arr;
