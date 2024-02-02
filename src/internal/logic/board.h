@@ -19,8 +19,6 @@ namespace ChessGame
     {
     public:
         constexpr Occupant() : m_occ(std::nullopt) {}
-        constexpr Occupant(Piece piece) : m_occ(piece) {}
-        constexpr Occupant(std::nullopt_t no) : m_occ(no) {}
         constexpr operator bool() const
         {
             return static_cast<bool>(m_occ);
@@ -29,6 +27,14 @@ namespace ChessGame
         explicit operator Piece() const
         {
             return m_occ.value();
+        }
+        void operator=(Piece piece)
+        {
+            m_occ = piece;
+        }
+        void operator=(std::nullopt_t no)
+        {
+            m_occ = std::nullopt;
         }
 
     private:

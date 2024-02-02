@@ -1,4 +1,4 @@
-#include "internal/logic/position.h"
+#include "internal/logic/board.h"
 
 #include <algorithm>
 #include <ranges>
