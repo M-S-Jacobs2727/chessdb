@@ -4,9 +4,9 @@
 #include "internal/logic/offset.h"
 #include "internal/logic/square.h"
 
-#include "legalMoves.h"
 #include <algorithm>
 #include <array>
+#include <ranges>
 
 #define MAX(x, y) (x < y) ? y : x
 
@@ -44,7 +44,7 @@ namespace ChessGame
         if (move.to == checkingSq)
             return true;
 
-        Piece checkingPiece = pos.get(checkingSq).value();
+        Piece checkingPiece = pos.get(checkingSq).piece();
 
         // Cannot block these pieces without capturing
         if (checkingPiece.type == PieceType::Pawn ||
@@ -96,7 +96,7 @@ namespace ChessGame
         {
             if (state.board.get(Square{file, rank}))
             {
-                Piece piece = state.board.get(Square{file, rank}).value();
+                Piece piece = state.board.get(Square{file, rank}).piece();
                 if (piece.color != state.turn &&
                     (piece.type == PieceType::Queen ||
                      piece.type == PieceType::Rook))
@@ -128,11 +128,11 @@ namespace ChessGame
             moves.emplace(pawn, from, to.value());
 
         to = attackLeft(from);
-        if (to && (!pos.get(to.value()) || pos.get(to.value()).value().color != color))
+        if (to && (!pos.get(to.value()) || pos.get(to.value()).piece().color != color))
             moves.emplace(pawn, from, to.value());
 
         to = attackRight(from);
-        if (to && (!pos.get(to.value()) || pos.get(to.value()).value().color != color))
+        if (to && (!pos.get(to.value()) || pos.get(to.value()).piece().color != color))
             moves.emplace(pawn, from, to.value());
 
         return moves;
@@ -148,8 +148,8 @@ namespace ChessGame
             auto to = offset(from);
             if (to)
             {
-                auto piece = pos.get(to.value());
-                if (!piece || piece.value().color != color)
+                auto occupant = pos.get(to.value());
+                if (!occupant || occupant.piece().color != color)
                     moves.emplace(Piece{color, PieceType::Knight}, from, to.value());
             }
         }
@@ -168,8 +168,8 @@ namespace ChessGame
             path.pop_back();
             for (const auto &to : path)
                 moves.emplace(Piece{color, PieceType::Bishop}, from, to);
-            auto piece = pos.get(last);
-            if (!piece || piece.value().color != color)
+            auto occupant = pos.get(last);
+            if (!occupant || occupant.piece().color != color)
                 moves.emplace(Piece{color, PieceType::Bishop}, from, last);
         }
         return moves;
@@ -187,8 +187,8 @@ namespace ChessGame
             path.pop_back();
             for (const auto &to : path)
                 moves.emplace(Piece{color, PieceType::Rook}, from, to);
-            auto piece = pos.get(last);
-            if (!piece || piece.value().color != color)
+            auto occupant = pos.get(last);
+            if (!occupant || occupant.piece().color != color)
                 moves.emplace(Piece{color, PieceType::Rook}, from, last);
         }
         return moves;
@@ -206,8 +206,8 @@ namespace ChessGame
             path.pop_back();
             for (const auto &to : path)
                 moves.emplace(Piece{color, PieceType::Queen}, from, to);
-            auto piece = pos.get(last);
-            if (!piece || piece.value().color != color)
+            auto occupant = pos.get(last);
+            if (!occupant || occupant.piece().color != color)
                 moves.emplace(Piece{color, PieceType::Queen}, from, last);
         }
         return moves;
@@ -225,8 +225,8 @@ namespace ChessGame
             auto to = offset(from);
             if (to)
             {
-                auto piece = pos.get(to.value());
-                if (!piece || piece.value().color != color)
+                auto occupant = pos.get(to.value());
+                if (!occupant || occupant.piece().color != color)
                     moves.emplace(king, from, to.value());
             }
         }
@@ -248,7 +248,7 @@ namespace ChessGame
             return {};
 
         std::unordered_set<Move> moves{};
-        Piece piece = pos.get(square).value();
+        Piece piece = pos.get(square).piece();
 
         switch (piece.type)
         {
@@ -301,10 +301,10 @@ namespace ChessGame
         std::pair<Square, Offset> hardPin{pinSquare, offset};
 
         auto occupant = pos.get(pinSquare);
-        if (!occupant || occupant.value().color == color)
+        if (!occupant || occupant.piece().color == color)
             return {};
 
-        Piece piece = occupant.value();
+        Piece piece = occupant.piece();
 
         if (piece.type == PieceType::Queen ||
             piece.type == PieceType::Bishop && offset.isDiagonal() ||
@@ -345,12 +345,12 @@ namespace ChessGame
             (numCheckers == 0) ? std::nullopt
                                : std::make_optional(state.attacks.attackers(kingSq, oppColor)[0])};
 
-        for (const auto &[sq, p] : pos.eachSquare())
+        for (const auto &[sq, p] : std::views::zip(pos.eachSquare(), pos.eachOccupant()))
         {
-            if (!p || p.value().color != color || p.value().type == PieceType::King)
+            if (!p || p.piece().color != color || p.piece().type == PieceType::King)
                 continue;
 
-            Piece piece = p.value();
+            Piece piece = p.piece();
 
             // use concepts(?) to affirm that pos.get(hardPin.value()).has_value() if hardPin.has_value()
             auto hardPin = getHardPin(pos, sq, color);
