@@ -57,7 +57,7 @@ namespace ChessGame
         std::vector<Square> getPath(Square fromSquare, Offset direction, bool includePiece) const;
         constexpr std::array<Square, 64> eachSquare() const;
         constexpr const std::array<Occupant, 64> &eachOccupant() const;
-        constexpr bool onBoard(Square square) const;
+        constexpr bool valid(Square square) const;
         constexpr size_t squareToIdx(Square square) const;
         constexpr Square idxToSquare(size_t idx) const;
 

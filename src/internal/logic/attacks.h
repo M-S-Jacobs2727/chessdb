@@ -5,9 +5,9 @@
 #include <memory>
 #include <vector>
 
+#include "internal/logic/board.h"
 #include "internal/logic/move.h"
 #include "internal/logic/piece.h"
-#include "internal/logic/position.h"
 #include "internal/logic/square.h"
 
 namespace ChessGame
@@ -18,7 +18,7 @@ namespace ChessGame
     {
     public:
         Attacks() = delete;
-        explicit Attacks(std::shared_ptr<Board> pos);
+        explicit Attacks(std::shared_ptr<Board> board);
 
         /* Retrieve a vector of squares occupied by pieces of the given color attacking
         the given square.
@@ -50,11 +50,11 @@ namespace ChessGame
         void removeAttacker(Square square, Piece piece);
         void addPiece(Square square);
         void removePiece(Square square);
-        std::shared_ptr<Board> getPos() const;
+        std::shared_ptr<Board> getBoard() const;
 
     private:
         // board position
-        std::weak_ptr<Board> m_pos;
+        std::weak_ptr<Board> m_board_ptr;
 
         // Squares occupied by white pieces that attack the given square
         AttackerArray m_attackedByWhite;

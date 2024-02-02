@@ -138,7 +138,7 @@ namespace ChessGame
         for (int i = 0; i < 8; ++i)
         {
             newSq += direction;
-            if (onBoard(newSq))
+            if (valid(newSq))
                 return path;
 
             auto occupant = get(newSq);
@@ -183,7 +183,7 @@ namespace ChessGame
         return Square{r, 7 - q};
     }
 
-    constexpr bool Board::onBoard(Square square) const
+    constexpr bool Board::valid(Square square) const
     {
         return 0 <= square.file &&
                square.file <= 7 &&
