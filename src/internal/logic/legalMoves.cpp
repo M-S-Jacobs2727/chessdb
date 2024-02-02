@@ -62,9 +62,9 @@ namespace ChessGame
         return (std::find(path.begin(), path.end(), move.to) == path.end());
     }
 
-    bool moveDisallowedByHardPin(const Move &move, const std::pair<Square, Offset> &hardPin, Square kingSq)
+    bool moveDisallowedByHardPin(const Move &move, const HardPin &hardPin, Square kingSq, const Board &board)
     {
-        for (Square tmpSq = hardPin.first; tmpSq != kingSq; tmpSq = hardPin.second(tmpSq).value_or(kingSq))
+        for (Square tmpSq = hardPin.attacker; board.valid(tmpSq) && tmpSq != kingSq; tmpSq += hardPin.direction)
             if (tmpSq == move.to)
                 return false;
         return true;
@@ -286,7 +286,7 @@ namespace ChessGame
         return moves;
     }
 
-    std::optional<std::pair<Square, Offset>> getHardPin(const Board &board, Square square, Color color)
+    std::optional<HardPin> getHardPin(const Board &board, Square square, Color color)
     {
         auto kingSq = board.kingSquare(color);
         auto offset = square - kingSq;
@@ -299,10 +299,10 @@ namespace ChessGame
         if (pathToPin.empty())
             return {};
 
-        auto pinSquare = pathToPin.back();
-        std::pair<Square, Offset> hardPin{pinSquare, offset};
+        auto attacker = pathToPin.back();
+        HardPin hardPin{attacker, offset};
 
-        auto occupant = board.get(pinSquare);
+        auto occupant = board.get(attacker);
         if (!occupant || occupant.piece().color == color)
             return {};
 
@@ -366,7 +366,7 @@ namespace ChessGame
                 if (checker && moveDisallowedByCheck(move, board, kingSq, checker.value()))
                     continue;
 
-                if (hardPin && moveDisallowedByHardPin(move, hardPin.value(), kingSq))
+                if (hardPin && moveDisallowedByHardPin(move, hardPin.value(), kingSq, board))
                     continue;
 
                 if (canCaptureEnPassant && epCatureResultsInCheck(move, state, kingSq))
