@@ -199,21 +199,21 @@ namespace ChessGame
     {
         // QS/0 -> 0
         // KS/1 -> 7
-        return 7u * static_cast<int>(side);
+        return 7 * static_cast<int>(side);
     }
 
     constexpr int Board::rookToFile(Castling::Side side)
     {
         // QS/0 -> 3
         // KS/1 -> 5
-        return 2u * static_cast<int>(side) + 3u;
+        return 2 * static_cast<int>(side) + 3;
     }
 
     constexpr int Board::kingToFile(Castling::Side side)
     {
         // QS/0 -> 2
         // KS/1 -> 6
-        return 4u * static_cast<int>(side) + 2u;
+        return 4 * static_cast<int>(side) + 2;
     }
 
     constexpr Square Board::rookFromSquare(const Color color, Castling::Side side)
