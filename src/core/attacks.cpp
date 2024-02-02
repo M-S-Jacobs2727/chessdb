@@ -7,8 +7,8 @@
 
 namespace ChessGame
 {
-    Attacks::Attacks(std::shared_ptr<Board> pos)
-        : m_board_ptr(pos)
+    Attacks::Attacks(std::shared_ptr<Board> board)
+        : m_board_ptr(board)
     {
         recompute();
     }
@@ -22,11 +22,11 @@ namespace ChessGame
         for (auto &bs : m_attackedFrom)
             bs.reset();
 
-        auto pos = getBoard();
+        auto board = getBoard();
 
-        for (const auto &[sq, occupant] : std::views::zip(pos->eachSquare(), pos->eachOccupant()))
+        for (const auto &[square, occupant] : std::views::zip(board->eachSquare(), board->eachOccupant()))
             if (occupant)
-                addAttacker(sq, occupant.piece());
+                addAttacker(square, occupant.piece());
     }
 
     std::vector<Square> Attacks::attackers(Square square, Color color) const
