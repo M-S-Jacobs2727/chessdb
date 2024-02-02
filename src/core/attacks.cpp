@@ -1,8 +1,9 @@
-#include <array>
-#include <ranges>
+#include "core/attacks.h"
 
-#include "internal/logic/attacks.h"
-#include "internal/logic/offset.h"
+#include <ranges>
+#include <utility>
+
+#include "core/offset.h"
 
 namespace ChessGame
 {

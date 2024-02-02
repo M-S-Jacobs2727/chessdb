@@ -1,10 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <optional>
-#include <string_view>
-
-#include "internal/logic/color.h"
+#include "core/color.h"
 
 namespace ChessGame
 {
@@ -27,9 +23,4 @@ namespace ChessGame
             return type == other.type && color == other.color;
         }
     };
-
-    constexpr inline uint8_t homeRank(const Color color)
-    {
-        return 7 * static_cast<int>(color);
-    }
 }

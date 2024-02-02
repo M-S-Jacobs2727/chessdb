@@ -1,11 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <optional>
 
-#include "internal/logic/castling.h"
-#include "internal/logic/piece.h"
-#include "internal/logic/square.h"
+#include "core/castling.h"
+#include "core/piece.h"
+#include "core/square.h"
 
 namespace ChessGame
 {

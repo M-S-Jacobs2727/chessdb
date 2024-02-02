@@ -2,9 +2,10 @@
 
 #include <unordered_set>
 
-#include "internal/logic/offset.h"
-#include "internal/logic/square.h"
-#include "internal/logic/state.h"
+#include "core/move.h"
+#include "core/offset.h"
+#include "core/square.h"
+#include "core/state.h"
 
 namespace ChessGame
 {
@@ -13,5 +14,6 @@ namespace ChessGame
         Square attacker;
         Offset direction;
     };
+    // TODO: change unordered_set to vector
     std::unordered_set<Move> legalMoves(const State &state);
 } // namespace ChessGame

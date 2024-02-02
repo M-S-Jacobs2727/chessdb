@@ -3,7 +3,7 @@
 #include <array>
 #include <cstdlib>
 
-#include "internal/logic/color.h"
+#include "core/color.h"
 
 #define MAX(x, y) (x < y) ? y : x
 
@@ -121,6 +121,12 @@ namespace ChessGame
             return Offset{0, static_cast<int>(color) * 2 - 1};
         }
 
+        const inline std::array<Offset, 4> blackPawn{{{0, -1},
+                                                      {0, -2},
+                                                      {-1, -1},
+                                                      {1, -1}}};
+        const inline std::array<Offset, 2> blackPawnAttack{{{-1, -1},
+                                                            {1, -1}}};
         const inline std::array<Offset, 4> pawn{{{0, 1},
                                                  {0, 2},
                                                  {-1, 1},

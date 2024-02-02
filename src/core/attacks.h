@@ -5,10 +5,11 @@
 #include <memory>
 #include <vector>
 
-#include "internal/logic/board.h"
-#include "internal/logic/move.h"
-#include "internal/logic/piece.h"
-#include "internal/logic/square.h"
+#include "core/board.h"
+#include "core/color.h"
+#include "core/move.h"
+#include "core/piece.h"
+#include "core/square.h"
 
 namespace ChessGame
 {

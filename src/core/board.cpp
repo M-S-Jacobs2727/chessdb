@@ -1,9 +1,8 @@
-#include "internal/logic/board.h"
+#include "core/board.h"
 
 #include <algorithm>
 #include <ranges>
 #include <stdexcept>
-#include <unordered_map>
 
 namespace ChessGame
 {
@@ -189,5 +188,46 @@ namespace ChessGame
                square.file <= 7 &&
                0 <= square.rank &&
                square.rank <= 7;
+    }
+
+    constexpr int Board::homeRank(Color color) const
+    {
+        return static_cast<int>(color) * 7;
+    }
+
+    constexpr int Board::rookFromFile(Castling::Side side) const
+    {
+        // QS/0 -> 0
+        // KS/1 -> 7
+        return 7u * static_cast<int>(side);
+    }
+
+    constexpr int Board::rookToFile(Castling::Side side) const
+    {
+        // QS/0 -> 3
+        // KS/1 -> 5
+        return 2u * static_cast<int>(side) + 3u;
+    }
+
+    constexpr int Board::kingToFile(Castling::Side side) const
+    {
+        // QS/0 -> 2
+        // KS/1 -> 6
+        return 4u * static_cast<int>(side) + 2u;
+    }
+
+    constexpr Square Board::rookFromSquare(const Color color, Castling::Side side) const
+    {
+        return Square{rookFromFile(side), homeRank(color)};
+    }
+
+    constexpr Square Board::rookToSquare(const Color color, Castling::Side side) const
+    {
+        return Square{rookToFile(side), homeRank(color)};
+    }
+
+    constexpr Square Board::kingToSquare(const Color color, Castling::Side side) const
+    {
+        return Square{kingToFile(side), homeRank(color)};
     }
 } // namespace ChessGame

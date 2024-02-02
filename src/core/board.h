@@ -3,13 +3,13 @@
 #include <array>
 #include <optional>
 #include <string_view>
-#include <utility>
 #include <vector>
 
-#include "internal/logic/move.h"
-#include "internal/logic/offset.h"
-#include "internal/logic/piece.h"
-#include "internal/logic/square.h"
+#include "core/castling.h"
+#include "core/color.h"
+#include "core/offset.h"
+#include "core/piece.h"
+#include "core/square.h"
 
 namespace ChessGame
 {
@@ -60,6 +60,14 @@ namespace ChessGame
         constexpr bool valid(Square square) const;
         constexpr size_t squareToIdx(Square square) const;
         constexpr Square idxToSquare(size_t idx) const;
+        constexpr int homeRank(Color color) const;
+
+        constexpr int rookFromFile(Castling::Side side) const;
+        constexpr int rookToFile(Castling::Side side) const;
+        constexpr int kingToFile(Castling::Side side) const;
+        constexpr Square rookFromSquare(Color color, Castling::Side side) const;
+        constexpr Square rookToSquare(Color color, Castling::Side side) const;
+        constexpr Square kingToSquare(Color color, Castling::Side side) const;
 
     private:
         std::array<Occupant, 64> m_arr;

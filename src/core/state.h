@@ -1,20 +1,19 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <optional>
 
-#include "internal/logic/attacks.h"
-#include "internal/logic/board.h"
-#include "internal/logic/castling.h"
-#include "internal/logic/move.h"
-#include "internal/logic/piece.h"
+#include "core/attacks.h"
+#include "core/board.h"
+#include "core/castling.h"
+#include "core/color.h"
+#include "core/move.h"
+#include "core/square.h"
 
 namespace ChessGame
 {
-    constexpr std::string_view initFENFull{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"};
-
     /// @brief The game state of a game of chess
-    /// @param fenString
     class State
     {
     public:
@@ -27,7 +26,7 @@ namespace ChessGame
         Attacks attacks;
 
     public:
-        State();
+        State() : board(initFEN), attacks(std::make_shared<Board>(board)) {}
         /// @brief Applies a move to the board state
         /// @param move
         void applyMove(const Move &move);

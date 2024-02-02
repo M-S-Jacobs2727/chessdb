@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <functional>
 
-#include "internal/logic/offset.h"
+#include "core/offset.h"
 
 namespace ChessGame
 {

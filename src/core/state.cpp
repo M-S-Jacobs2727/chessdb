@@ -1,35 +1,9 @@
-#include "internal/logic/state.h"
+#include "core/state.h"
 
-#include <algorithm>
-#include <regex>
-#include <sstream>
-#include <stdexcept>
-#include <vector>
-
-#include "internal/logic/offset.h"
+#include "core/offset.h"
 
 namespace ChessGame
 {
-    const std::unordered_map<char, PieceType> PGNPieceType{
-        {'K', PieceType::King},
-        {'O', PieceType::King},
-        {'Q', PieceType::Queen},
-        {'R', PieceType::Rook},
-        {'B', PieceType::Bishop},
-        {'N', PieceType::Knight},
-        {'a', PieceType::Pawn},
-        {'b', PieceType::Pawn},
-        {'c', PieceType::Pawn},
-        {'d', PieceType::Pawn},
-        {'e', PieceType::Pawn},
-        {'f', PieceType::Pawn},
-        {'g', PieceType::Pawn},
-        {'h', PieceType::Pawn}};
-
-    State::State() : board(initFEN), attacks(std::make_shared<Board>(board))
-    {
-    }
-
     void State::applyMove(const ChessGame::Move &move)
     {
         board.remove(move.from);
@@ -66,7 +40,7 @@ namespace ChessGame
         else
             enPassant = std::nullopt;
 
-        auto r = homeRank(turn);
+        auto r = board.homeRank(turn);
         if (move.piece.type == PieceType::Rook && move.from.rank == r)
         {
             if (move.from.file == 0)

@@ -396,4 +396,20 @@ namespace ChessGame
         iss >> str;
         fullTurnCounter = std::stoul(str);
     }
+
+    const std::unordered_map<char, PieceType> PGNPieceType{
+        {'K', PieceType::King},
+        {'O', PieceType::King},
+        {'Q', PieceType::Queen},
+        {'R', PieceType::Rook},
+        {'B', PieceType::Bishop},
+        {'N', PieceType::Knight},
+        {'a', PieceType::Pawn},
+        {'b', PieceType::Pawn},
+        {'c', PieceType::Pawn},
+        {'d', PieceType::Pawn},
+        {'e', PieceType::Pawn},
+        {'f', PieceType::Pawn},
+        {'g', PieceType::Pawn},
+        {'h', PieceType::Pawn}};
 }

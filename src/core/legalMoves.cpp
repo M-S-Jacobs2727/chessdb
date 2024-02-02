@@ -1,16 +1,11 @@
-#include "internal/logic/legalMoves.h"
-#include "internal/logic/attacks.h"
-#include "internal/logic/move.h"
-#include "internal/logic/offset.h"
-#include "internal/logic/square.h"
+#include "core/legalMoves.h"
 
 #include <algorithm>
-#include <array>
 #include <ranges>
 #include <utility>
 #include <vector>
 
-#define MAX(x, y) (x < y) ? y : x
+#include "core/attacks.h"
 
 namespace ChessGame
 {
@@ -22,18 +17,11 @@ namespace ChessGame
             state.attacks.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
             return false;
 
-        if (side == Castling::Side::QUEEN)
-        {
-            for (auto file = 1; file <= 3; ++file)
-                if (state.board.get(Square{file, move.from.rank}))
-                    return false;
-        }
-        else
-        {
-            for (auto file = 5; file <= 6; ++file)
-                if (state.board.get(Square{file, move.from.rank}))
-                    return false;
-        }
+        int file1 = (side == Castling::Side::QUEEN) ? 1 : 5,
+            file2 = (side == Castling::Side::QUEEN) ? 3 : 6;
+        for (auto file = file1; file <= file2; ++file)
+            if (state.board.get(Square{file, move.from.rank}))
+                return false;
 
         return true;
     }
@@ -59,7 +47,7 @@ namespace ChessGame
         dir /= MAX(abs(dir.file), abs(dir.rank));
 
         auto path = board.getPath(checkingSq, dir, false);
-        return (std::find(path.begin(), path.end(), move.to) == path.end());
+        return std::find(path.begin(), path.end(), move.to) == path.end();
     }
 
     bool moveDisallowedByHardPin(const Move &move, const HardPin &hardPin, Square kingSq, const Board &board)
@@ -220,7 +208,7 @@ namespace ChessGame
         std::unordered_set<Move> moves{};
         moves.reserve(8);
         Piece king{color, PieceType::King};
-        auto hr = homeRank(color);
+        auto hr = board.homeRank(color);
 
         for (const auto &offset : Offsets::queenKing)
         {
@@ -249,8 +237,8 @@ namespace ChessGame
         if (!board.get(square))
             return {};
 
-        std::unordered_set<Move> moves{};
         Piece piece = board.get(square).piece();
+        std::unordered_set<Move> moves{};
 
         switch (piece.type)
         {
@@ -347,21 +335,20 @@ namespace ChessGame
             (numCheckers == 0) ? std::nullopt
                                : std::make_optional(state.attacks.attackers(kingSq, oppColor)[0])};
 
-        for (const auto &[sq, p] : std::views::zip(board.eachSquare(), board.eachOccupant()))
+        for (const auto &[square, occupant] : std::views::zip(board.eachSquare(), board.eachOccupant()))
         {
-            if (!p || p.piece().color != color || p.piece().type == PieceType::King)
+            if (!occupant || occupant.piece().color != color || occupant.piece().type == PieceType::King)
                 continue;
 
-            Piece piece = p.piece();
+            Piece piece = occupant.piece();
 
-            // use concepts(?) to affirm that board.get(hardPin.value()).has_value() if hardPin.has_value()
-            auto hardPin = getHardPin(board, sq, color);
+            auto hardPin = getHardPin(board, square, color);
             bool canCaptureEnPassant = (state.enPassant) &&
                                        (piece.type == PieceType::Pawn) &&
-                                       (sq.rank == ((color == Color::White) ? 5u : 4u)) &&
-                                       (abs(sq.file - state.enPassant.value().file) == 1);
+                                       (square.rank == ((color == Color::White) ? 5u : 4u)) &&
+                                       (abs(square.file - state.enPassant.value().file) == 1);
 
-            for (const auto &move : candidateMoves(board, sq))
+            for (const auto &move : candidateMoves(board, square))
             {
                 if (checker && moveDisallowedByCheck(move, board, kingSq, checker.value()))
                     continue;
