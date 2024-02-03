@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <ranges>
+#include <sstream>
 #include <stdexcept>
+#include <utility>
 
 namespace ChessGame
 {
@@ -11,93 +13,77 @@ namespace ChessGame
         uint8_t row = 0, col = 0, numWhiteKings = 0, numBlackKings = 0, i = 0;
         for (const auto &c : fenString)
         {
-            bool complete{false};
+            if (c == ' ')
+                break;
 
-            switch (c)
+            auto p = FEN::charToPiece(c);
+            Piece piece;
+            int num_empty;
+
+            switch (p.index())
             {
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-                col += c - '0';
-                i += c - '0';
+            case 0:
+                piece = std::get<Piece>(p);
+                m_arr[i++] = piece;
+                ++col;
+
+                if (piece.type == PieceType::King)
+                {
+                    switch (piece.color)
+                    {
+                    case Color::White:
+                        ++numWhiteKings;
+                        break;
+                    case Color::Black:
+                        ++numBlackKings;
+                        break;
+
+                    default:
+                        std::unreachable();
+                        break;
+                    }
+                }
                 break;
 
-            case 'p':
-                m_arr[i++] = Piece{Color::Black, PieceType::Pawn};
-                ++col;
-                break;
-            case 'P':
-                m_arr[i++] = Piece{Color::White, PieceType::Pawn};
-                ++col;
-                break;
-            case 'n':
-                m_arr[i++] = Piece{Color::Black, PieceType::Knight};
-                ++col;
-                break;
-            case 'N':
-                m_arr[i++] = Piece{Color::White, PieceType::Knight};
-                ++col;
-                break;
-            case 'b':
-                m_arr[i++] = Piece{Color::Black, PieceType::Bishop};
-                ++col;
-                break;
-            case 'B':
-                m_arr[i++] = Piece{Color::White, PieceType::Bishop};
-                ++col;
-                break;
-            case 'r':
-                m_arr[i++] = Piece{Color::Black, PieceType::Rook};
-                ++col;
-                break;
-            case 'R':
-                m_arr[i++] = Piece{Color::White, PieceType::Rook};
-                ++col;
-                break;
-            case 'q':
-                m_arr[i++] = Piece{Color::Black, PieceType::Queen};
-                ++col;
-                break;
-            case 'Q':
-                m_arr[i++] = Piece{Color::White, PieceType::Queen};
-                ++col;
-                break;
-            case 'k':
-                numBlackKings++;
-                m_arr[i++] = Piece{Color::Black, PieceType::King};
-                ++col;
-                break;
-            case 'K':
-                numWhiteKings++;
-                m_arr[i++] = Piece{Color::White, PieceType::King};
-                ++col;
-                break;
+            case 1:
+                num_empty = std::get<int>(p);
+                if (num_empty)
+                {
+                    col += num_empty;
+                    i += num_empty;
+                }
+                else
+                {
+                    if (col != 8)
+                        throw std::runtime_error("Invalid FEN string: wrong number of columns");
+                    if (row == 7)
+                        throw std::runtime_error("Invalid FEN string: too many rows");
 
-            case '/':
-                if (col != 8)
-                    throw std::runtime_error("Invalid FEN string: wrong number of columns");
-                row++;
-                col = 0;
-                break;
-
-            case ' ':
-                complete = true;
+                    ++row;
+                    col = 0;
+                }
                 break;
 
             default:
-                throw std::runtime_error("Invalid FEN string: invalid character");
-            }
-            if (complete)
+                std::unreachable();
                 break;
+            }
         }
 
         if (i != 64 || row != 7 || col != 8 || numWhiteKings != 1 || numBlackKings != 1)
-            throw std::runtime_error("Invalid FEN string: end");
+        {
+            std::ostringstream err{"Invalid FEN string: "};
+            if (row != 7)
+                err << "only " << row << " rows.";
+            else if (col != 8)
+                err << "last row has " << col << " columns.";
+            else if (numWhiteKings != 1 || numBlackKings != 1)
+                err << "found " << numWhiteKings << " white kings and " << numBlackKings << " black kings.";
+            else
+                err << "i = " << i << '.';
+            throw std::runtime_error(err.str());
+        }
+        throw std::runtime_error("Invalid FEN string: end");
     }
 
     Occupant Board::get(Square square) const
@@ -147,6 +133,35 @@ namespace ChessGame
                 return path;
         }
         return path;
+    }
+
+    std::string Board::toFen() const
+    {
+        std::string fenstr;
+        fenstr.reserve(75);
+
+        for (size_t row = 0, i = 0; row < 8; ++row)
+        {
+            if (row != 0)
+                fenstr += '/';
+
+            size_t num_empty = 0;
+            for (size_t col = 0; col < 8; ++col, ++i)
+            {
+                if (m_arr[i])
+                {
+                    if (num_empty)
+                        fenstr += static_cast<char>('0' + num_empty);
+                    fenstr += FEN::pieceToChar(m_arr[i].piece());
+                }
+                else
+                    ++num_empty;
+            }
+            if (num_empty)
+                fenstr += static_cast<char>('0' + num_empty);
+        }
+
+        return fenstr;
     }
 
     constexpr std::array<Square, 64> Board::eachSquare()

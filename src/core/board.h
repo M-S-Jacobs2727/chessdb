@@ -13,10 +13,10 @@
 #include "core/piece.h"
 #include "core/square.h"
 
+#include "formats/fen.h"
+
 namespace ChessGame
 {
-    constexpr std::string_view initFEN{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
-
     class Occupant
     {
     public:
@@ -46,11 +46,13 @@ namespace ChessGame
     class Board
     {
     public:
-        explicit Board(std::string_view fenString);
+        explicit Board(std::string_view fenString = FEN::startpos);
         Occupant get(Square square) const;
         Occupant put(Square square, Piece piece);
         Occupant remove(Square square);
         Square kingSquare(Color color) const;
+
+        std::string toFen() const;
 
         /*
          * Returns a (possibly empty) vector of `Square`s along a given direction,
@@ -72,9 +74,6 @@ namespace ChessGame
         static constexpr Square rookFromSquare(Color color, Castling::Side side);
         static constexpr Square rookToSquare(Color color, Castling::Side side);
         static constexpr Square kingToSquare(Color color, Castling::Side side);
-
-        friend std::ostream &FEN::operator<<(std::ostream &, const Board &);
-        friend constexpr std::string FEN::str(const Board &board);
 
     private:
         std::array<Occupant, 64> m_arr;
