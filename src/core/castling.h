@@ -8,6 +8,8 @@
 #include "core/color.h"
 #include "core/square.h"
 
+#include "formats/fen.h"
+
 namespace ChessGame::Castling
 {
     enum class Side
@@ -19,24 +21,17 @@ namespace ChessGame::Castling
     class Rights
     {
     public:
-        Rights() = default;
-        explicit Rights(std::string_view fenStringRights);
+        explicit Rights(std::string_view fenStringRights = FEN::startcastle);
         constexpr void reset(bool val = true);
         constexpr void remove(Color color, Side side);
         constexpr void remove(Color color);
         constexpr bool get(Color color, Side side) const;
         constexpr const std::array<bool, 4> &get() const;
 
-        friend constexpr std::string FEN::str(const Rights &rights);
+        constexpr std::string toFEN() const;
 
     private:
         constexpr inline int idx(Color color, Side side) const;
         std::array<bool, 4> m_rights = {true, true, true, true};
-        std::unordered_map<char, size_t> m_fenMap = {
-            {'K', 0},
-            {'Q', 1},
-            {'k', 2},
-            {'q', 3},
-        };
     };
 } // namespace ChessGame::Castling

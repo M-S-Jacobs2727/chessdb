@@ -10,12 +10,7 @@ namespace ChessGame::Castling
         if (fenStringRights == "-")
             return;
         for (const auto &c : fenStringRights)
-        {
-            auto it = m_fenMap.find(c);
-            if (it == m_fenMap.end())
-                throw std::runtime_error("Invalid FEN castle string");
-            m_rights[(*it).second] = true;
-        }
+            m_rights[FEN::charToCastleIdx(c)] = true;
     }
 
     constexpr void Rights::reset(bool val = true)
@@ -49,4 +44,19 @@ namespace ChessGame::Castling
         return 2 * static_cast<int>(color) - static_cast<int>(side) + 1;
     }
 
+    constexpr std::string Rights::toFEN() const
+    {
+        std::string out;
+        out.reserve(5);
+        std::string_view test{"KQkq"};
+
+        for (size_t i = 0; i < 4; ++i)
+            if (m_rights[i])
+                out += test[i];
+
+        if (out.empty())
+            out += '-';
+
+        return out;
+    }
 } // namespace ChessGame::Castling

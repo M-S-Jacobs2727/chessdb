@@ -10,7 +10,40 @@ namespace ChessGame::FEN
 {
     constexpr std::string_view startpos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     constexpr std::string_view startstate{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"};
+    constexpr std::string_view startcastle{"KQkq"};
 
+    constexpr int charToCastleIdx(char c)
+    {
+        int idx = -1;
+        switch (c)
+        {
+        case 'K':
+            idx = 0;
+            break;
+        case 'Q':
+            idx = 1;
+            break;
+        case 'k':
+            idx = 2;
+            break;
+        case 'q':
+            idx = 3;
+            break;
+
+        default:
+            throw std::runtime_error("Invalid character in castle section of FEN string.");
+            break;
+        }
+
+        return idx;
+    }
+
+    std::unordered_map<char, size_t> m_fenMap = {
+        {'K', 0},
+        {'Q', 1},
+        {'k', 2},
+        {'q', 3},
+    };
     constexpr std::variant<Piece, int> charToPiece(char c)
     {
         std::variant<Piece, int> occ;
