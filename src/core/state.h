@@ -1,10 +1,9 @@
 #pragma once
 
 #include <cstdint>
-#include <memory>
 #include <optional>
-#include <ostream>
 #include <string>
+#include <string_view>
 
 #include "core/attacks.h"
 #include "core/board.h"
@@ -12,6 +11,8 @@
 #include "core/color.h"
 #include "core/move.h"
 #include "core/square.h"
+
+#include "formats/fen.h"
 
 namespace ChessGame
 {
@@ -28,12 +29,12 @@ namespace ChessGame
         Attacks attacks;
 
     public:
-        State() : board(initFEN), attacks(std::make_shared<Board>(board)) {}
+        State();
+        State(std::string_view fenstr = FEN::startstate);
         /// @brief Applies a move to the board state
         /// @param move
         void applyMove(const Move &move);
 
-        friend std::ostream &FEN::operator<<(std::ostream &, const State &);
-        friend constexpr std::string FEN::str(const State &state);
+        std::string toFEN() const;
     };
 } // namespace ChessGame

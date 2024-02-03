@@ -1,9 +1,59 @@
 #include "core/state.h"
 
+#include <memory>
+#include <sstream>
+#include <stdexcept>
+
 #include "core/offset.h"
 
 namespace ChessGame
 {
+    State::State()
+        : board(FEN::startpos), attacks(std::make_shared<Board>(board)),
+          fullTurnCounter(1), halfTurnCounter(0) {}
+
+    State::State(std::string_view fenstr)
+        : board(fenstr), attacks(std::make_shared<Board>(board))
+    {
+        std::istringstream readFEN{fenstr.data()};
+
+        std::string word;
+        readFEN >> word;
+
+        readFEN >> word;
+        if (word.size() != 1)
+            throw std::runtime_error("Invalid turn string.");
+        switch (word[0])
+        {
+        case 'w':
+            turn = Color::White;
+            break;
+        case 'b':
+            turn = Color::Black;
+            break;
+
+        default:
+            throw std::runtime_error("Invalid turn string.");
+            break;
+        }
+
+        readFEN >> word;
+        castleRights = Castling::Rights(word);
+
+        readFEN >> word;
+        if (word != "-")
+        {
+            if (word.size() != 2)
+                throw std::runtime_error("Invalid en passant square in FEN string.");
+            enPassant = Square{word[0] - 'a', word[1] - '1'};
+        }
+
+        readFEN >> word;
+        halfTurnCounter = std::stoul(word);
+        readFEN >> word;
+        fullTurnCounter = std::stoul(word);
+    }
+
     void State::applyMove(const ChessGame::Move &move)
     {
         board.remove(move.from);
@@ -53,5 +103,26 @@ namespace ChessGame
         turn = oppositeColor(turn);
 
         attacks.applyMove(move);
+    }
+
+    std::string State::toFEN() const
+    {
+        auto fenstr = board.toFen();
+        fenstr += ' ';
+        fenstr += (turn == Color::White) ? 'w' : 'b';
+        fenstr += ' ';
+        fenstr += castleRights.toFEN();
+        fenstr += ' ';
+        if (enPassant)
+        {
+            fenstr += static_cast<char>('a' + enPassant.value().file);
+            fenstr += static_cast<char>('1' + enPassant.value().rank);
+        }
+        else
+            fenstr += '-';
+        fenstr += ' ';
+        fenstr += std::to_string(halfTurnCounter);
+        fenstr += ' ';
+        fenstr += std::to_string(fullTurnCounter);
     }
 }
