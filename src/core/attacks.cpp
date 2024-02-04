@@ -29,12 +29,26 @@ namespace ChessGame
                 addAttacker(square, occupant.value());
     }
 
+    std::vector<Square> Attacks::attacks(Square square) const
+    {
+        auto board = getBoard();
+        std::vector<Square> attackedSquares;
+        const auto &attacked = m_attackedFrom[board->squareToIdx(square)];
+        attackedSquares.reserve(attacked.count());
+
+        for (size_t i = 0; i < 64; ++i)
+            if (attacked[i])
+                attackedSquares.push_back(board->idxToSquare(i));
+
+        return attackedSquares;
+    }
+
     std::vector<Square> Attacks::attackers(Square square, Color color) const
     {
         auto board = getBoard();
         auto idx = board->squareToIdx(square);
-        auto &attackedBy = (color == Color::White) ? m_attackedByWhite[idx]
-                                                   : m_attackedByBlack[idx];
+        const auto &attackedBy = (color == Color::White) ? m_attackedByWhite[idx]
+                                                         : m_attackedByBlack[idx];
         std::vector<Square> attackers;
         attackers.reserve(attackedBy.count());
 

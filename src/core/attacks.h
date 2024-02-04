@@ -15,11 +15,16 @@ namespace ChessGame
 {
     using AttackerArray = std::array<std::bitset<64>, 64>;
 
+    // TODO: Rename everything here
     class Attacks
     {
     public:
         Attacks() = delete;
         explicit Attacks(std::shared_ptr<Board> board);
+
+        /* The squares that the piece on the given square attacks.
+         */
+        std::vector<Square> attacks(Square square) const;
 
         /* Retrieve a vector of squares occupied by pieces of the given color attacking
         the given square.
