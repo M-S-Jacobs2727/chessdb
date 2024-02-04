@@ -39,7 +39,7 @@ namespace JChess::FEN
         return idx;
     }
 
-    std::unordered_map<char, size_t> m_fenMap = {
+    const inline std::unordered_map<char, size_t> m_fenMap = {
         {'K', 0},
         {'Q', 1},
         {'k', 2},
