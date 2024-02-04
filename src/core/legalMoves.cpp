@@ -5,11 +5,15 @@
 #include <utility>
 
 #include "core/attacks.h"
+#include "core/offset.h"
 
 namespace ChessGame
 {
     bool castleIsLegal(const State &state, Castling::Side side)
     {
+        if (!state.castleRights.get(state.turn, side))
+            return false;
+
         Square midSquare = Board::rookToSquare(state.turn, side);
 
         if (state.attacks.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
@@ -291,14 +295,12 @@ namespace ChessGame
 
         if (!inCheck) // castling moves
         {
-            if (state.castleRights.get(turnColor, Castling::Side::QUEEN) &&
-                castleIsLegal(state, Castling::Side::QUEEN))
+            if (castleIsLegal(state, Castling::Side::QUEEN))
                 moves.push_back({.piece = king,
                                  .from = kingSq,
                                  .to = board.kingToSquare(turnColor, Castling::Side::QUEEN),
                                  .castle = Castling::Side::QUEEN});
-            if (state.castleRights.get(turnColor, Castling::Side::KING) &&
-                castleIsLegal(state, Castling::Side::KING))
+            if (castleIsLegal(state, Castling::Side::KING))
                 moves.push_back({.piece = king,
                                  .from = kingSq,
                                  .to = board.kingToSquare(turnColor, Castling::Side::KING),
