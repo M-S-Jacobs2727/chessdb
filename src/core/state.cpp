@@ -59,9 +59,7 @@ namespace ChessGame
     void State::applyMove(const ChessGame::Move &move)
     {
         board.remove(move.from);
-        board.put(move.to,
-                  move.promotion ? Piece{turn, move.promotion.value()}
-                                 : move.piece);
+        board.put(move.to, move.promotion.value_or(move.piece));
 
         if (move.piece.type == PieceType::Pawn || move.capture)
             halfTurnCounter = 0;

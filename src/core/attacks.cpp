@@ -92,10 +92,10 @@ namespace ChessGame
         }
         else if (move.capture)
         {
-            removeAttacker(move.to, Piece{otherColor, move.capture.value()});
+            removeAttacker(move.to, move.capture.value());
         }
 
-        Piece addedAttacker = Piece{activeColor, move.promotion.value_or(move.piece.type)};
+        Piece addedAttacker = move.promotion.value_or(move.piece);
         addAttacker(move.to, addedAttacker);
     }
 

@@ -17,9 +17,9 @@ namespace ChessGame
         Square to;
 
         bool enPassant = false;
-        std::optional<PieceType> capture = std::nullopt;
+        std::optional<Piece> capture = std::nullopt;
         std::optional<Castling::Side> castle = std::nullopt;
-        std::optional<PieceType> promotion = std::nullopt;
+        std::optional<Piece> promotion = std::nullopt;
 
         bool operator==(const Move &other) const
         {
