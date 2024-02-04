@@ -8,22 +8,6 @@
 
 namespace ChessGame
 {
-    bool squareOnPath(Square test, Square start, Square end)
-    {
-        Offset dir1 = end - start;
-        if (!dir1.isDiagonal() && !dir1.isLateral())
-            return false;
-
-        Offset dir2 = test - start;
-        if (!dir2.isDiagonal() && !dir2.isLateral())
-            return false;
-
-        // return true iff (start < test < end) or (start > test > end) or (start == test == end)
-        // for both rank and file, and both end-start and test-start are diagonal or lateral paths
-        return ((start.file <=> test.file) == (test.file <=> end.file)) &&
-               ((start.rank <=> test.rank) == (test.rank <=> end.rank));
-    }
-
     bool castleIsLegal(const State &state, Castling::Side side)
     {
         Square midSquare = Board::rookToSquare(state.turn, side);
@@ -355,8 +339,8 @@ namespace ChessGame
             }
 
             for (const auto &move : candidateMoves)
-                if ((!checker || squareOnPath(move.to, checker.value(), kingSq)) &&
-                    (!hardPin || squareOnPath(move.to, hardPin.value(), kingSq)))
+                if ((!checker || Board::betweenSquares(move.to, checker.value(), kingSq)) &&
+                    (!hardPin || Board::betweenSquares(move.to, hardPin.value(), kingSq)))
                     moves.push_back(move);
         }
 

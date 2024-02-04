@@ -46,6 +46,7 @@ namespace ChessGame
         static constexpr size_t squareToIdx(Square square);
         static constexpr Square idxToSquare(size_t idx);
         static constexpr int homeRank(Color color);
+        static constexpr bool betweenSquares(Square test, Square start, Square end);
 
         static constexpr int rookFromFile(Castling::Side side);
         static constexpr int rookToFile(Castling::Side side);

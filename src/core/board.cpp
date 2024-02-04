@@ -127,6 +127,22 @@ namespace ChessGame
         return (occ && occ.value().color != movingColor);
     }
 
+    constexpr bool betweenSquares(Square test, Square start, Square end)
+    {
+        Offset dir1 = end - start;
+        if (!dir1.isDiagonal() && !dir1.isLateral())
+            return false;
+
+        Offset dir2 = test - start;
+        if (!dir2.isDiagonal() && !dir2.isLateral())
+            return false;
+
+        // return true iff (start < test < end) or (start > test > end) or (start == test == end)
+        // for both rank and file, and both end-start and test-start are diagonal or lateral paths
+        return ((start.file <=> test.file) == (test.file <=> end.file)) &&
+               ((start.rank <=> test.rank) == (test.rank <=> end.rank));
+    }
+
     std::vector<Square> Board::getPath(Square fromSquare, Offset direction, bool includePiece) const
     {
         std::vector<Square> path{};
