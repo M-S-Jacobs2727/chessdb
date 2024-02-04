@@ -62,15 +62,13 @@ namespace ChessGame
     {
         auto rank = move.from.rank;
         Square epPawn = state.enPassant.value() + Offsets::backward(state.turn);
-        Square myPawn = move.from;
-        int dir = (kingSq.file < epPawn.file) ? 1 : -1;
-        Offset pawnToKingDir{kingSq.file - epPawn.file,
-                             kingSq.rank - epPawn.rank};
 
         if (epPawn.rank != kingSq.rank)
             return false;
 
-        bool secondHalf = false;
+        Square myPawn = move.from;
+        int dir = (kingSq.file < epPawn.file) ? 1 : -1;
+
         auto file = kingSq.file;
         file += dir;
         while (file != epPawn.file && file != myPawn.file)
@@ -281,8 +279,6 @@ namespace ChessGame
         if (!offset.norm())
             return {};
 
-        Color oppColor = oppositeColor(color);
-
         auto pathToPin = board.getPath(square, -offset, true);
         if (pathToPin.empty())
             return {};
@@ -297,8 +293,8 @@ namespace ChessGame
         Piece piece = occupant.piece();
 
         if (piece.type == PieceType::Queen ||
-            piece.type == PieceType::Bishop && offset.isDiagonal() ||
-            piece.type == PieceType::Rook && offset.isLateral())
+            (piece.type == PieceType::Bishop && offset.isDiagonal()) ||
+            (piece.type == PieceType::Rook && offset.isLateral()))
             return hardPin;
 
         return {};
@@ -345,7 +341,7 @@ namespace ChessGame
             auto hardPin = getHardPin(board, square, color);
             bool canCaptureEnPassant = (state.enPassant) &&
                                        (piece.type == PieceType::Pawn) &&
-                                       (square.rank == ((color == Color::White) ? 5u : 4u)) &&
+                                       (square.rank == ((color == Color::White) ? 5 : 4)) &&
                                        (abs(square.file - state.enPassant.value().file) == 1);
 
             for (const auto &move : candidateMoves(board, square))

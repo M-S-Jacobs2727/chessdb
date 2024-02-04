@@ -13,7 +13,7 @@ namespace ChessGame::Castling
             m_rights[FEN::charToCastleIdx(c)] = true;
     }
 
-    constexpr void Rights::reset(bool val = true)
+    constexpr void Rights::reset(bool val)
     {
         m_rights.fill(val);
     }

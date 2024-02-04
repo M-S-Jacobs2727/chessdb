@@ -9,8 +9,10 @@
 namespace ChessGame
 {
     State::State()
-        : board(FEN::startpos), attacks(std::make_shared<Board>(board)),
-          fullTurnCounter(1), halfTurnCounter(0) {}
+        : board(FEN::startpos), fullTurnCounter(1), halfTurnCounter(0),
+          attacks(std::make_shared<Board>(board))
+    {
+    }
 
     State::State(std::string_view fenstr)
         : board(fenstr), attacks(std::make_shared<Board>(board))
@@ -124,5 +126,7 @@ namespace ChessGame
         fenstr += std::to_string(halfTurnCounter);
         fenstr += ' ';
         fenstr += std::to_string(fullTurnCounter);
+
+        return fenstr;
     }
 }

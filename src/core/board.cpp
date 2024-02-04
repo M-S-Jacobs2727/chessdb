@@ -193,7 +193,7 @@ namespace ChessGame
 
     constexpr Square Board::idxToSquare(size_t idx)
     {
-        size_t q = idx / 8, r = idx % 8;
+        int q = idx / 8, r = idx % 8;
         return Square{r, 7 - q};
     }
 

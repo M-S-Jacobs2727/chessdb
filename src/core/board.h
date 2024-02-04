@@ -25,6 +25,14 @@ namespace ChessGame
         {
             return static_cast<bool>(m_occ);
         }
+        constexpr bool operator==(const Occupant &occ) const
+        {
+            return occ.piece() == m_occ;
+        }
+        constexpr bool operator==(const Piece &piece) const
+        {
+            return m_occ && (piece == m_occ);
+        }
         operator Piece() = delete;
         void operator=(Piece piece)
         {

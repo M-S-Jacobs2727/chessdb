@@ -82,8 +82,8 @@ namespace ChessGame
         else if (move.castle)
         {
             bool qs = move.castle.value() == Castling::Side::QUEEN;
-            Square rookTo = Square{qs ? 3u : 5u, move.from.rank},
-                   rookFrom = Square{qs ? 0u : 7u, move.from.rank};
+            Square rookTo = Square{qs ? 3 : 5, move.from.rank},
+                   rookFrom = Square{qs ? 0 : 7, move.from.rank};
             removePiece(rookFrom);
             addPiece(rookTo);
             Piece rook{activeColor, PieceType::Rook};
@@ -175,7 +175,6 @@ namespace ChessGame
 
     void Attacks::removeAttacker(Square square, Piece piece)
     {
-        std::optional<Square> maybeSq = std::nullopt;
         Square newSq{};
         auto board = getBoard();
 
