@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace ChessGame::Castling
+namespace JChess::Castling
 {
     Rights::Rights(std::string_view fenStringRights)
     {
@@ -59,4 +59,4 @@ namespace ChessGame::Castling
 
         return out;
     }
-} // namespace ChessGame::Castling
+} // namespace JChess::Castling

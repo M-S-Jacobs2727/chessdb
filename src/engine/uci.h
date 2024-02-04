@@ -11,7 +11,7 @@
 #include "core/board.h"
 #include "core/move.h"
 
-namespace ChessGame
+namespace JChess
 {
     namespace bp = boost::process;
 

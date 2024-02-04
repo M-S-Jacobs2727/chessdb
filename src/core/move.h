@@ -8,7 +8,7 @@
 #include "core/piece.h"
 #include "core/square.h"
 
-namespace ChessGame
+namespace JChess
 {
     struct Move
     {
@@ -31,9 +31,9 @@ namespace ChessGame
 } // namespace ChessGame
 
 template <>
-struct std::hash<ChessGame::Move>
+struct std::hash<JChess::Move>
 {
-    inline size_t operator()(const ChessGame::Move &move) const noexcept
+    inline size_t operator()(const JChess::Move &move) const noexcept
     {
         size_t h = 0;
         h ^= std::hash<size_t>{}(static_cast<size_t>(move.piece.color));

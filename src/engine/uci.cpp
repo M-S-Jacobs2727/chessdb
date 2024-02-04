@@ -3,7 +3,7 @@
 #include <chrono>
 #include <sstream>
 
-namespace ChessGame
+namespace JChess
 {
     UCI::UCI(std::string_view enginePath)
         : m_engine(bp::child(enginePath,

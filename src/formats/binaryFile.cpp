@@ -7,7 +7,7 @@
 
 #include "fileFormat/binaryFile.h"
 
-namespace ChessGame
+namespace JChess
 {
     constexpr std::string_view FORMATCODE = "PGN1";
 

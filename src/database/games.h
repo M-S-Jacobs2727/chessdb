@@ -7,7 +7,7 @@
 #include "internal/game/game.h"
 #include "internal/game/move.h"
 
-namespace ChessGame
+namespace JChess
 {
     std::string_view assembleMovesBlob(const std::vector<Move> &moves);
     std::string_view insertGameCommand(const Game &game);

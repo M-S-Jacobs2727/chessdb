@@ -8,7 +8,7 @@
 #include <set>
 #include <tuple>
 
-namespace ChessGame
+namespace JChess
 {
     uint64_t _insertGame(pqxx::work &txn, const Game &game)
     {

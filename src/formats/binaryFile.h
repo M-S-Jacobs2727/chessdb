@@ -8,7 +8,7 @@
 #include "internal/logic/game.h"
 #include "internal/logic/state.h"
 
-namespace ChessGame
+namespace JChess
 {
     void writeBinary(std::ostream &output, const Game &game);
     void writeBinaryHeader(std::ostream &output, const Game &game);

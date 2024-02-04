@@ -5,7 +5,7 @@
 
 #include "core/offset.h"
 
-namespace ChessGame
+namespace JChess
 {
     Attacks::Attacks(std::shared_ptr<Board> board)
         : m_board_ptr(board)
@@ -320,4 +320,4 @@ namespace ChessGame
             throw std::runtime_error("AttackingPieces could not access Postion");
         return sp_pos;
     }
-} // namespace ChessGame
+} // namespace JChess

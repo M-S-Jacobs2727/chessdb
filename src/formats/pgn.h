@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ChessGame::PGN
+namespace JChess::PGN
 {
 
 } // namespace ChessGame::PGN

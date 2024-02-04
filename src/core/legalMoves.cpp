@@ -7,7 +7,7 @@
 #include "core/attacks.h"
 #include "core/offset.h"
 
-namespace ChessGame
+namespace JChess
 {
     bool castleIsLegal(const State &state, Castling::Side side)
     {

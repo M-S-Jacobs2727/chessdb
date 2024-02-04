@@ -7,7 +7,7 @@
 #include "core/square.h"
 #include "core/state.h"
 
-namespace ChessGame
+namespace JChess
 {
     std::optional<Square> getHardPin(const State &state, Square testSquare, Square kingSq);
     std::vector<Move> legalMoves(const State &state);

@@ -1,7 +1,7 @@
 #include "core/piece.h"
 #include <gtest/gtest.h>
 
-using ChessGame::Piece, ChessGame::PieceType, ChessGame::Color;
+using JChess::Piece, JChess::PieceType, JChess::Color;
 
 TEST(PieceTest, BasicAssertions)
 {
@@ -12,7 +12,7 @@ TEST(PieceTest, BasicAssertions)
 
 TEST(PieceTest, OppositeColor)
 {
-    using ChessGame::oppositeColor;
+    using JChess::oppositeColor;
     EXPECT_EQ(oppositeColor(Color::White), Color::Black);
     EXPECT_EQ(oppositeColor(Color::Black), Color::White);
 }

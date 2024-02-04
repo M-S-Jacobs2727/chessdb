@@ -17,7 +17,7 @@
 
 #include "fileFormat/pgnFile.h"
 
-namespace ChessGame
+namespace JChess
 {
     void readPGNHeader(std::istream &input, Game &game)
     {

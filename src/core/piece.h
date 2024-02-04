@@ -2,7 +2,7 @@
 
 #include "core/color.h"
 
-namespace ChessGame
+namespace JChess
 {
     enum class PieceType
     {

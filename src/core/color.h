@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ChessGame
+namespace JChess
 {
     enum class Color
     {

@@ -15,15 +15,15 @@ int main(int argc, char *argv[])
     std::string output_filename{argv[2]};
 
     std::ifstream input{input_filename};
-    auto game = ChessGame::readPGN(input);
+    auto game = JChess::readPGN(input);
     input.close();
 
     std::ofstream output{output_filename};
-    ChessGame::writeBinary(output, game);
+    JChess::writeBinary(output, game);
     output.close();
 
     input.open(output_filename);
-    auto game2 = ChessGame::readBinary(input);
+    auto game2 = JChess::readBinary(input);
     input.close();
 
     return 0;

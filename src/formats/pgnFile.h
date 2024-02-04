@@ -7,7 +7,7 @@
 #include "internal/game/game.h"
 #include "internal/game/move.h"
 
-namespace ChessGame
+namespace JChess
 {
     Game readPGN(std::istream &input);
 

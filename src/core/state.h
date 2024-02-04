@@ -14,7 +14,7 @@
 
 #include "formats/fen.h"
 
-namespace ChessGame
+namespace JChess
 {
     /// @brief The game state of a game of chess
     class State

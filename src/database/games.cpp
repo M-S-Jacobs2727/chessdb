@@ -8,7 +8,7 @@
 
 #include <pqxx/pqxx>
 
-namespace ChessGame
+namespace JChess
 {
     std::string_view assembleMovesBlob(const std::vector<Move> &moves)
     {

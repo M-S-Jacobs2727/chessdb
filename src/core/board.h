@@ -15,7 +15,7 @@
 
 #include "formats/fen.h"
 
-namespace ChessGame
+namespace JChess
 {
     using Occupant = std::optional<Piece>;
 
@@ -58,4 +58,4 @@ namespace ChessGame
     private:
         std::array<Occupant, 64> m_arr;
     };
-} // namespace ChessGame
+} // namespace JChess

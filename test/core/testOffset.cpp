@@ -2,7 +2,7 @@
 #include "core/square.h"
 #include <gtest/gtest.h>
 
-using ChessGame::Offset;
+using JChess::Offset;
 
 TEST(OffsetTest, BasicAssertions)
 {
@@ -85,7 +85,7 @@ TEST(OffsetTest, Norm)
 
 TEST(OffsetTest, SquareOperator)
 {
-    using ChessGame::Square;
+    using JChess::Square;
 
     Square sq{0, 0};
     Offset offset{1, 2};
@@ -102,7 +102,7 @@ TEST(OffsetTest, SquareOperator)
 
 TEST(OffsetTest, Difference)
 {
-    using ChessGame::Square;
+    using JChess::Square;
 
     Square sq{0, 0}, sq2{6, 0};
     Offset offset = sq2 - sq;
@@ -115,16 +115,16 @@ TEST(OffsetTest, Difference)
 
 TEST(OffsetTest, BackAndForth)
 {
-    using ChessGame::Color;
+    using JChess::Color;
 
-    Offset offset = ChessGame::forward(Color::White),
-           offset2 = ChessGame::backward(Color::Black);
+    Offset offset = JChess::forward(Color::White),
+           offset2 = JChess::backward(Color::Black);
     EXPECT_EQ(offset, offset2);
     EXPECT_EQ(offset.file, 0);
     EXPECT_EQ(offset.rank, 1);
 
-    offset = ChessGame::forward(Color::Black);
-    offset2 = ChessGame::backward(Color::White);
+    offset = JChess::forward(Color::Black);
+    offset2 = JChess::backward(Color::White);
     EXPECT_EQ(offset, offset2);
     EXPECT_EQ(offset.file, 0);
     EXPECT_EQ(offset.rank, -1);

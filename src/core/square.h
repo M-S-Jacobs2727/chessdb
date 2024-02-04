@@ -5,7 +5,7 @@
 
 #include "core/offset.h"
 
-namespace ChessGame
+namespace JChess
 {
     struct Square
     {
@@ -51,9 +51,9 @@ namespace ChessGame
 } // namespace ChessGame
 
 template <>
-struct std::hash<ChessGame::Square>
+struct std::hash<JChess::Square>
 {
-    inline size_t operator()(const ChessGame::Square &square) const noexcept
+    inline size_t operator()(const JChess::Square &square) const noexcept
     {
         size_t h1 = std::hash<int>{}(square.file);
         size_t h2 = std::hash<int>{}(square.rank);

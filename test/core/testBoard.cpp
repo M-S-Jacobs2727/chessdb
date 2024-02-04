@@ -1,11 +1,11 @@
 #include "core/board.h"
 #include <gtest/gtest.h>
 
-using ChessGame::Board;
+using JChess::Board;
 
 TEST(PositionTest, BasicAssertions)
 {
-    using ChessGame::Color, ChessGame::Piece, ChessGame::PieceType;
+    using JChess::Color, JChess::Piece, JChess::PieceType;
     Piece wp{Color::White, PieceType::Pawn},
         wn{Color::White, PieceType::Knight},
         wb{Color::White, PieceType::Bishop},
@@ -102,7 +102,7 @@ TEST(PositionTest, BasicAssertions)
 
 TEST(PositionTest, PutRemove)
 {
-    using ChessGame::Color, ChessGame::Piece, ChessGame::PieceType;
+    using JChess::Color, JChess::Piece, JChess::PieceType;
 
     Piece wp{Color::White, PieceType::Pawn},
         wn{Color::White, PieceType::Knight},
@@ -137,16 +137,16 @@ TEST(PositionTest, PutRemove)
 TEST(PositionTest, KingSquare)
 {
     Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
-    ChessGame::Square ws = pos.kingSquare(ChessGame::Color::White),
-                      bs = pos.kingSquare(ChessGame::Color::Black);
+    JChess::Square ws = pos.kingSquare(JChess::Color::White),
+                      bs = pos.kingSquare(JChess::Color::Black);
     EXPECT_EQ(ws.file, 4);
     EXPECT_EQ(ws.rank, 0);
     EXPECT_EQ(bs.file, 4);
     EXPECT_EQ(bs.rank, 7);
 
     Board pos2{"8/8/8/k6K/8/8/8/8"};
-    ws = pos2.kingSquare(ChessGame::Color::White);
-    bs = pos2.kingSquare(ChessGame::Color::Black);
+    ws = pos2.kingSquare(JChess::Color::White);
+    bs = pos2.kingSquare(JChess::Color::Black);
     EXPECT_EQ(ws.file, 7);
     EXPECT_EQ(ws.rank, 4);
     EXPECT_EQ(bs.file, 0);
@@ -155,7 +155,7 @@ TEST(PositionTest, KingSquare)
 
 TEST(PositionTest, GetPath)
 {
-    using ChessGame::Offset, ChessGame::Square;
+    using JChess::Offset, JChess::Square;
     Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     Square start{3, 1};
     Offset forward{0, 1};

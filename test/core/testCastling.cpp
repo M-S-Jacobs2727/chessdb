@@ -1,11 +1,11 @@
 #include "core/castling.h"
 #include <gtest/gtest.h>
 
-namespace cstl = ChessGame::Castling;
+namespace cstl = JChess::Castling;
 
 TEST(CastlingTest, BasicAssertions)
 {
-    using ChessGame::Color, cstl::Side;
+    using JChess::Color, cstl::Side;
 
     cstl::Rights rights;
     EXPECT_TRUE(rights.get(Color::White, Side::QUEEN));
@@ -16,7 +16,7 @@ TEST(CastlingTest, BasicAssertions)
 
 TEST(CastlingTest, Squares)
 {
-    using ChessGame::Square, ChessGame::Color, ChessGame::Castling::Side;
+    using JChess::Square, JChess::Color, JChess::Castling::Side;
     Square sq, sq2;
 
     sq = cstl::kingToSquare(Color::White, Side::QUEEN);
@@ -61,7 +61,7 @@ TEST(CastlingTest, Squares)
 
 TEST(CastlingTest, FENConstructor)
 {
-    using ChessGame::Color, ChessGame::Castling::Side;
+    using JChess::Color, JChess::Castling::Side;
 
     {
         cstl::Rights rights("KQkq");
@@ -102,7 +102,7 @@ TEST(CastlingTest, FENConstructor)
 
 TEST(CastlingTest, Remove)
 {
-    using ChessGame::Color, ChessGame::Castling::Side;
+    using JChess::Color, JChess::Castling::Side;
 
     cstl::Rights rights;
     rights.remove(Color::White, Side::KING);

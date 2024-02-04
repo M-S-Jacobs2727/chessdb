@@ -9,7 +9,7 @@
 #include "internal/game/move.h"
 #include "internal/game/position.h"
 
-namespace ChessGame
+namespace JChess
 {
     using blob = std::basic_string<std::byte>;
 

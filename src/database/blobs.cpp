@@ -1,7 +1,7 @@
 #include "database/blobs.h"
 #include "blobs.h"
 
-namespace ChessGame
+namespace JChess
 {
     template <class T, class U>
     constexpr void writeToBits(T &bits, U value, uint8_t shift)

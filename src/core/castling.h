@@ -10,7 +10,7 @@
 
 #include "formats/fen.h"
 
-namespace ChessGame::Castling
+namespace JChess::Castling
 {
     enum class Side
     {
@@ -34,4 +34,4 @@ namespace ChessGame::Castling
         constexpr inline int idx(Color color, Side side) const;
         std::array<bool, 4> m_rights = {true, true, true, true};
     };
-} // namespace ChessGame::Castling
+} // namespace JChess::Castling

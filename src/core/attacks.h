@@ -11,11 +11,10 @@
 #include "core/piece.h"
 #include "core/square.h"
 
-namespace ChessGame
+namespace JChess
 {
     using AttackerArray = std::array<std::bitset<64>, 64>;
 
-    // TODO: Rename everything here
     class Attacks
     {
     public:
@@ -81,4 +80,4 @@ namespace ChessGame
         // Squares that the piece occupying the given square attacks
         AttackerArray m_attackedFrom;
     };
-} // namespace ChessGame
+} // namespace JChess

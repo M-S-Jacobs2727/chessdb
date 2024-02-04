@@ -3,7 +3,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace ChessGame
+namespace JChess
 {
     using msDuration = std::chrono::duration<uint32_t, std::milli>;
     struct TimeControl

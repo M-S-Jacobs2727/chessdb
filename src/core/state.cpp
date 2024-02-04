@@ -6,7 +6,7 @@
 
 #include "core/offset.h"
 
-namespace ChessGame
+namespace JChess
 {
     State::State()
         : board(FEN::startpos), fullTurnCounter(1), halfTurnCounter(0),
@@ -56,7 +56,7 @@ namespace ChessGame
         fullTurnCounter = std::stoul(word);
     }
 
-    void State::applyMove(const ChessGame::Move &move)
+    void State::applyMove(const JChess::Move &move)
     {
         board.remove(move.from);
         board.put(move.to, move.promotion.value_or(move.piece));

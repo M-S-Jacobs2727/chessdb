@@ -7,7 +7,7 @@
 
 #define MAX(x, y) (x < y) ? y : x
 
-namespace ChessGame
+namespace JChess
 {
     struct Offset
     {

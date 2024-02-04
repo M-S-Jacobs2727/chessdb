@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace ChessGame
+namespace JChess
 {
     struct Evaluation
     {

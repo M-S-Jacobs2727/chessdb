@@ -4,5 +4,5 @@
 
 TEST(UCITest, Startup)
 {
-    ChessGame::UCI uci{"stockfish"};
+    JChess::UCI uci{"stockfish"};
 }

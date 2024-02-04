@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ChessGame::Algebraic
+namespace JChess::Algebraic
 {
 
 } // namespace ChessGame::Algebraic

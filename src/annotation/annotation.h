@@ -4,7 +4,7 @@
 #include <string_view>
 #include <unordered_map>
 
-namespace ChessGame
+namespace JChess
 {
     enum class Annotation
     {
@@ -48,4 +48,4 @@ namespace ChessGame
             {Annotation::Interesting, "interesting"s},
             {Annotation::Dubious, "dubious"s}};
     } // namespace Annotations
-} // namespace ChessGame
+} // namespace JChess

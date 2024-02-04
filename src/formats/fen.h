@@ -6,7 +6,7 @@
 
 #include "core/piece.h"
 
-namespace ChessGame::FEN
+namespace JChess::FEN
 {
     constexpr std::string_view startpos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     constexpr std::string_view startstate{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"};

@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <utility>
 
-namespace ChessGame
+namespace JChess
 {
     Board::Board(std::string_view fenString)
     {
@@ -270,4 +270,4 @@ namespace ChessGame
     {
         return Square{kingToFile(side), homeRank(color)};
     }
-} // namespace ChessGame
+} // namespace JChess

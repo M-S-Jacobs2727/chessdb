@@ -1,7 +1,7 @@
 #include "core/square.h"
 #include <gtest/gtest.h>
 
-using ChessGame::Square;
+using JChess::Square;
 
 TEST(SquareTest, BasicAssertions)
 {
