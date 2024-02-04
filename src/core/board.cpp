@@ -119,19 +119,16 @@ namespace ChessGame
     {
         std::vector<Square> path{};
         path.reserve(8);
-        Square newSq = fromSquare;
-        for (int i = 0; i < 8; ++i)
-        {
-            newSq += direction;
-            if (valid(newSq))
-                return path;
+        for (Square sq = fromSquare + direction; valid(sq) && !get(sq); sq += direction)
+            path.push_back(sq);
 
-            auto occupant = get(newSq);
-            if (!occupant || includePiece)
-                path.push_back(newSq);
-            if (occupant)
-                return path;
-        }
+        if (path.empty())
+            return path;
+
+        Square lastSq = path.back() + direction;
+        if (valid(lastSq) && includePiece)
+            path.push_back(lastSq);
+
         return path;
     }
 
