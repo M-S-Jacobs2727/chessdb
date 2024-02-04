@@ -146,16 +146,16 @@ namespace JChess
     {
         std::vector<Square> path{};
         path.reserve(8);
-        for (Square sq = fromSquare + direction; valid(sq) && !get(sq); sq += direction)
+        for (Square sq = fromSquare + direction; valid(sq); sq += direction)
+        {
+            if (get(sq))
+            {
+                if (includePiece)
+                    path.push_back(sq);
+                break;
+            }
             path.push_back(sq);
-
-        if (path.empty())
-            return path;
-
-        Square lastSq = path.back() + direction;
-        if (valid(lastSq) && includePiece)
-            path.push_back(lastSq);
-
+        }
         return path;
     }
 
