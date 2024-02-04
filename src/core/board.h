@@ -28,8 +28,8 @@ namespace JChess
         Occupant remove(Square square);
         Square kingSquare(Color color) const;
 
-        constexpr bool canMoveTo(Color movingColor, Square to) const;
-        constexpr bool pawnCanCapture(Color movingColor, Square to) const;
+        bool canMoveTo(Color movingColor, Square to) const;
+        bool pawnCanCapture(Color movingColor, Square to) const;
 
         std::string toFen() const;
 
@@ -38,22 +38,22 @@ namespace JChess
          * up to and optionally including the first piece found.
          */
         std::vector<Square> getPath(Square fromSquare, Offset direction, bool includePiece) const;
-        constexpr const std::array<Occupant, 64> &eachOccupant() const;
+        const std::array<Occupant, 64> &eachOccupant() const;
 
-        static constexpr std::array<Square, 64> eachSquare();
+        static std::array<Square, 64> eachSquare();
 
-        static constexpr bool valid(Square square);
-        static constexpr size_t squareToIdx(Square square);
-        static constexpr Square idxToSquare(size_t idx);
-        static constexpr int homeRank(Color color);
-        static constexpr bool betweenSquares(Square test, Square start, Square end);
+        static bool valid(Square square);
+        static size_t squareToIdx(Square square);
+        static Square idxToSquare(size_t idx);
+        static int homeRank(Color color);
+        static bool betweenSquares(Square test, Square start, Square end);
 
-        static constexpr int rookFromFile(Castling::Side side);
-        static constexpr int rookToFile(Castling::Side side);
-        static constexpr int kingToFile(Castling::Side side);
-        static constexpr Square rookFromSquare(Color color, Castling::Side side);
-        static constexpr Square rookToSquare(Color color, Castling::Side side);
-        static constexpr Square kingToSquare(Color color, Castling::Side side);
+        static int rookFromFile(Castling::Side side);
+        static int rookToFile(Castling::Side side);
+        static int kingToFile(Castling::Side side);
+        static Square rookFromSquare(Color color, Castling::Side side);
+        static Square rookToSquare(Color color, Castling::Side side);
+        static Square kingToSquare(Color color, Castling::Side side);
 
     private:
         std::array<Occupant, 64> m_arr;

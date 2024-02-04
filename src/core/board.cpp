@@ -115,19 +115,19 @@ namespace JChess
         return idxToSquare(idx);
     }
 
-    constexpr bool Board::canMoveTo(Color movingColor, Square to) const
+    bool Board::canMoveTo(Color movingColor, Square to) const
     {
         auto occ = get(to);
         return (!occ || occ.value().color != movingColor);
     }
 
-    constexpr bool Board::pawnCanCapture(Color movingColor, Square to) const
+    bool Board::pawnCanCapture(Color movingColor, Square to) const
     {
         auto occ = get(to);
         return (occ && occ.value().color != movingColor);
     }
 
-    constexpr bool betweenSquares(Square test, Square start, Square end)
+    bool betweenSquares(Square test, Square start, Square end)
     {
         Offset dir1 = end - start;
         if (!dir1.isDiagonal() && !dir1.isLateral())
@@ -189,12 +189,12 @@ namespace JChess
         return fenstr;
     }
 
-    constexpr std::array<Square, 64> Board::eachSquare()
+    std::array<Square, 64> Board::eachSquare()
     {
         std::array<Square, 64> squares;
 
         size_t i = 0;
-        for (int rank = 7; rank >= 0; ++rank)
+        for (int rank = 7; rank >= 0; --rank)
         {
             for (int file = 0; file < 8; ++file, ++i)
             {
@@ -206,23 +206,23 @@ namespace JChess
         return squares;
     }
 
-    constexpr const std::array<Occupant, 64> &Board::eachOccupant() const
+    const std::array<Occupant, 64> &Board::eachOccupant() const
     {
         return m_arr;
     }
 
-    constexpr size_t Board::squareToIdx(Square square)
+    size_t Board::squareToIdx(Square square)
     {
         return static_cast<size_t>((7 - square.rank) * 8 + square.file);
     }
 
-    constexpr Square Board::idxToSquare(size_t idx)
+    Square Board::idxToSquare(size_t idx)
     {
         int q = idx / 8, r = idx % 8;
         return Square{r, 7 - q};
     }
 
-    constexpr bool Board::valid(Square square)
+    bool Board::valid(Square square)
     {
         return 0 <= square.file &&
                square.file <= 7 &&
@@ -230,43 +230,43 @@ namespace JChess
                square.rank <= 7;
     }
 
-    constexpr int Board::homeRank(Color color)
+    int Board::homeRank(Color color)
     {
         return static_cast<int>(color) * 7;
     }
 
-    constexpr int Board::rookFromFile(Castling::Side side)
+    int Board::rookFromFile(Castling::Side side)
     {
         // QS/0 -> 0
         // KS/1 -> 7
         return 7 * static_cast<int>(side);
     }
 
-    constexpr int Board::rookToFile(Castling::Side side)
+    int Board::rookToFile(Castling::Side side)
     {
         // QS/0 -> 3
         // KS/1 -> 5
         return 2 * static_cast<int>(side) + 3;
     }
 
-    constexpr int Board::kingToFile(Castling::Side side)
+    int Board::kingToFile(Castling::Side side)
     {
         // QS/0 -> 2
         // KS/1 -> 6
         return 4 * static_cast<int>(side) + 2;
     }
 
-    constexpr Square Board::rookFromSquare(const Color color, Castling::Side side)
+    Square Board::rookFromSquare(const Color color, Castling::Side side)
     {
         return Square{rookFromFile(side), homeRank(color)};
     }
 
-    constexpr Square Board::rookToSquare(const Color color, Castling::Side side)
+    Square Board::rookToSquare(const Color color, Castling::Side side)
     {
         return Square{rookToFile(side), homeRank(color)};
     }
 
-    constexpr Square Board::kingToSquare(const Color color, Castling::Side side)
+    Square Board::kingToSquare(const Color color, Castling::Side side)
     {
         return Square{kingToFile(side), homeRank(color)};
     }
