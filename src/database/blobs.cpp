@@ -92,4 +92,4 @@ namespace JChess
         return pos;
     }
 
-} // namespace ChessGame
+} // namespace JChess

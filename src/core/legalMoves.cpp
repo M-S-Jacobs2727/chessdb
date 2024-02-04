@@ -348,4 +348,4 @@ namespace JChess
 
         return moves;
     }
-} // namespace ChessGame
+} // namespace JChess

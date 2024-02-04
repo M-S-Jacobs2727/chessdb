@@ -37,4 +37,4 @@ namespace JChess
 
         std::string toFEN() const;
     };
-} // namespace ChessGame
+} // namespace JChess

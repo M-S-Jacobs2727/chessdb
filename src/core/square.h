@@ -48,7 +48,7 @@ namespace JChess
             return Offset{file - other.file, rank - other.rank};
         }
     };
-} // namespace ChessGame
+} // namespace JChess
 
 template <>
 struct std::hash<JChess::Square>

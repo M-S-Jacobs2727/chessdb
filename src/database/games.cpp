@@ -70,4 +70,4 @@ namespace JChess
 
         return command.str();
     }
-} // namespace ChessGame
+} // namespace JChess

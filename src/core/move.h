@@ -28,7 +28,7 @@ namespace JChess
                    to == other.to;
         }
     };
-} // namespace ChessGame
+} // namespace JChess
 
 template <>
 struct std::hash<JChess::Move>

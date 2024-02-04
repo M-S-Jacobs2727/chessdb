@@ -17,4 +17,4 @@ namespace JChess
                      const Board &pos,
                      const std::optional<Square> &enPassant,
                      Color turn);
-} // namespace ChessGame
+} // namespace JChess

@@ -96,4 +96,4 @@ namespace JChess
 
         std::chrono::duration<float> m_readDelay;
     };
-} // namespace ChessGame
+} // namespace JChess

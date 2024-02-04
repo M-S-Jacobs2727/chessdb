@@ -3,4 +3,4 @@
 namespace JChess::PGN
 {
 
-} // namespace ChessGame::PGN
+} // namespace JChess::PGN

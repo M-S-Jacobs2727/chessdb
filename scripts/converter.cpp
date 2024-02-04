@@ -4,7 +4,7 @@
 
 #include "chessfiles/binaryFile.h"
 #include "chessfiles/pgnFile.h"
-#include "chessgame/game.h"
+#include "JChess/game.h"
 
 int main(int argc, char *argv[])
 {

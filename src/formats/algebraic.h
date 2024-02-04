@@ -3,4 +3,4 @@
 namespace JChess::Algebraic
 {
 
-} // namespace ChessGame::Algebraic
+} // namespace JChess::Algebraic

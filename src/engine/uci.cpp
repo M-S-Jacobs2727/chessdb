@@ -161,4 +161,4 @@ namespace JChess
 
         return fut.get();
     }
-} // namespace ChessGame
+} // namespace JChess

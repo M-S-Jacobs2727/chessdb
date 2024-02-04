@@ -284,4 +284,4 @@ namespace JChess
 
         input.read(reinterpret_cast<char *>(&board.fullTurnCounter), sizeof(board.fullTurnCounter));
     }
-} // namespace ChessGame
+} // namespace JChess

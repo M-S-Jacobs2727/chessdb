@@ -11,4 +11,4 @@ namespace JChess
 {
     std::optional<Square> getHardPin(const State &state, Square testSquare, Square kingSq);
     std::vector<Move> legalMoves(const State &state);
-} // namespace ChessGame
+} // namespace JChess

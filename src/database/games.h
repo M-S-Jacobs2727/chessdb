@@ -12,4 +12,4 @@ namespace JChess
     std::string_view assembleMovesBlob(const std::vector<Move> &moves);
     std::string_view insertGameCommand(const Game &game);
     bool insertGame(pqxx::connection &conn, const Game &game);
-} // namespace ChessGame
+} // namespace JChess

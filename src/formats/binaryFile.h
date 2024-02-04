@@ -23,4 +23,4 @@ namespace JChess
     void readBinaryEvaluation(std::istream &input, Evaluation &eval);
     void readBinaryClock(std::istream &input, ClockTime &clock);
     void readBinaryState(std::istream &input, State &state);
-} // namespace ChessGame
+} // namespace JChess

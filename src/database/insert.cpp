@@ -233,4 +233,4 @@ namespace JChess
             std::cerr << e.what() << '\n';
         }
     }
-} // namespace ChessGame
+} // namespace JChess

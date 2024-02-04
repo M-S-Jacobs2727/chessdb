@@ -113,4 +113,4 @@ namespace JChess::FEN
     {
         return pieceChars[static_cast<int>(piece.color) * 6 + static_cast<int>(piece.type)];
     }
-} // namespace ChessGame::FEN
+} // namespace JChess::FEN

@@ -18,4 +18,4 @@ namespace JChess
 
     blob positionToBlob(const Board &board);
     Board blobToPosition(const blob &posBlob);
-} // namespace ChessGame
+} // namespace JChess
