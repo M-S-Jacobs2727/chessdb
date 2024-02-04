@@ -10,59 +10,59 @@ TEST(AttacksTest, BasicAssertions)
     Attacks att{pos_p};
 
     {
-        int nums[] = {0, 1, 1, 1, 1, 1, 1, 0};
+        size_t nums[] = {0, 1, 1, 1, 1, 1, 1, 0};
 
-        for (size_t i = 0; i < 8; ++i)
+        for (int i = 0; i < 8; ++i)
         {
             auto num = att.numAttackers({i, 0}, JChess::Color::White);
             EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "1.";
             num = att.numAttackers({i, 0}, JChess::Color::Black);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "1.";
+            EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "1.";
             num = att.numAttackers({i, 7}, JChess::Color::White);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "8.";
+            EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "8.";
             num = att.numAttackers({i, 7}, JChess::Color::Black);
             EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "8.";
         }
     }
     {
-        int nums[] = {1, 1, 1, 4, 4, 1, 1, 1};
+        size_t nums[] = {1, 1, 1, 4, 4, 1, 1, 1};
 
-        for (size_t i = 0; i < 8; ++i)
+        for (int i = 0; i < 8; ++i)
         {
             auto num = att.numAttackers({i, 1}, JChess::Color::White);
             EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "2.";
             num = att.numAttackers({i, 1}, JChess::Color::Black);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "2.";
+            EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "2.";
             num = att.numAttackers({i, 6}, JChess::Color::White);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "7.";
+            EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "7.";
             num = att.numAttackers({i, 6}, JChess::Color::Black);
             EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "7.";
         }
     }
     {
-        int nums[] = {2, 2, 3, 2, 2, 3, 2, 2};
+        size_t nums[] = {2, 2, 3, 2, 2, 3, 2, 2};
 
-        for (size_t i = 0; i < 8; ++i)
+        for (int i = 0; i < 8; ++i)
         {
             auto num = att.numAttackers({i, 2}, JChess::Color::White);
             EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "3.";
             num = att.numAttackers({i, 2}, JChess::Color::Black);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "3.";
+            EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "3.";
             num = att.numAttackers({i, 5}, JChess::Color::White);
-            EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "6.";
+            EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "6.";
             num = att.numAttackers({i, 5}, JChess::Color::Black);
             EXPECT_EQ(nums[i], num) << "Incorrect number of attackers to " << (char)('a' + i) << "6.";
         }
     }
-    for (size_t i = 0; i < 8; ++i)
+    for (int i = 0; i < 8; ++i)
     {
         auto num = att.numAttackers({i, 3}, JChess::Color::White);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "4.";
+        EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "4.";
         num = att.numAttackers({i, 3}, JChess::Color::Black);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "4.";
+        EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "4.";
         num = att.numAttackers({i, 4}, JChess::Color::White);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "5.";
+        EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "5.";
         num = att.numAttackers({i, 4}, JChess::Color::Black);
-        EXPECT_EQ(0, num) << "Incorrect number of attackers to " << (char)('a' + i) << "5.";
+        EXPECT_EQ(0ull, num) << "Incorrect number of attackers to " << (char)('a' + i) << "5.";
     }
 }
