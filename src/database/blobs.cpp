@@ -1,7 +1,7 @@
 #include "database/blobs.h"
 #include "blobs.h"
 
-namespace ChessGame
+namespace JChess
 {
     template <class T, class U>
     constexpr void writeToBits(T &bits, U value, uint8_t shift)
@@ -61,26 +61,26 @@ namespace ChessGame
         return moves;
     }
 
-    blob positionToBlob(const Position &position)
+    blob positionToBlob(const Board &board)
     {
         blob blob;
         blob.reserve(32);
         for (size_t i = 0; i < 32; ++i)
         {
             std::byte bits{0};
-            writeToBits(bits, position[2 * i].color, 1);
-            writeToBits(bits, position[2 * i].type, 3);
-            writeToBits(bits, position[2 * i + 1].color, 1);
-            writeToBits(bits, position[2 * i + 1].type, 3);
+            writeToBits(bits, board[2 * i].color, 1);
+            writeToBits(bits, board[2 * i].type, 3);
+            writeToBits(bits, board[2 * i + 1].color, 1);
+            writeToBits(bits, board[2 * i + 1].type, 3);
 
             blob.push_back(bits);
         }
         return blob;
     }
 
-    Position blobToPosition(const blob &posBlob)
+    Board blobToPosition(const blob &posBlob)
     {
-        Position pos;
+        Board pos;
         for (size_t i = 0; i < 32; ++i)
         {
             const auto &bits = posBlob[i];
@@ -92,4 +92,4 @@ namespace ChessGame
         return pos;
     }
 
-} // namespace ChessGame
+} // namespace JChess

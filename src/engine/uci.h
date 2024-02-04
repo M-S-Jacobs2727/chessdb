@@ -7,11 +7,11 @@
 
 #include <boost/process.hpp>
 
-#include "internal/annotation/evaluation.h"
-#include "internal/logic/move.h"
-#include "internal/logic/position.h"
+#include "annotation/evaluation.h"
+#include "core/board.h"
+#include "core/move.h"
 
-namespace ChessGame
+namespace JChess
 {
     namespace bp = boost::process;
 
@@ -51,21 +51,21 @@ namespace ChessGame
         /// @brief Set UCI options for this instance (not implemented).
         void setOptions();
 
-        /// @brief Set up engine for a new game starting at `position`.
-        /// @param position An initial starting Position
-        void newGame(const Position &position);
+        /// @brief Set up engine for a new game starting at `board`.
+        /// @param board An initial starting Position
+        void newGame(const Board &board);
 
-        /// @brief Update the engine's board position with the given move.
+        /// @brief Update the engine's board board with the given move.
         /// @param move
         void applyMove(const Move &move);
 
-        /// @brief Apply a new position to the engine's state.
+        /// @brief Apply a new board to the engine's state.
         /// Note: Do not use for a new game. Call `UCI::newGame(pos)` instead.
-        /// @param pos The new position to evaluate.
-        void nextPosition(const Position &pos);
+        /// @param pos The new board to evaluate.
+        void nextPosition(const Board &pos);
 
         void poll();
-        eval_t evaluation();
+        Evaluation evaluation();
         Move bestMove();
         void stop();
         void start();
@@ -89,11 +89,11 @@ namespace ChessGame
         bp::child m_engine;
 
         std::vector<std::string> m_header;
-        Position m_initialPosition;
+        Board m_initialPosition;
         std::vector<Move> m_currentMoves;
         Move m_bestMove;
         std::string m_lastLine;
 
         std::chrono::duration<float> m_readDelay;
     };
-} // namespace ChessGame
+} // namespace JChess

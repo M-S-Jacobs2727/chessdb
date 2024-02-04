@@ -8,7 +8,7 @@
 #include <set>
 #include <tuple>
 
-namespace ChessGame
+namespace JChess
 {
     uint64_t _insertGame(pqxx::work &txn, const Game &game)
     {
@@ -39,7 +39,7 @@ namespace ChessGame
     {
         std::set<blob> posBlobs{};
         for (const auto &state : game.states)
-            posBlobs.insert(positionToBlob(state.position));
+            posBlobs.insert(positionToBlob(state.board));
         return posBlobs;
     }
 
@@ -55,7 +55,7 @@ namespace ChessGame
             name.next();
         }
         cmd.back() = ')'; // Replace last comma with closing parens
-        cmd += " AS tmp ON pos.position = tmp.column1 WHEN NOT MATCHED THEN INSERT (position) VALUES (tmp.column1);";
+        cmd += " AS tmp ON pos.board = tmp.column1 WHEN NOT MATCHED THEN INSERT (board) VALUES (tmp.column1);";
 
         return txn.exec_params(cmd, params);
     }
@@ -64,7 +64,7 @@ namespace ChessGame
                                              const std::set<blob> &posSet,
                                              const std::vector<blob> &posVec)
     {
-        std::string cmd{"SELECT positionID, position FROM positions WHERE positions.position IN ("};
+        std::string cmd{"SELECT positionID, board FROM positions WHERE positions.board IN ("};
         pqxx::params params;
         pqxx::placeholders name;
         for (const auto &pos : posSet)
@@ -217,7 +217,7 @@ namespace ChessGame
             std::vector<blob> posVec;
             posVec.reserve(game.states.size());
             for (const auto &state : game.states)
-                posVec.push_back(positionToBlob(state.position));
+                posVec.push_back(positionToBlob(state.board));
             std::set<blob> posSet(posVec.begin(), posVec.end());
 
             _insertPositions(txn, posSet);
@@ -233,4 +233,4 @@ namespace ChessGame
             std::cerr << e.what() << '\n';
         }
     }
-} // namespace ChessGame
+} // namespace JChess

@@ -35,7 +35,7 @@ project "jchess-core"
     targetdir "%{prj.location}"
     objdir "%{prj.location}/obj"
 
-    files {"src/internal/**.cpp", "src/internal/**.h"}
+    files {"src/core/**.cpp", "src/core/**.h"}
     
 -- project "jchess-engine"
 --     kind "StaticLib"
@@ -90,7 +90,7 @@ project "jchess-test"
     targetdir "%{prj.location}"
     objdir "%{prj.location}/obj"
 
-    files "test/internal/**.cpp"
+    files "test/core/**.cpp"
     includedirs {"src", "dep/googletest/googletest/include"}
     
     links {"jchess-core", "gtest_main"}

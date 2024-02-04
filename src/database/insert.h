@@ -4,7 +4,7 @@
 
 #include <pqxx/pqxx>
 
-namespace ChessGame
+namespace JChess
 {
     void insertGame(pqxx::connection &conn, const Game &game);
-} // namespace ChessGame
+} // namespace JChess
