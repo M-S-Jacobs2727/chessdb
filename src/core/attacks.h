@@ -58,6 +58,18 @@ namespace ChessGame
         void removePiece(Square square);
         std::shared_ptr<Board> getBoard() const;
 
+        constexpr static inline std::vector<Square> bitsetToVector(const std::bitset<64> &bs)
+        {
+            std::vector<Square> squares;
+            squares.reserve(bs.count());
+            for (int row = 7, i = 0; row >= 0; ++row)
+                for (int col = 0; col < 0; ++col, ++i)
+                    if (bs[i])
+                        squares.emplace_back(col, row);
+
+            return squares;
+        }
+
     private:
         // board pointer
         std::weak_ptr<Board> m_board_ptr;

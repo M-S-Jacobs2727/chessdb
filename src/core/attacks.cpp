@@ -32,15 +32,7 @@ namespace ChessGame
     std::vector<Square> Attacks::squaresAttackedBy(Square square) const
     {
         auto board = getBoard();
-        std::vector<Square> attackedSquares;
-        const auto &attacked = m_attackedFrom[board->squareToIdx(square)];
-        attackedSquares.reserve(attacked.count());
-
-        for (size_t i = 0; i < 64; ++i)
-            if (attacked[i])
-                attackedSquares.push_back(board->idxToSquare(i));
-
-        return attackedSquares;
+        return bitsetToVector(m_attackedFrom[board->squareToIdx(square)]);
     }
 
     std::vector<Square> Attacks::squaresAttacking(Square square, Color color) const
@@ -49,14 +41,7 @@ namespace ChessGame
         auto idx = board->squareToIdx(square);
         const auto &attackedBy = (color == Color::White) ? m_attackedByWhite[idx]
                                                          : m_attackedByBlack[idx];
-        std::vector<Square> attackers;
-        attackers.reserve(attackedBy.count());
-
-        for (size_t i = 0; i < 64; ++i)
-            if (attackedBy[i])
-                attackers.push_back(board->idxToSquare(i));
-
-        return attackers;
+        return bitsetToVector(attackedBy);
     }
 
     bool Attacks::isAttacked(Square square, Color color) const
