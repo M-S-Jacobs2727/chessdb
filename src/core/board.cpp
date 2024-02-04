@@ -83,7 +83,6 @@ namespace JChess
                 err << "i = " << i << '.';
             throw std::runtime_error(err.str());
         }
-        throw std::runtime_error("Invalid FEN string: end");
     }
 
     Occupant Board::get(Square square) const
