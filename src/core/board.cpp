@@ -115,6 +115,18 @@ namespace ChessGame
         return idxToSquare(idx);
     }
 
+    constexpr bool Board::canMoveTo(Color movingColor, Square to) const
+    {
+        auto occ = get(to);
+        return (!occ || occ.value().color != movingColor);
+    }
+
+    constexpr bool Board::pawnCanCapture(Color movingColor, Square to) const
+    {
+        auto occ = get(to);
+        return (occ && occ.value().color != movingColor);
+    }
+
     std::vector<Square> Board::getPath(Square fromSquare, Offset direction, bool includePiece) const
     {
         std::vector<Square> path{};

@@ -28,6 +28,9 @@ namespace ChessGame
         Occupant remove(Square square);
         Square kingSquare(Color color) const;
 
+        constexpr bool canMoveTo(Color movingColor, Square to) const;
+        constexpr bool pawnCanCapture(Color movingColor, Square to) const;
+
         std::string toFen() const;
 
         /*
