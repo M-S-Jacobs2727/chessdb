@@ -29,7 +29,7 @@ namespace JChess
                 throw std::runtime_error("Invalid file value for Square from string");
             file = static_cast<int>(f - 'a');
 
-            rank = std::stol(str.substr(1).data());
+            rank = std::stol(str.substr(1).data()) - 1;
         }
 
         constexpr inline bool operator==(const Square &other) const
