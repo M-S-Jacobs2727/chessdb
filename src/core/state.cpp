@@ -72,7 +72,7 @@ namespace ChessGame
             Square rookFrom{qs ? 0 : 7, move.from.rank},
                 rookTo{qs ? 3 : 5, move.from.rank};
             auto rook = board.remove(rookFrom);
-            board.put(rookTo, rook.piece());
+            board.put(rookTo, rook.value());
 
             castleRights.remove(turn);
         }

@@ -26,7 +26,7 @@ namespace ChessGame
 
         for (const auto &[square, occupant] : std::views::zip(board->eachSquare(), board->eachOccupant()))
             if (occupant)
-                addAttacker(square, occupant.piece());
+                addAttacker(square, occupant.value());
     }
 
     std::vector<Square> Attacks::attackers(Square square, Color color) const
@@ -258,7 +258,7 @@ namespace ChessGame
 
             [[unlikely]] if (!board->get(attacker))
                 throw std::runtime_error("Invalid attacker");
-            auto piece = board->get(attacker).piece();
+            auto piece = board->get(attacker).value();
 
             auto &attackedBy = (piece.color == Color::White) ? m_attackedByWhite : m_attackedByBlack;
 
@@ -292,7 +292,7 @@ namespace ChessGame
 
             [[unlikely]] if (!board->get(attacker))
                 throw std::runtime_error("Invalid attacker");
-            auto piece = board->get(attacker).piece();
+            auto piece = board->get(attacker).value();
 
             auto &attackedBy = (piece.color == Color::White) ? m_attackedByWhite : m_attackedByBlack;
 

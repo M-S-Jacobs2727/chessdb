@@ -149,7 +149,7 @@ namespace ChessGame
                 {
                     if (num_empty)
                         fenstr += static_cast<char>('0' + num_empty);
-                    fenstr += FEN::pieceToChar(m_arr[i].piece());
+                    fenstr += FEN::pieceToChar(m_arr[i].value());
                 }
                 else
                     ++num_empty;

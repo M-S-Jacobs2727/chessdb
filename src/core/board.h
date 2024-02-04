@@ -17,39 +17,7 @@
 
 namespace ChessGame
 {
-    class Occupant
-    {
-    public:
-        constexpr Occupant() : m_occ(std::nullopt) {}
-        constexpr operator bool() const
-        {
-            return static_cast<bool>(m_occ);
-        }
-        constexpr bool operator==(const Occupant &occ) const
-        {
-            return occ.piece() == m_occ;
-        }
-        constexpr bool operator==(const Piece &piece) const
-        {
-            return m_occ && (piece == m_occ);
-        }
-        operator Piece() = delete;
-        void operator=(Piece piece)
-        {
-            m_occ = piece;
-        }
-        void operator=(std::nullopt_t no)
-        {
-            m_occ = std::nullopt;
-        }
-        const Piece &piece() const
-        {
-            return m_occ.value();
-        }
-
-    private:
-        std::optional<Piece> m_occ;
-    };
+    using Occupant = std::optional<Piece>;
 
     class Board
     {
