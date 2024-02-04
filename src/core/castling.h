@@ -3,7 +3,6 @@
 #include <array>
 #include <string>
 #include <string_view>
-#include <unordered_map>
 
 #include "core/color.h"
 #include "core/square.h"
