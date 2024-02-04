@@ -9,10 +9,5 @@
 
 namespace ChessGame
 {
-    struct HardPin
-    {
-        Square attacker;
-        Offset direction;
-    };
     std::vector<Move> legalMoves(const State &state);
 } // namespace ChessGame

@@ -8,319 +8,317 @@
 
 namespace ChessGame
 {
-    bool castleIsLegal(const Move &move, const State &state)
+    bool squareOnPath(Square test, Square start, Square end)
     {
-        auto side = (move.to.file == 2u) ? Castling::Side::QUEEN : Castling::Side::KING;
-        Square midSquare{(move.from.file + move.to.file) / 2, move.from.rank};
-        if (!state.castleRights.get(state.turn, side) ||
-            state.attacks.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
+        Offset dir1 = end - start;
+        if (!dir1.isDiagonal() && !dir1.isLateral())
             return false;
 
+        Offset dir2 = test - start;
+        if (!dir2.isDiagonal() && !dir2.isLateral())
+            return false;
+
+        // return true iff (start < test < end) or (start > test > end) or (start == test == end)
+        // for both rank and file, and both end-start and test-start are diagonal or lateral paths
+        return ((start.file <=> test.file) == (test.file <=> end.file)) &&
+               ((start.rank <=> test.rank) == (test.rank <=> end.rank));
+    }
+
+    bool castleIsLegal(const State &state, Castling::Side side)
+    {
+        Square midSquare = Board::rookToSquare(state.turn, side);
+
+        if (state.attacks.numAttackers(midSquare, oppositeColor(state.turn)) > 0)
+            return false;
+
+        // check that each square between king and rook is empty
         int file1 = (side == Castling::Side::QUEEN) ? 1 : 5,
             file2 = (side == Castling::Side::QUEEN) ? 3 : 6;
         for (auto file = file1; file <= file2; ++file)
-            if (state.board.get(Square{file, move.from.rank}))
+            if (state.board.get(Square{file, midSquare.rank}))
                 return false;
 
         return true;
     }
 
-    bool moveDisallowedByCheck(const Move &move,
-                               const Board &board,
-                               Square kingSq,
-                               Square checkingSq)
+    bool epCatureResultsInCheck(Square from, const State &state, Square kingSq)
     {
-        if (move.to == checkingSq)
-            return true;
-
-        Piece checkingPiece = board.get(checkingSq).piece();
-
-        // Cannot block these pieces without capturing
-        if (checkingPiece.type == PieceType::Pawn ||
-            checkingPiece.type == PieceType::Knight ||
-            checkingPiece.type == PieceType::King)
+        if (from.rank != kingSq.rank)
             return false;
 
-        Offset dir{kingSq.file - checkingSq.file,
-                   kingSq.rank - checkingSq.rank};
-        dir /= MAX(abs(dir.file), abs(dir.rank));
-
-        auto path = board.getPath(checkingSq, dir, false);
-        return std::find(path.begin(), path.end(), move.to) == path.end();
-    }
-
-    bool moveDisallowedByHardPin(const Move &move, const HardPin &hardPin, Square kingSq, const Board &board)
-    {
-        for (Square tmpSq = hardPin.attacker; board.valid(tmpSq) && tmpSq != kingSq; tmpSq += hardPin.direction)
-            if (tmpSq == move.to)
-                return false;
-        return true;
-    }
-
-    bool epCatureResultsInCheck(const Move &move, const State &state, Square kingSq)
-    {
-        auto rank = move.from.rank;
-        Square epPawn = state.enPassant.value() + Offsets::backward(state.turn);
-
-        if (epPawn.rank != kingSq.rank)
-            return false;
-
-        Square myPawn = move.from;
+        Square epPawn{state.enPassant.value().file, from.rank};
         int dir = (kingSq.file < epPawn.file) ? 1 : -1;
 
         auto file = kingSq.file;
         file += dir;
-        while (file != epPawn.file && file != myPawn.file)
+        while (file != epPawn.file && file != from.file)
         {
-            if (state.board.get(Square{file, rank}))
+            if (state.board.get(Square{file, from.rank}))
                 return false;
             file += dir;
         }
 
-        file += dir * 2;
+        file += dir;
 
-        while (0 <= file && file <= 7)
+        Occupant occ;
+        while (0 < file && file < 7)
         {
-            if (state.board.get(Square{file, rank}))
-            {
-                Piece piece = state.board.get(Square{file, rank}).piece();
-                if (piece.color != state.turn &&
-                    (piece.type == PieceType::Queen ||
-                     piece.type == PieceType::Rook))
-                    return true;
-                return false;
-            }
+            file += dir;
+            occ = state.board.get(Square{file, from.rank});
+            if (occ)
+                break;
         }
-        return false;
+        if (!occ)
+            return false;
+        Piece piece = occ.value();
+        return (piece.color != state.turn &&
+                (piece.type == PieceType::Queen ||
+                 piece.type == PieceType::Rook));
     }
 
-    std::vector<Move> candidatePawnMoves(const Board &board, Square from, Color color)
+    std::optional<Square> getHardPin(const State &state, Square testSquare, Square kingSq)
     {
-        std::vector<Move> moves{};
-        moves.reserve(4);
-        Piece pawn{color, PieceType::Pawn};
-        uint8_t pawnStartRank = static_cast<uint8_t>(static_cast<int>(color) * -5 + 6);
-
-        Offset oneForward = Offsets::forward(color);
-        Offset twoForward = oneForward * 2;
-        Offset attackLeft = oneForward + Offset{-1, 0};
-        Offset attackRight = oneForward + Offset{1, 0};
-
-        auto to = from + oneForward;
-        if (board.valid(to) && !board.get(to))
-            moves.emplace_back(pawn, from, to);
-
-        to = from + twoForward;
-        if (board.valid(to) && from.rank == pawnStartRank && !board.get(to))
-            moves.emplace_back(pawn, from, to);
-
-        to = from + attackLeft;
-        if (board.valid(to) && (!board.get(to) || board.get(to).piece().color != color))
-            moves.emplace_back(pawn, from, to);
-
-        to = from + attackRight;
-        if (board.valid(to) && (!board.get(to) || board.get(to).piece().color != color))
-            moves.emplace_back(pawn, from, to);
-
-        return moves;
-    }
-
-    std::vector<Move> candidateKnightMoves(const Board &board, Square from, Color color)
-    {
-        std::vector<Move> moves{};
-        moves.reserve(8);
-
-        for (const auto &offset : Offsets::knight)
-        {
-            auto to = from + offset;
-            if (board.valid(to))
-            {
-                auto occupant = board.get(to);
-                if (!occupant || occupant.piece().color != color)
-                    moves.emplace_back(Piece{color, PieceType::Knight}, from, to);
-            }
-        }
-        return moves;
-    }
-
-    std::vector<Move> candidateBishopMoves(const Board &board, Square from, Color color)
-    {
-        std::vector<Move> moves{};
-        moves.reserve(16);
-
-        for (const auto &offset : Offsets::bishop)
-        {
-            auto path = board.getPath(from, offset, true);
-            auto last = path.back();
-            path.pop_back();
-            for (const auto &to : path)
-                moves.emplace_back(Piece{color, PieceType::Bishop}, from, to);
-            auto occupant = board.get(last);
-            if (!occupant || occupant.piece().color != color)
-                moves.emplace_back(Piece{color, PieceType::Bishop}, from, last);
-        }
-        return moves;
-    }
-
-    std::vector<Move> candidateRookMoves(const Board &board, Square from, Color color)
-    {
-        std::vector<Move> moves{};
-        moves.reserve(16);
-
-        for (const auto &offset : Offsets::rook)
-        {
-            auto path = board.getPath(from, offset, true);
-            auto last = path.back();
-            path.pop_back();
-            for (const auto &to : path)
-                moves.emplace_back(Piece{color, PieceType::Rook}, from, to);
-            auto occupant = board.get(last);
-            if (!occupant || occupant.piece().color != color)
-                moves.emplace_back(Piece{color, PieceType::Rook}, from, last);
-        }
-        return moves;
-    }
-
-    std::vector<Move> candidateQueenMoves(const Board &board, Square from, Color color)
-    {
-        std::vector<Move> moves{};
-        moves.reserve(32);
-
-        for (const auto &offset : Offsets::queenKing)
-        {
-            auto path = board.getPath(from, offset, true);
-            auto last = path.back();
-            path.pop_back();
-            for (const auto &to : path)
-                moves.emplace_back(Piece{color, PieceType::Queen}, from, to);
-            auto occupant = board.get(last);
-            if (!occupant || occupant.piece().color != color)
-                moves.emplace_back(Piece{color, PieceType::Queen}, from, last);
-        }
-        return moves;
-    }
-
-    std::vector<Move> candidateKingMoves(const Board &board, Square from, Color color)
-    {
-        std::vector<Move> moves{};
-        moves.reserve(8);
-        Piece king{color, PieceType::King};
-        auto hr = board.homeRank(color);
-
-        for (const auto &offset : Offsets::queenKing)
-        {
-            auto to = from + offset;
-            if (board.valid(to))
-            {
-                auto occupant = board.get(to);
-                if (!occupant || occupant.piece().color != color)
-                    moves.emplace_back(king, from, to);
-            }
-        }
-        if (from == Square{4, hr})
-        {
-            Square to{2, hr};
-            if (!board.get(to))
-                moves.emplace_back(king, from, to);
-            to = Square{6, hr};
-            if (!board.get(to))
-                moves.emplace_back(king, from, to);
-        }
-        return moves;
-    }
-
-    std::vector<Move> candidateMoves(const Board &board, Square square)
-    {
-        if (!board.get(square))
+        auto pinDirection = kingSq - testSquare;
+        if (!pinDirection.norm())
             return {};
 
-        Piece piece = board.get(square).piece();
-        std::vector<Move> moves{};
-
-        switch (piece.type)
-        {
-        case PieceType::Pawn:
-            candidatePawnMoves(board, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Knight:
-            candidateKnightMoves(board, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Bishop:
-            candidateBishopMoves(board, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Rook:
-            candidateRookMoves(board, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::Queen:
-            candidateQueenMoves(board, square, piece.color).swap(moves);
-            break;
-
-        case PieceType::King:
-            candidateKingMoves(board, square, piece.color).swap(moves);
-            break;
-
-        default:
-            std::unreachable();
-            break;
-        }
-
-        return moves;
-    }
-
-    std::optional<HardPin> getHardPin(const Board &board, Square square, Color color)
-    {
-        auto kingSq = board.kingSquare(color);
-        auto offset = square - kingSq;
-        if (!offset.norm())
-            return {};
-
-        auto pathToPin = board.getPath(square, -offset, true);
+        auto pathToPin = state.board.getPath(testSquare, -pinDirection, true);
         if (pathToPin.empty())
             return {};
 
-        auto attacker = pathToPin.back();
-        HardPin hardPin{attacker, offset};
+        auto pinSquare = pathToPin.back();
 
-        auto occupant = board.get(attacker);
-        if (!occupant || occupant.piece().color == color)
+        auto occupant = state.board.get(pinSquare);
+        if (!occupant || occupant.value().color == state.turn)
             return {};
 
-        Piece piece = occupant.piece();
+        Piece piece = occupant.value();
 
         if (piece.type == PieceType::Queen ||
-            (piece.type == PieceType::Bishop && offset.isDiagonal()) ||
-            (piece.type == PieceType::Rook && offset.isLateral()))
-            return hardPin;
+            (piece.type == PieceType::Bishop && pinDirection.isDiagonal()) ||
+            (piece.type == PieceType::Rook && pinDirection.isLateral()))
+            return pinSquare;
 
         return {};
     }
+
+    /* This is a complex function, but I'm hoping to do branching at compile time as much as possible.
+     * In general, a pawn can move one square forward if the space is empty, or capture one square to
+     * either foward diagonal. If it is on its starting rank, it can additionally move two squares forward
+     * if both are empty. If it is able to promote, each promotion piece is a separate move, and it can
+     * capture to promote as well. If it is able to capture en passant, that square must be capturable despite
+     * being empty.
+     */
+    template <Color color>
+    std::vector<Move> candidatePawnMoves(const State &state, Square from, Square kingSq)
+    {
+        std::vector<Move> moves{};
+        constexpr Color oppColor = oppositeColor(color);
+        constexpr Piece pawn{color, PieceType::Pawn};
+        constexpr int pawnStartRank = static_cast<int>(color) * 5 + 1;
+        constexpr int pawnToPromoteRank = static_cast<int>(color) * -5 + 6;
+        constexpr int pawnToEPRank = static_cast<int>(color) * -1 + 4;
+
+        Square oneForward = from + Offsets::forward(color);
+        Square attackLeft = oneForward + Offset{-1, 0};
+        Square attackRight = oneForward + Offset{1, 0};
+
+        bool canCaptureEnPassant = (state.enPassant) &&
+                                   (from.rank == pawnToEPRank) &&
+                                   (abs(from.file - state.enPassant.value().file) == 1);
+
+        if (from.rank == pawnToPromoteRank)
+        {
+            moves.reserve(12);
+
+            constexpr Piece knight{color, PieceType::Knight};
+            constexpr Piece bishop{color, PieceType::Bishop};
+            constexpr Piece rook{color, PieceType::Rook};
+            constexpr Piece queen{color, PieceType::Queen};
+
+            if (!state.board.get(oneForward))
+            {
+                moves.push_back({.piece = pawn, .from = from, .to = oneForward, .promotion = knight});
+                moves.push_back({.piece = pawn, .from = from, .to = oneForward, .promotion = bishop});
+                moves.push_back({.piece = pawn, .from = from, .to = oneForward, .promotion = rook});
+                moves.push_back({.piece = pawn, .from = from, .to = oneForward, .promotion = queen});
+            }
+            if (from.file != 0 && state.board.pawnCanCapture(color, attackLeft))
+            {
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackLeft,
+                    .promotion = knight,
+                    .capture = state.board.get(attackLeft),
+                });
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackLeft,
+                    .promotion = bishop,
+                    .capture = state.board.get(attackLeft),
+                });
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackLeft,
+                    .promotion = rook,
+                    .capture = state.board.get(attackLeft),
+                });
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackLeft,
+                    .promotion = queen,
+                    .capture = state.board.get(attackLeft),
+                });
+            }
+            if (from.file != 7 && state.board.pawnCanCapture(color, attackRight))
+            {
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackRight,
+                    .promotion = knight,
+                    .capture = state.board.get(attackRight),
+                });
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackRight,
+                    .promotion = bishop,
+                    .capture = state.board.get(attackRight),
+                });
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackRight,
+                    .promotion = rook,
+                    .capture = state.board.get(attackRight),
+                });
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackRight,
+                    .promotion = queen,
+                    .capture = state.board.get(attackRight),
+                });
+            }
+        }
+        else if (from.rank == pawnStartRank)
+        {
+            moves.reserve(4);
+            Square twoForward = oneForward + Offsets::forward(color);
+
+            if (!state.board.get(oneForward))
+            {
+                moves.emplace_back(pawn, from, oneForward);
+                if (!state.board.get(twoForward))
+                    moves.emplace_back(pawn, from, twoForward);
+            }
+            if (from.file != 0 && state.board.pawnCanCapture(color, attackLeft))
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackLeft,
+                    .capture = state.board.get(attackLeft),
+                });
+            if (from.file != 7 && state.board.pawnCanCapture(color, attackRight))
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackRight,
+                    .capture = state.board.get(attackRight),
+                });
+        }
+        else if (canCaptureEnPassant)
+        {
+            moves.reserve(3);
+            Square epAttack = state.enPassant.value();
+            Square otherAttack = Square{2 * from.file - epAttack.file, epAttack.rank};
+
+            if (!state.board.get(oneForward))
+                moves.emplace_back(pawn, from, oneForward);
+            if (!epCatureResultsInCheck(from, state, kingSq))
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = epAttack,
+                    .enPassant = true,
+                    .capture = Piece{oppColor, PieceType::Pawn},
+                });
+            if (0 <= otherAttack.file && otherAttack.file <= 7 && state.board.pawnCanCapture(color, otherAttack))
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = otherAttack,
+                    .capture = state.board.get(otherAttack),
+                });
+        }
+        else
+        {
+            moves.reserve(3);
+
+            if (!state.board.get(oneForward))
+                moves.emplace_back(pawn, from, oneForward);
+            if (from.file != 0 && state.board.pawnCanCapture(color, attackLeft))
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackLeft,
+                    .capture = state.board.get(attackLeft),
+                });
+            if (from.file != 7 && state.board.pawnCanCapture(color, attackRight))
+                moves.push_back({
+                    .piece = pawn,
+                    .from = from,
+                    .to = attackRight,
+                    .capture = state.board.get(attackRight),
+                });
+        }
+
+        return moves;
+    }
+
+    template <>
+    std::vector<Move> candidatePawnMoves<Color::White>(const State &, Square, Square);
+    template <>
+    std::vector<Move> candidatePawnMoves<Color::Black>(const State &, Square, Square);
 
     std::vector<Move> legalMoves(const State &state)
     {
         std::vector<Move> moves{};
         const auto &board = state.board;
-        Color color = state.turn;
-        Color oppColor = oppositeColor(color);
+        Color turnColor = state.turn;
+        Color oppColor = oppositeColor(turnColor);
 
-        Square kingSq = board.kingSquare(color);
+        Piece king{turnColor, PieceType::King};
+        Square kingSq = board.kingSquare(turnColor);
 
         auto numCheckers = state.attacks.numAttackers(kingSq, oppColor);
         bool inCheck = numCheckers >= 1;
 
-        std::vector<Move> kingMoves = candidateKingMoves(board, kingSq, color);
-        for (const auto &move : kingMoves)
+        std::vector<Square> toSquares = state.attacks.attacks(kingSq);
+        for (const auto &to : toSquares)
+            if (state.attacks.numAttackers(to, oppColor) == 0 &&
+                board.canMoveTo(turnColor, to))
+                moves.push_back({.piece = king, .from = kingSq, .to = to, .capture = board.get(to)});
+
+        if (!inCheck) // castling moves
         {
-            if (state.attacks.numAttackers(move.to, oppColor) > 0)
-                continue;
-
-            if (move.castle && (inCheck || !castleIsLegal(move, state)))
-                continue;
-
-            moves.push_back(move);
+            if (state.castleRights.get(turnColor, Castling::Side::QUEEN) &&
+                castleIsLegal(state, Castling::Side::QUEEN))
+                moves.push_back({.piece = king,
+                                 .from = kingSq,
+                                 .to = board.kingToSquare(turnColor, Castling::Side::QUEEN),
+                                 .castle = Castling::Side::QUEEN});
+            if (state.castleRights.get(turnColor, Castling::Side::KING) &&
+                castleIsLegal(state, Castling::Side::KING))
+                moves.push_back({.piece = king,
+                                 .from = kingSq,
+                                 .to = board.kingToSquare(turnColor, Castling::Side::KING),
+                                 .castle = Castling::Side::KING});
         }
 
         if (numCheckers > 1)
@@ -332,30 +330,34 @@ namespace ChessGame
 
         for (const auto &[square, occupant] : std::views::zip(board.eachSquare(), board.eachOccupant()))
         {
-            if (!occupant || occupant.piece().color != color || occupant.piece().type == PieceType::King)
+            if (!occupant || occupant.value().color != turnColor || occupant.value().type == PieceType::King)
                 continue;
 
-            Piece piece = occupant.piece();
+            Piece piece = occupant.value();
 
-            auto hardPin = getHardPin(board, square, color);
-            bool canCaptureEnPassant = (state.enPassant) &&
-                                       (piece.type == PieceType::Pawn) &&
-                                       (square.rank == ((color == Color::White) ? 5 : 4)) &&
-                                       (abs(square.file - state.enPassant.value().file) == 1);
+            auto hardPin = getHardPin(state, square, kingSq);
 
-            for (const auto &move : candidateMoves(board, square))
+            std::vector<Move> candidateMoves;
+            if (piece.type == PieceType::Pawn)
             {
-                if (checker && moveDisallowedByCheck(move, board, kingSq, checker.value()))
-                    continue;
-
-                if (hardPin && moveDisallowedByHardPin(move, hardPin.value(), kingSq, board))
-                    continue;
-
-                if (canCaptureEnPassant && epCatureResultsInCheck(move, state, kingSq))
-                    continue;
-
-                moves.push_back(move);
+                if (turnColor == Color::White)
+                    candidatePawnMoves<Color::White>(state, square, kingSq).swap(candidateMoves);
+                else
+                    candidatePawnMoves<Color::Black>(state, square, kingSq).swap(candidateMoves);
             }
+            else
+            {
+                toSquares = state.attacks.attacks(square);
+                candidateMoves.reserve(toSquares.size());
+                for (const auto &to : toSquares)
+                    if (board.canMoveTo(turnColor, to))
+                        candidateMoves.push_back({.piece = piece, .from = square, .to = to, .capture = board.get(to)});
+            }
+
+            for (const auto &move : candidateMoves)
+                if ((!checker || squareOnPath(move.to, checker.value(), kingSq)) &&
+                    (!hardPin || squareOnPath(move.to, hardPin.value(), kingSq)))
+                    moves.push_back(move);
         }
 
         return moves;
