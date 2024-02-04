@@ -29,24 +29,3 @@ namespace JChess
         }
     };
 } // namespace JChess
-
-template <>
-struct std::hash<JChess::Move>
-{
-    inline size_t operator()(const JChess::Move &move) const noexcept
-    {
-        size_t h = 0;
-        h ^= std::hash<size_t>{}(static_cast<size_t>(move.piece.color));
-        h <<= 3;
-        h ^= std::hash<size_t>{}(static_cast<size_t>(move.piece.type));
-        h <<= 4;
-        h ^= std::hash<size_t>{}(static_cast<size_t>(move.from.file));
-        h <<= 4;
-        h ^= std::hash<size_t>{}(static_cast<size_t>(move.from.rank));
-        h <<= 4;
-        h ^= std::hash<size_t>{}(static_cast<size_t>(move.to.file));
-        h <<= 4;
-        h ^= std::hash<size_t>{}(static_cast<size_t>(move.to.rank));
-        return h;
-    }
-};

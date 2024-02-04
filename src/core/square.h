@@ -65,14 +65,3 @@ namespace JChess
         }
     };
 } // namespace JChess
-
-template <>
-struct std::hash<JChess::Square>
-{
-    inline size_t operator()(const JChess::Square &square) const noexcept
-    {
-        size_t h1 = std::hash<int>{}(square.file);
-        size_t h2 = std::hash<int>{}(square.rank);
-        return (h1 << 4) ^ h2;
-    }
-};
