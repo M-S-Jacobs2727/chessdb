@@ -3,7 +3,7 @@
 
 using JChess::Board;
 
-TEST(PositionTest, BasicAssertions)
+TEST(BoardTest, BasicAssertions)
 {
     using JChess::Color, JChess::Piece, JChess::PieceType;
     Piece wp{Color::White, PieceType::Pawn},
@@ -100,7 +100,7 @@ TEST(PositionTest, BasicAssertions)
             EXPECT_FALSE(pos.get({i, j}));
 }
 
-TEST(PositionTest, PutRemove)
+TEST(BoardTest, PutRemove)
 {
     using JChess::Color, JChess::Piece, JChess::PieceType;
 
@@ -134,7 +134,7 @@ TEST(PositionTest, PutRemove)
     EXPECT_EQ(p.value(), wq);
 }
 
-TEST(PositionTest, KingSquare)
+TEST(BoardTest, KingSquare)
 {
     Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     JChess::Square ws = pos.kingSquare(JChess::Color::White),
@@ -153,7 +153,7 @@ TEST(PositionTest, KingSquare)
     EXPECT_EQ(bs.rank, 4);
 }
 
-TEST(PositionTest, GetPath)
+TEST(BoardTest, GetPath)
 {
     using JChess::Offset, JChess::Square;
     Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
