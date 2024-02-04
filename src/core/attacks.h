@@ -24,16 +24,16 @@ namespace ChessGame
 
         /* The squares that the piece on the given square attacks.
          */
-        std::vector<Square> attacks(Square square) const;
+        std::vector<Square> squaresAttackedBy(Square square) const;
 
         /* Retrieve a vector of squares occupied by pieces of the given color attacking
         the given square.
          */
-        std::vector<Square> attackers(Square square, Color color) const;
+        std::vector<Square> squaresAttacking(Square square, Color color) const;
 
         /* Ascertain whether the given square is attacked by pieces of the given color.
          */
-        bool attacked(Square square, Color color) const;
+        bool isAttacked(Square square, Color color) const;
 
         /* Ascertain the number of attackers of a given color on the given square.
          */

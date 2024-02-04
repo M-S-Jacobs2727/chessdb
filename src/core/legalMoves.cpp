@@ -287,7 +287,7 @@ namespace ChessGame
         auto numCheckers = state.attacks.numAttackers(kingSq, oppColor);
         bool inCheck = numCheckers >= 1;
 
-        std::vector<Square> toSquares = state.attacks.attacks(kingSq);
+        std::vector<Square> toSquares = state.attacks.squaresAttackedBy(kingSq);
         for (const auto &to : toSquares)
             if (state.attacks.numAttackers(to, oppColor) == 0 &&
                 board.canMoveTo(turnColor, to))
@@ -312,7 +312,7 @@ namespace ChessGame
 
         std::optional<Square> checker{
             (numCheckers == 0) ? std::nullopt
-                               : std::make_optional(state.attacks.attackers(kingSq, oppColor)[0])};
+                               : std::make_optional(state.attacks.squaresAttacking(kingSq, oppColor)[0])};
 
         for (const auto &[square, occupant] : std::views::zip(board.eachSquare(), board.eachOccupant()))
         {
@@ -333,7 +333,7 @@ namespace ChessGame
             }
             else
             {
-                toSquares = state.attacks.attacks(square);
+                toSquares = state.attacks.squaresAttackedBy(square);
                 candidateMoves.reserve(toSquares.size());
                 for (const auto &to : toSquares)
                     if (board.canMoveTo(turnColor, to))

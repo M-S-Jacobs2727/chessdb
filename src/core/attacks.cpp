@@ -29,7 +29,7 @@ namespace ChessGame
                 addAttacker(square, occupant.value());
     }
 
-    std::vector<Square> Attacks::attacks(Square square) const
+    std::vector<Square> Attacks::squaresAttackedBy(Square square) const
     {
         auto board = getBoard();
         std::vector<Square> attackedSquares;
@@ -43,7 +43,7 @@ namespace ChessGame
         return attackedSquares;
     }
 
-    std::vector<Square> Attacks::attackers(Square square, Color color) const
+    std::vector<Square> Attacks::squaresAttacking(Square square, Color color) const
     {
         auto board = getBoard();
         auto idx = board->squareToIdx(square);
@@ -59,7 +59,7 @@ namespace ChessGame
         return attackers;
     }
 
-    bool Attacks::attacked(Square square, Color color) const
+    bool Attacks::isAttacked(Square square, Color color) const
     {
         auto board = getBoard();
         auto idx = board->squareToIdx(square);
