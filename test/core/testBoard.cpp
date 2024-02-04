@@ -28,71 +28,71 @@ TEST(PositionTest, BasicAssertions)
             auto p1 = pos.get({i, j}), p2 = pos2.get({i, j});
             EXPECT_EQ(static_cast<bool>(p1), static_cast<bool>(p2));
             if (p1)
-                EXPECT_EQ(p1.piece(), p2.piece());
+                EXPECT_EQ(p1.value(), p2.value());
         }
 
     auto p = pos.get({0, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wr);
+    EXPECT_EQ(p.value(), wr);
     p = pos.get({1, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wn);
+    EXPECT_EQ(p.value(), wn);
     p = pos.get({2, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wb);
+    EXPECT_EQ(p.value(), wb);
     p = pos.get({3, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wq);
+    EXPECT_EQ(p.value(), wq);
     p = pos.get({4, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wk);
+    EXPECT_EQ(p.value(), wk);
     p = pos.get({5, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wb);
+    EXPECT_EQ(p.value(), wb);
     p = pos.get({6, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wn);
+    EXPECT_EQ(p.value(), wn);
     p = pos.get({7, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wr);
+    EXPECT_EQ(p.value(), wr);
 
     p = pos.get({0, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), br);
+    EXPECT_EQ(p.value(), br);
     p = pos.get({1, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), bn);
+    EXPECT_EQ(p.value(), bn);
     p = pos.get({2, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), bb);
+    EXPECT_EQ(p.value(), bb);
     p = pos.get({3, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), bq);
+    EXPECT_EQ(p.value(), bq);
     p = pos.get({4, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), bk);
+    EXPECT_EQ(p.value(), bk);
     p = pos.get({5, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), bb);
+    EXPECT_EQ(p.value(), bb);
     p = pos.get({6, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), bn);
+    EXPECT_EQ(p.value(), bn);
     p = pos.get({7, 7});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), br);
+    EXPECT_EQ(p.value(), br);
 
     for (size_t i = 0; i < 8; ++i)
     {
         p = pos.get({i, 1});
         ASSERT_TRUE(p);
-        EXPECT_EQ(p.piece(), wp);
+        EXPECT_EQ(p.value(), wp);
     }
 
     for (size_t i = 0; i < 8; ++i)
     {
         p = pos.get({i, 6});
         ASSERT_TRUE(p);
-        EXPECT_EQ(p.piece(), bp);
+        EXPECT_EQ(p.value(), bp);
     }
 
     for (size_t j = 2; j < 6; ++j)
@@ -122,23 +122,23 @@ TEST(PositionTest, PutRemove)
 
     auto p = pos.remove({0, 0});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wr);
+    EXPECT_EQ(p.value(), wr);
     EXPECT_FALSE(pos.get({0, 0}));
 
     p = pos.put({0, 1}, wq);
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wp);
+    EXPECT_EQ(p.value(), wp);
 
     p = pos.get({0, 1});
     ASSERT_TRUE(p);
-    EXPECT_EQ(p.piece(), wq);
+    EXPECT_EQ(p.value(), wq);
 }
 
 TEST(PositionTest, KingSquare)
 {
     Board pos{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"};
     JChess::Square ws = pos.kingSquare(JChess::Color::White),
-                      bs = pos.kingSquare(JChess::Color::Black);
+                   bs = pos.kingSquare(JChess::Color::Black);
     EXPECT_EQ(ws.file, 4);
     EXPECT_EQ(ws.rank, 0);
     EXPECT_EQ(bs.file, 4);
