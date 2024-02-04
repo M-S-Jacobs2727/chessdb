@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_set>
+#include <vector>
 
 #include "core/move.h"
 #include "core/offset.h"
@@ -14,6 +14,5 @@ namespace ChessGame
         Square attacker;
         Offset direction;
     };
-    // TODO: change unordered_set to vector
-    std::unordered_set<Move> legalMoves(const State &state);
+    std::vector<Move> legalMoves(const State &state);
 } // namespace ChessGame

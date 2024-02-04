@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <ranges>
 #include <utility>
-#include <vector>
 
 #include "core/attacks.h"
 
@@ -95,9 +94,9 @@ namespace ChessGame
         return false;
     }
 
-    std::unordered_set<Move> candidatePawnMoves(const Board &board, Square from, Color color)
+    std::vector<Move> candidatePawnMoves(const Board &board, Square from, Color color)
     {
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
         moves.reserve(4);
         Piece pawn{color, PieceType::Pawn};
         uint8_t pawnStartRank = static_cast<uint8_t>(static_cast<int>(color) * -5 + 6);
@@ -109,26 +108,26 @@ namespace ChessGame
 
         auto to = from + oneForward;
         if (board.valid(to) && !board.get(to))
-            moves.emplace(pawn, from, to);
+            moves.emplace_back(pawn, from, to);
 
         to = from + twoForward;
         if (board.valid(to) && from.rank == pawnStartRank && !board.get(to))
-            moves.emplace(pawn, from, to);
+            moves.emplace_back(pawn, from, to);
 
         to = from + attackLeft;
         if (board.valid(to) && (!board.get(to) || board.get(to).piece().color != color))
-            moves.emplace(pawn, from, to);
+            moves.emplace_back(pawn, from, to);
 
         to = from + attackRight;
         if (board.valid(to) && (!board.get(to) || board.get(to).piece().color != color))
-            moves.emplace(pawn, from, to);
+            moves.emplace_back(pawn, from, to);
 
         return moves;
     }
 
-    std::unordered_set<Move> candidateKnightMoves(const Board &board, Square from, Color color)
+    std::vector<Move> candidateKnightMoves(const Board &board, Square from, Color color)
     {
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
         moves.reserve(8);
 
         for (const auto &offset : Offsets::knight)
@@ -138,15 +137,15 @@ namespace ChessGame
             {
                 auto occupant = board.get(to);
                 if (!occupant || occupant.piece().color != color)
-                    moves.emplace(Piece{color, PieceType::Knight}, from, to);
+                    moves.emplace_back(Piece{color, PieceType::Knight}, from, to);
             }
         }
         return moves;
     }
 
-    std::unordered_set<Move> candidateBishopMoves(const Board &board, Square from, Color color)
+    std::vector<Move> candidateBishopMoves(const Board &board, Square from, Color color)
     {
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
         moves.reserve(16);
 
         for (const auto &offset : Offsets::bishop)
@@ -155,17 +154,17 @@ namespace ChessGame
             auto last = path.back();
             path.pop_back();
             for (const auto &to : path)
-                moves.emplace(Piece{color, PieceType::Bishop}, from, to);
+                moves.emplace_back(Piece{color, PieceType::Bishop}, from, to);
             auto occupant = board.get(last);
             if (!occupant || occupant.piece().color != color)
-                moves.emplace(Piece{color, PieceType::Bishop}, from, last);
+                moves.emplace_back(Piece{color, PieceType::Bishop}, from, last);
         }
         return moves;
     }
 
-    std::unordered_set<Move> candidateRookMoves(const Board &board, Square from, Color color)
+    std::vector<Move> candidateRookMoves(const Board &board, Square from, Color color)
     {
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
         moves.reserve(16);
 
         for (const auto &offset : Offsets::rook)
@@ -174,17 +173,17 @@ namespace ChessGame
             auto last = path.back();
             path.pop_back();
             for (const auto &to : path)
-                moves.emplace(Piece{color, PieceType::Rook}, from, to);
+                moves.emplace_back(Piece{color, PieceType::Rook}, from, to);
             auto occupant = board.get(last);
             if (!occupant || occupant.piece().color != color)
-                moves.emplace(Piece{color, PieceType::Rook}, from, last);
+                moves.emplace_back(Piece{color, PieceType::Rook}, from, last);
         }
         return moves;
     }
 
-    std::unordered_set<Move> candidateQueenMoves(const Board &board, Square from, Color color)
+    std::vector<Move> candidateQueenMoves(const Board &board, Square from, Color color)
     {
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
         moves.reserve(32);
 
         for (const auto &offset : Offsets::queenKing)
@@ -193,17 +192,17 @@ namespace ChessGame
             auto last = path.back();
             path.pop_back();
             for (const auto &to : path)
-                moves.emplace(Piece{color, PieceType::Queen}, from, to);
+                moves.emplace_back(Piece{color, PieceType::Queen}, from, to);
             auto occupant = board.get(last);
             if (!occupant || occupant.piece().color != color)
-                moves.emplace(Piece{color, PieceType::Queen}, from, last);
+                moves.emplace_back(Piece{color, PieceType::Queen}, from, last);
         }
         return moves;
     }
 
-    std::unordered_set<Move> candidateKingMoves(const Board &board, Square from, Color color)
+    std::vector<Move> candidateKingMoves(const Board &board, Square from, Color color)
     {
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
         moves.reserve(8);
         Piece king{color, PieceType::King};
         auto hr = board.homeRank(color);
@@ -215,28 +214,28 @@ namespace ChessGame
             {
                 auto occupant = board.get(to);
                 if (!occupant || occupant.piece().color != color)
-                    moves.emplace(king, from, to);
+                    moves.emplace_back(king, from, to);
             }
         }
         if (from == Square{4, hr})
         {
             Square to{2, hr};
             if (!board.get(to))
-                moves.emplace(king, from, to);
+                moves.emplace_back(king, from, to);
             to = Square{6, hr};
             if (!board.get(to))
-                moves.emplace(king, from, to);
+                moves.emplace_back(king, from, to);
         }
         return moves;
     }
 
-    std::unordered_set<Move> candidateMoves(const Board &board, Square square)
+    std::vector<Move> candidateMoves(const Board &board, Square square)
     {
         if (!board.get(square))
             return {};
 
         Piece piece = board.get(square).piece();
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
 
         switch (piece.type)
         {
@@ -300,9 +299,9 @@ namespace ChessGame
         return {};
     }
 
-    std::unordered_set<Move> legalMoves(const State &state)
+    std::vector<Move> legalMoves(const State &state)
     {
-        std::unordered_set<Move> moves{};
+        std::vector<Move> moves{};
         const auto &board = state.board;
         Color color = state.turn;
         Color oppColor = oppositeColor(color);
@@ -312,7 +311,7 @@ namespace ChessGame
         auto numCheckers = state.attacks.numAttackers(kingSq, oppColor);
         bool inCheck = numCheckers >= 1;
 
-        std::unordered_set<Move> kingMoves = candidateKingMoves(board, kingSq, color);
+        std::vector<Move> kingMoves = candidateKingMoves(board, kingSq, color);
         for (const auto &move : kingMoves)
         {
             if (state.attacks.numAttackers(move.to, oppColor) > 0)
@@ -321,7 +320,7 @@ namespace ChessGame
             if (move.castle && (inCheck || !castleIsLegal(move, state)))
                 continue;
 
-            moves.insert(move);
+            moves.push_back(move);
         }
 
         if (numCheckers > 1)
@@ -355,7 +354,7 @@ namespace ChessGame
                 if (canCaptureEnPassant && epCatureResultsInCheck(move, state, kingSq))
                     continue;
 
-                moves.insert(move);
+                moves.push_back(move);
             }
         }
 
