@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <functional>
+#include <stdexcept>
+#include <string>
+#include <string_view>
 
 #include "core/offset.h"
 
@@ -15,6 +18,19 @@ namespace JChess
         constexpr Square() = default;
         constexpr Square(int file, int rank)
             : file(file), rank(rank) {}
+        constexpr Square(std::string_view str)
+        {
+            auto len = str.size();
+            if (len < 2 || len > 3)
+                throw std::runtime_error("Invalid string length for Square");
+
+            char f = str[0];
+            if (f < 'a' || 'z' < f)
+                throw std::runtime_error("Invalid file value for Square from string");
+            file = static_cast<int>(f - 'a');
+
+            rank = std::stol(str.substr(1).data());
+        }
 
         constexpr inline bool operator==(const Square &other) const
         {
